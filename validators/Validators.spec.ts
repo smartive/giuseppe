@@ -14,8 +14,15 @@ describe('Validators', () => {
             IsStringValidator('a string').should.be.true;
         });
 
+        it('should validate an empty string correctly', () => {
+            IsStringValidator('').should.be.true;
+        });
+
         it('should validate a non string correctly', () => {
             IsStringValidator(1).should.be.false;
+            IsStringValidator(NaN).should.be.false;
+            IsStringValidator({}).should.be.false;
+            IsStringValidator([]).should.be.false;
         });
 
         it('should validate a null value correctly', () => {

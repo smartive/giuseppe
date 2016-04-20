@@ -135,7 +135,7 @@ describe('ErrorHandlerDecorators', () => {
             fn.should.throw(ErrorHandlerWrongReturnTypeError);
         });
 
-        it('should should register a handler for the controller', () => {
+        it('should register a handler for the controller', () => {
             class Ctrl {
                 @ErrorHandler()
                 public func(req: Object, res: Object, err: Error): void {
@@ -150,7 +150,7 @@ describe('ErrorHandlerDecorators', () => {
                 .that.deep.equals([Ctrl.prototype.func]);
         });
 
-        it('should should register a default and a specific handler for the controller', () => {
+        it('should register a default and a specific handler for the controller', () => {
             class Ctrl {
                 @ErrorHandler()
                 public func(req: Object, res: Object, err: Error): void {
