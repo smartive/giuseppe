@@ -1,13 +1,9 @@
 # giuseppe
-> [Italian: dʒuˈzɛppe]
 
 ![giuseppe](https://cloud.githubusercontent.com/assets/292951/14691860/f363e562-0753-11e6-89df-aab95645084f.png)
 
-A controller routing system for expressJS with typescript decorators and annotations.
-Named after Giuseppe Verdi the great componist. Like Verdi, we compose things, 
-but not a great piece of musical history. We compose routes for you. `giuseppe` is dedicated to
-[expressJS](http://expressjs.com/) and depends on it. We were tired of writting all the
-route registrations by ourselfes.
+giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](http://expressjs.com/) using [TypeScript](https://www.typescriptlang.org/) decorators and annotations named after the great Italian componist Giuseppe Verdi. Like Verdi, it composes things, but not a great piece of musical history! We compose routes for you. giuseppe is dedicated to
+[Express](http://expressjs.com/) and depends on it. We were tired of writing all the route registrations by ourselves.
 
 ## Docs
 
