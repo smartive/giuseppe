@@ -15,6 +15,7 @@ node_modules
 # Typescript stuff
 typings
 build
+docs
 
 *.ts
 !*.d.ts

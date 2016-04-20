@@ -14,10 +14,11 @@ route registrations by ourselfes.
 This readme will give a short overview over the usable features. For more detailed information,
 please find a more detailed documentation in the `docs/` folder.
 
-- [Registration function]()
+- [Registration of controllers](docs/Registration.md)
 - [Controllers]()
 - [Routes]()
 - [Parameters]()
+- [Validators]()
 - [Error handling]()
 
 ## Installation
