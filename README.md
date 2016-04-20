@@ -5,7 +5,7 @@
 
 A controller routing system for expressJS with typescript decorators and annotations.
 Named after Giuseppe Verdi the great componist. Like Verdi, we compose things, 
-but not a great piece of art! We compose routes for you. `giuseppe` is dedicated to
+but not a great piece of musical history. We compose routes for you. `giuseppe` is dedicated to
 [expressJS](http://expressjs.com/) and depends on it. We were tired of writting all the
 route registrations by ourselfes.
 
