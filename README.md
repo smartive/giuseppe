@@ -155,6 +155,10 @@ own awesome way and will maintain it in the future.
 
 ## Changelog
 
+The changelog is based on [keep a changelog](http://keepachangelog.com) and is located here:
+
+[Changelog](CHANGELOG.md)
+
 ## Licence
 
 This software is licenced under the [MIT](LICENSE) licence.
