@@ -1,0 +1,32 @@
+{
+  "name": "giuseppe",
+  "version": "0.1.0",
+  "description": "A controller routing system for expressJS with typescript decorators and annotations",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/smartive/giuseppe.git"
+  },
+  "keywords": [
+    "express",
+    "routing",
+    "typescript",
+    "decorators",
+    "api",
+    "controller"
+  ],
+  "author": "Christoph Bühler <christoph@smartive.ch>",
+  "contributors": [
+    {
+      "name": "Dominique Wirz",
+      "email": "dominique@smartive.ch"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smartive/giuseppe/issues"
+  },
+  "homepage": "https://github.com/smartive/giuseppe#readme"
+}
