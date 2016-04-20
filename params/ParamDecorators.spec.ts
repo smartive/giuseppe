@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {Query, paramsKey, Param, ParamType, UrlParam, Body, Req, Res} from './ParamDecorators';
+import {Query, paramsKey, Param, ParamType, UrlParam, Body, Req, Res, Header} from './ParamDecorators';
 import {Route} from '../routes/RouteDecorators';
 import {Controller} from '../controllers/ControllerDecorator';
 import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationFailedError} from '../errors/Errors';
@@ -547,6 +547,189 @@ describe('ParamDecorators', () => {
                 },
                 foo: 'bar'
             }, null);
+        });
+
+    });
+
+    describe('Header', () => {
+
+        it('should return a decorator function', () => {
+            Header('name').should.be.a('function').with.lengthOf(3);
+        });
+
+        it('should add a correct header param registration object to the route', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('name') name: string): any {
+                    return {};
+                }
+            }
+
+            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+
+            params.should.be.an('array').with.lengthOf(1);
+
+            let param: Param = params[0];
+
+            param.paramType.should.equal(ParamType.Header);
+            param.index.should.equal(0);
+            param.name.should.equal('name');
+            should.not.exist(param.options);
+            param.type.should.equal(String);
+        });
+
+        it('should inject the correct variable', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test') test: string): any {
+                    test.should.equal('foobar');
+                    return {};
+                }
+            }
+
+            let ctrl: any = new Ctrl();
+            ctrl.func({
+                headers: {test: 'foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null);
+        });
+
+        it('should parse the correct value', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test') test: string): any {
+                    test.should.be.a('string');
+                    return {};
+                }
+            }
+
+            let ctrl: any = new Ctrl();
+            ctrl.func({
+                headers: {test: 'foobar'},
+                get: function (name) {
+                    return this.headers[name]
+                }
+            }, {
+                json: () => {
+                }
+            }, null);
+        });
+
+        it('should throw on non provided required parameter', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test', {required: true}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+
+            let ctrl: any = new Ctrl();
+
+            ctrl.func({
+                headers: {notProvided: 'foobar'},
+                get: function (name) {
+                    this.headers[name]
+                }
+            }, {}, null);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(RequiredParameterNotProvidedError);
+        });
+
+        it('should inject undefined if param is not provided', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test') test: string): any {
+                    should.not.exist(test);
+                    return {};
+                }
+            }
+
+            let ctrl: any = new Ctrl();
+
+            ctrl.func({
+                headers: {notProvided: 'foobar'},
+                get: function (name) {
+                    this.headers[name]
+                }
+            }, {
+                json: () => {
+                }
+            }, null);
+        });
+
+        it('should validate correctly', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test', {validator: IsStringValidator}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+
+            let ctrl: any = new Ctrl();
+
+            ctrl.func({
+                headers: {test: 'foobar'},
+                get: function (name) {
+                    this.headers[name]
+                }
+            }, {
+                json: () => {
+                }
+            }, null);
+
+            spy.should.not.be.called;
+        });
+
+        it('should throw on validation error', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test', {validator: IsNumberValidator}) test: number): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+
+            let ctrl: any = new Ctrl();
+
+            ctrl.func({
+                headers: {test: 'foobar'},
+                get: function (name) {
+                    return this.headers[name]
+                }
+            }, {
+                json: () => {
+                }
+            }, null);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
         });
 
     });

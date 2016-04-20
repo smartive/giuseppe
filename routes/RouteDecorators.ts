@@ -25,7 +25,7 @@ let parseParam = (value: any, param: Param) => {
 
     if ((value === null || value === undefined) && param.options && param.options.required) {
         throw new RequiredParameterNotProvidedError(param.name);
-    } else if (!value) {
+    } else if (value === null || value === undefined) {
         return undefined;
     }
 
@@ -121,6 +121,9 @@ export function Route(route: string = '', httpMethod: RouteMethod = RouteMethod.
                             return;
                         case ParamType.Query:
                             paramValues[p.index] = parseParam(request.query[p.name], p);
+                            return;
+                        case ParamType.Header:
+                            paramValues[p.index] = parseParam(request.get(p.name), p);
                             return;
                     }
                 });

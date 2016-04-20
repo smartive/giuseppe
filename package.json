@@ -1,13 +1,14 @@
 {
   "name": "giuseppe",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A controller routing system for expressJS with typescript decorators and annotations",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
     "clean": "rimraf build",
     "pretest": "npm install -q && typings install && npm run clean && tsc",
     "test": "mocha --ui bdd --recursive ./build",
-    "develop": "npm run clean && tsc -w",
+    "develop": "npm run clean && tsc --sourceMap -w",
+    "prepublish": "if [ -n \"$CI\" ]; then tsc --outDir .; fi",
     "postinstall": "typings install"
   },
   "repository": {
@@ -46,6 +47,7 @@
     "mocha": "^2.4.5",
     "rimraf": "^2.5.2",
     "sinon": "^1.17.3",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "tslint": "^3.7.4"
   }
 }

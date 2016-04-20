@@ -14,7 +14,8 @@ export enum ParamType {
     Query,
     Body,
     Request,
-    Response
+    Response,
+    Header
 }
 
 /**
@@ -102,4 +103,13 @@ export function Req() {
  */
 export function Res() {
     return param(ParamType.Response, 'response');
+}
+
+/**
+ * Declares the current parameter as a header parameter. The route will provide the corresponding http header value.
+ *
+ * @returns {(Object, string, number) => void} - Parameter decorator for the given function.
+ */
+export function Header(name: string, options?: ParamOptions) {
+    return param(ParamType.Header, name, options);
 }
