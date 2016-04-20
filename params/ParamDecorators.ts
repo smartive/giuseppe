@@ -74,7 +74,7 @@ export function Query(name: string, options?: ParamOptions) {
  * @returns {(Object, string, number) => void} - Parameter decorator for the given function.
  */
 export function UrlParam(name: string) {
-    return param(ParamType.Url, name, { required: true });
+    return param(ParamType.Url, name, {required: true});
 }
 
 /**
