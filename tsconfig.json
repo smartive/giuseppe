@@ -3,9 +3,10 @@
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
-    "removeComments": true,
+    "removeComments": false,
     "outDir": "./build",
-    "sourceMap": true,
+    "declaration": true,
+    "sourceMap": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },

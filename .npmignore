@@ -15,3 +15,11 @@ node_modules
 # Typescript stuff
 typings
 build
+
+*.ts
+!*.d.ts
+*.js.map
+*.spec.js
+*.spec.ts
+*.spec.d.ts
+*.spec.js.map
