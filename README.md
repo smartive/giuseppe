@@ -1,7 +1,7 @@
 # giuseppe
-![giuseppe](https://cloud.githubusercontent.com/assets/1067213/14689133/51624568-0746-11e6-9d93-eabc6d5f97e2.png)
-
 > [Italian: dʒuˈzɛppe]
+
+![giuseppe](https://cloud.githubusercontent.com/assets/292951/14691860/f363e562-0753-11e6-89df-aab95645084f.png)
 
 A controller routing system for expressJS with typescript decorators and annotations.
 Named after Giuseppe Verdi the great componist. Like Verdi, we compose things, 
@@ -152,6 +152,8 @@ The author of the package is [Christoph Bühler](https://github.com/buehler)
 but without the help of [smartive](https://smartive.ch), this package would not
 have been possible. All the people of smartive contributed to this package in their
 own awesome way and will maintain it in the future.
+
+[Full list of contributors](https://github.com/smartive/giuseppe/graphs/contributors)
 
 ## Changelog
 
