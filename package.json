@@ -2,8 +2,13 @@
   "name": "giuseppe",
   "version": "0.1.0",
   "description": "A controller routing system for expressJS with typescript decorators and annotations",
+  "main": "index.ts",
   "scripts": {
-    "test": "npm test"
+    "clean": "rimraf build",
+    "pretest": "npm install -q && typings install && npm run clean && tsc",
+    "test": "mocha --ui bdd --recursive ./build",
+    "develop": "npm run clean && tsc -w",
+    "postinstall": "typings install"
   },
   "repository": {
     "type": "git",
@@ -28,5 +33,19 @@
   "bugs": {
     "url": "https://github.com/smartive/giuseppe/issues"
   },
-  "homepage": "https://github.com/smartive/giuseppe#readme"
+  "homepage": "https://github.com/smartive/giuseppe#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "http-status": "^0.2.1",
+    "reflect-metadata": "^0.1.3",
+    "typescript": "^1.8.10",
+    "typings": "^0.8.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "rimraf": "^2.5.2",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0"
+  }
 }
