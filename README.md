@@ -157,4 +157,4 @@ own awesome way and will maintain it in the future.
 
 ## Licence
 
-This software is licenced under the [MIT](https://github.com/smartive/giuseppe/blob/master/LICENSE) licence.
+This software is licenced under the [MIT](LICENSE) licence.
