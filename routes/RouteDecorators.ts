@@ -122,6 +122,9 @@ export function Route(route: string = '', httpMethod: RouteMethod = RouteMethod.
                         case ParamType.Query:
                             paramValues[p.index] = parseParam(request.query[p.name], p);
                             return;
+                        case ParamType.Header:
+                            paramValues[p.index] = parseParam(request.get(p.name), p);
+                            return;
                     }
                 });
             } catch (e) {
