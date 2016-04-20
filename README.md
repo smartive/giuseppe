@@ -1,5 +1,5 @@
 # giuseppe
-[giuseppe](https://cloud.githubusercontent.com/assets/1067213/14689133/51624568-0746-11e6-9d93-eabc6d5f97e2.png)
+![giuseppe](https://cloud.githubusercontent.com/assets/1067213/14689133/51624568-0746-11e6-9d93-eabc6d5f97e2.png)
 
 > [Italian: dʒuˈzɛppe]
 
