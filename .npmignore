@@ -16,6 +16,9 @@ node_modules
 typings
 build
 
-*.js
+*.ts
 *.js.map
-*.spec
+*.spec.js
+*.spec.ts
+*.spec.d.ts
+*.spec.js.map
