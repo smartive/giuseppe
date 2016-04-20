@@ -18,6 +18,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - First version of giuseppe.
 - Adding base code and travis-CI.
 
-[Unreleased]: https://github.com/smartive/giuseppe/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/smartive/giuseppe/compare/v0.3.0...develop
 [0.3.0]: https://github.com/smartive/giuseppe/compare/v0.2.0...v0.3.0
 [0.2.1]: https://github.com/smartive/giuseppe/tree/v0.2.1
