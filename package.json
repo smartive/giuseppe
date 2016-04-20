@@ -8,6 +8,7 @@
     "pretest": "npm install -q && typings install && npm run clean && tsc",
     "test": "mocha --ui bdd --recursive ./build",
     "develop": "npm run clean && tsc -w",
+    "prepublish": "rimraf build && tsc --outDir .",
     "postinstall": "typings install"
   },
   "repository": {
