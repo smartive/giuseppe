@@ -17,6 +17,7 @@ typings
 build
 
 *.ts
+!*.d.ts
 *.js.map
 *.spec.js
 *.spec.ts
