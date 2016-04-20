@@ -25,7 +25,7 @@ let parseParam = (value: any, param: Param) => {
 
     if ((value === null || value === undefined) && param.options && param.options.required) {
         throw new RequiredParameterNotProvidedError(param.name);
-    } else if (!value) {
+    } else if (value === null || value === undefined) {
         return undefined;
     }
 
