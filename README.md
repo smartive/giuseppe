@@ -126,7 +126,7 @@ In the example above, the two controllers are registered in expressJS with the r
 name `data`. If it's not provided, undefined is injected.
 
 This was a short example of the possiblities of giuseppe. Please find a more detailed version
-of the documentation in the links at the start and/or the `docs/` folder.
+of the documentation in the [links at the start](#docs) and/or the `docs/` folder.
 
 ## Testing
 
