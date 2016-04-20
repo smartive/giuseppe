@@ -2,6 +2,7 @@
   "name": "giuseppe",
   "version": "0.1.0",
   "description": "A controller routing system for expressJS with typescript decorators and annotations",
+  "main": "index.ts",
   "scripts": {
     "clean": "rimraf build",
     "pretest": "npm install -q && typings install && npm run clean && tsc",
