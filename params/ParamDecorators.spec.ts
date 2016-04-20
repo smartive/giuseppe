@@ -593,7 +593,7 @@ describe('ParamDecorators', () => {
             ctrl.func({
                 headers: {test: 'foobar'},
                 get: function (name) {
-                    this.headers[name]
+                    return this.headers[name];
                 }
             }, {
                 json: () => {
@@ -615,7 +615,7 @@ describe('ParamDecorators', () => {
             ctrl.func({
                 headers: {test: 'foobar'},
                 get: function (name) {
-                    this.headers[name]
+                    return this.headers[name]
                 }
             }, {
                 json: () => {
@@ -721,7 +721,7 @@ describe('ParamDecorators', () => {
             ctrl.func({
                 headers: {test: 'foobar'},
                 get: function (name) {
-                    this.headers[name]
+                    return this.headers[name]
                 }
             }, {
                 json: () => {
