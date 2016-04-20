@@ -1,6 +1,6 @@
 {
   "name": "giuseppe",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "A controller routing system for expressJS with typescript decorators and annotations",
   "main": "index.js",
   "scripts": {
