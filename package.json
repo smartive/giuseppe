@@ -4,11 +4,11 @@
   "description": "A controller routing system for expressJS with typescript decorators and annotations",
   "main": "index.js",
   "scripts": {
+    "bootstrap": "npm install -q && typings install",
     "clean": "rimraf build",
-    "pretest": "npm install -q && typings install && npm run clean && tsc",
+    "pretest": "npm run bootstrap && npm run clean && tsc",
     "test": "mocha --ui bdd --recursive ./build",
-    "develop": "npm run clean && tsc --sourceMap -w",
-    "prepublish": "if [ -n \"$CI\" ] && [ -n \"$TRAVIS_TAG\" ]; then tsc --outDir .; fi"
+    "develop": "npm run clean && tsc --sourceMap -w"
   },
   "repository": {
     "type": "git",
