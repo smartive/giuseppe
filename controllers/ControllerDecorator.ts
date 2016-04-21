@@ -92,7 +92,8 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
             instance = new ctrl.controller();
 
         routes.forEach((route: RouteRegistration) => {
-            let routeTarget = ctrl.controller.prototype,
+            let ctrlTarget = ctrl.controller,
+                routeTarget = ctrlTarget.prototype,
                 routeUrl = url + [ctrl.prefix, route.path].filter(Boolean).join('/'),
                 routeId = routeUrl + route.method.toString(),
                 returnType = Reflect.getMetadata('design:returntype', routeTarget, route.propertyKey),
@@ -117,7 +118,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
             params = params.sort((p1, p2) => (p1.index < p2.index) ? -1 : 1);
 
             route.descriptor.value = (request: Request, response: Response, next) => {
-                let errorHandlers: ErrorHandlerManager = Reflect.getMetadata(ERRORHANDLER_KEY, routeTarget),
+                let errorHandlers: ErrorHandlerManager = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
                     paramValues = [];
 
                 if (!errorHandlers) {
