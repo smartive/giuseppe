@@ -1,6 +1,9 @@
 language: node_js
 node_js:
 - '5'
+before_deploy:
+  - npm run bootstrap
+  - tsc --outDir .
 deploy:
   provider: npm
   email: christoph.buehler@bluewin.ch
