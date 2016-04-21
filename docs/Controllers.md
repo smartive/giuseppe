@@ -1,4 +1,4 @@
-# Controller 
+# Controller
 
 In terms of the api controller, there is not much to say. You need to decorate your
 controllers class with the `@Controller` annotation so it registers itself with
