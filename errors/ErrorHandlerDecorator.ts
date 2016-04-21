@@ -12,7 +12,7 @@ const argumentCount = 3;
  * Reflect metadata key for error handler manager.
  * @type {string}
  */
-export const errorHandlerKey = 'errorHandler';
+export const ERRORHANDLER_KEY = 'errorHandler';
 
 /**
  * @typedef ErrorHandlerFunction
@@ -102,12 +102,12 @@ export function ErrorHandler(...errors: Function[]) {
             throw new ErrorHandlerWrongReturnTypeError();
         }
 
-        let handler: ErrorHandlerManager = Reflect.getMetadata(errorHandlerKey, target.constructor) || new ErrorHandlerManager();
+        let handler: ErrorHandlerManager = Reflect.getMetadata(ERRORHANDLER_KEY, target.constructor) || new ErrorHandlerManager();
         if (errors.length) {
             errors.forEach(e => handler.addHandler(descriptor.value, e));
         } else {
             handler.addHandler(descriptor.value);
         }
-        Reflect.defineMetadata(errorHandlerKey, handler, target.constructor);
+        Reflect.defineMetadata(ERRORHANDLER_KEY, handler, target.constructor);
     };
 }

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {Router} from 'express';
-import {RouteMethod, routesKey, RouteRegistration} from '../routes/RouteDecorators';
+import {RouteMethod, ROUTES_KEY, RouteRegistration} from '../routes/RouteDecorators';
 import {HttpVerbNotSupportedError, DuplicateRouteDeclarationError} from '../errors/Errors';
 
 let controllers: ControllerRegistration[] = [],
@@ -42,7 +42,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
     }
 
     controllers.forEach(ctrl => {
-        let routes = Reflect.getOwnMetadata(routesKey, ctrl.controller) || [],
+        let routes = Reflect.getOwnMetadata(ROUTES_KEY, ctrl.controller) || [],
             instance = new ctrl.controller();
 
         routes.forEach((route: RouteRegistration) => {

@@ -1,9 +1,9 @@
 import 'reflect-metadata';
-import {Query, paramsKey, Param, ParamType, UrlParam, Body, Req, Res, Header} from './ParamDecorators';
+import {Query, PARAMS_KEY, Param, ParamType, UrlParam, Body, Req, Res, Header} from './ParamDecorators';
 import {Route} from '../routes/RouteDecorators';
 import {Controller} from '../controllers/ControllerDecorator';
 import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationFailedError} from '../errors/Errors';
-import {ErrorHandlerManager, errorHandlerKey} from '../errors/ErrorHandlerDecorator';
+import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {IsStringValidator, IsNumberValidator} from '../validators/Validators';
 import chai = require('chai');
 import sinon = require('sinon');
@@ -29,7 +29,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -88,7 +88,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -134,7 +134,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -156,7 +156,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -180,7 +180,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -207,7 +207,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -266,7 +266,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -293,7 +293,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -352,7 +352,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -398,7 +398,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -420,7 +420,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -444,7 +444,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -471,7 +471,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -518,7 +518,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -566,7 +566,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -635,7 +635,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -685,7 +685,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -714,7 +714,7 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 

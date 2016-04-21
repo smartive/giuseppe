@@ -3,7 +3,7 @@ import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
 import {Controller, registerControllers, resetControllerRegistrations} from './ControllerDecorator';
 import {Router} from 'express';
-import {Get, Post, Put, Delete, routesKey} from '../routes/RouteDecorators';
+import {Get, Post, Put, Delete, ROUTES_KEY} from '../routes/RouteDecorators';
 import {SinonSpy} from '~sinon/lib/sinon';
 import {DuplicateRouteDeclarationError, HttpVerbNotSupportedError} from '../errors/Errors';
 
@@ -246,9 +246,9 @@ describe('Controller', () => {
                 }
             }
 
-            let routes = Reflect.getMetadata(routesKey, Ctrl);
+            let routes = Reflect.getMetadata(ROUTES_KEY, Ctrl);
             routes[0].method = -1;
-            Reflect.defineMetadata(routesKey, routes, Ctrl);
+            Reflect.defineMetadata(ROUTES_KEY, routes, Ctrl);
 
             let fn = () => {
                 registerControllers('', router);

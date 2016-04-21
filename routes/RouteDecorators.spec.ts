@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import {Get, Put, Post, Delete, Route, routesKey, RouteRegistration, RouteMethod} from '../routes/RouteDecorators';
+import {Get, Put, Post, Delete, Route, ROUTES_KEY, RouteRegistration, RouteMethod} from '../routes/RouteDecorators';
 import {ParameterConstructorArgumentsError, RouteError, WrongReturnTypeError} from '../errors/Errors';
 import {Query, Res} from '../params/ParamDecorators';
 import {Controller} from '../controllers/ControllerDecorator';
 import {Response} from 'express';
-import {ErrorHandlerManager, errorHandlerKey} from '../errors/ErrorHandlerDecorator';
+import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -109,7 +109,7 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let routes = Reflect.getMetadata(routesKey, Ctrl);
+            let routes = Reflect.getMetadata(ROUTES_KEY, Ctrl);
 
             routes.should.be.an('array').with.lengthOf(1);
 
@@ -131,7 +131,7 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let routes = Reflect.getMetadata(routesKey, Ctrl);
+            let routes = Reflect.getMetadata(ROUTES_KEY, Ctrl);
 
             routes.should.be.an('array').with.lengthOf(2);
 
@@ -199,7 +199,7 @@ describe('RouteDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl();
 
@@ -222,7 +222,7 @@ describe('RouteDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 errSpy = sinon.spy();
             handler.addHandler(errSpy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl(),
                 spy = sinon.spy();
@@ -250,7 +250,7 @@ describe('RouteDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 errSpy = sinon.spy();
             handler.addHandler(errSpy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
             let ctrl: any = new Ctrl(),
                 spy = sinon.spy();

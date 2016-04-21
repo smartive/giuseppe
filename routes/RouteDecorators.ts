@@ -4,7 +4,7 @@ import 'reflect-metadata';
  * Reflect metadata key for the controllers routes.
  * @type {string}
  */
-export const routesKey = 'routes';
+export const ROUTES_KEY = 'routes';
 
 /**
  * Enum for the possible route http methods.
@@ -36,9 +36,9 @@ export class RouteRegistration {
  */
 export function Route(route: string = '', httpMethod: RouteMethod = RouteMethod.Get) {
     return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-        let routes = Reflect.getMetadata(routesKey, target.constructor) || [];
+        let routes = Reflect.getMetadata(ROUTES_KEY, target.constructor) || [];
         routes.push(new RouteRegistration(route || '', httpMethod, descriptor.value, propertyKey));
-        Reflect.defineMetadata(routesKey, routes, target.constructor);
+        Reflect.defineMetadata(ROUTES_KEY, routes, target.constructor);
     };
 }
 
