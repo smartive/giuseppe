@@ -22,7 +22,7 @@ export enum RouteMethod {
  * @class
  */
 export class RouteRegistration {
-    constructor(public path: string, public method: RouteMethod, public func: Function, public propertyKey: string) {
+    constructor(public path: string, public method: RouteMethod, public descriptor: PropertyDescriptor, public propertyKey: string) {
     }
 }
 
@@ -37,7 +37,7 @@ export class RouteRegistration {
 export function Route(route: string = '', httpMethod: RouteMethod = RouteMethod.Get) {
     return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
         let routes = Reflect.getMetadata(ROUTES_KEY, target.constructor) || [];
-        routes.push(new RouteRegistration(route || '', httpMethod, descriptor.value, propertyKey));
+        routes.push(new RouteRegistration(route || '', httpMethod, descriptor, propertyKey));
         Reflect.defineMetadata(ROUTES_KEY, routes, target.constructor);
     };
 }
