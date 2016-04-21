@@ -6,7 +6,7 @@ import {
 } from '../errors/Errors';
 import {Request, Response} from 'express';
 
-const argumentCount = 3;
+const ARGUMENT_COUNT = 3;
 
 /**
  * Reflect metadata key for error handler manager.
@@ -87,7 +87,7 @@ export class ErrorHandlerManager {
 export function ErrorHandler(...errors: Function[]) {
     return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
         let paramtypes = Reflect.getMetadata('design:paramtypes', target, propertyKey);
-        if (paramtypes.length !== argumentCount) {
+        if (paramtypes.length !== ARGUMENT_COUNT) {
             throw new ErrorHandlerWrongArgumentsError();
         }
 
