@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Documentation
 
+### Fixed
+- \#17 Routes had wrong `this` context set. via \#21
+- \#18 Renamed const variables and exported validators to correct cases. via \#21
+
 ## [0.3.0] - 2016-04-20
 ### Added
 - `@Header` parameter description.
