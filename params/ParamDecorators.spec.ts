@@ -692,7 +692,7 @@ describe('ParamDecorators', () => {
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should parse the correct value', () => {
@@ -717,7 +717,7 @@ describe('ParamDecorators', () => {
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should throw on non provided required parameter', () => {
@@ -746,7 +746,7 @@ describe('ParamDecorators', () => {
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(RequiredParameterNotProvidedError);
@@ -774,7 +774,7 @@ describe('ParamDecorators', () => {
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should validate correctly', () => {
@@ -803,7 +803,7 @@ describe('ParamDecorators', () => {
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
 
             spy.should.not.be.called;
         });
@@ -834,7 +834,7 @@ describe('ParamDecorators', () => {
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
