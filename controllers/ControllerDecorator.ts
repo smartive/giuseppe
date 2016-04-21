@@ -1,13 +1,13 @@
 import 'reflect-metadata';
 import {Router} from 'express';
-import {RouteMethod, routesKey} from '../routes/RouteDecorators';
+import {RouteMethod, routesKey, RouteRegistration} from '../routes/RouteDecorators';
 import {HttpVerbNotSupportedError, DuplicateRouteDeclarationError} from '../errors/Errors';
 
 let controllers: ControllerRegistration[] = [],
     definedRoutes = [];
 
 class ControllerRegistration {
-    constructor(public controller: Object, public prefix?: string) {
+    constructor(public controller: any, public prefix?: string) {
     }
 }
 
@@ -42,10 +42,12 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
     }
 
     controllers.forEach(ctrl => {
-        let routes = Reflect.getOwnMetadata(routesKey, ctrl.controller) || [];
+        let routes = Reflect.getOwnMetadata(routesKey, ctrl.controller) || [],
+            instance = new ctrl.controller();
 
-        routes.forEach(route => {
-            let routeUrl = url + [ctrl.prefix, route.path].filter(Boolean).join('/'),
+        routes.forEach((route: RouteRegistration) => {
+            let routeTarget = ctrl.controller.prototype,
+                routeUrl = url + [ctrl.prefix, route.path].filter(Boolean).join('/'),
                 routeId = routeUrl + route.method.toString();
 
             if (routeUrl.length > 1 && routeUrl[routeUrl.length - 1] === '/') {
