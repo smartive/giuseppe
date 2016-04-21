@@ -8,10 +8,11 @@ This document describes the different kinds of errors and their propper manageme
 ### Design time errors
 
 Those errors happen during the application startup. They will crash your application since it's
-not usefull to use the api when those errors happen. When you decorate a class with a TypeScript
+not helpfull to use the api when those errors happen. When you decorate a class with a TypeScript
 decorator (e.g. `@Controller`), your transpiled JavaScript uses helper functions for that.
 When you load a decorated class (i.e. `import {...} from ...;`), this decoration code is
-executed. Giuseppe prevents some design time errors by throwing errors during this design time.
+executed. Giuseppe prevents some horrible random situations by throwing error objects 
+during the design time (e.g. on duplicate routes, express just uses the first one).
 
 All errors are documented with JSDoc in the [Errors.ts](../errors/Errors.ts) file. A brief overview is given:
 
@@ -54,3 +55,69 @@ and handle the runtime errors. But more on that later, first a brief list of run
    by giuseppe and happend during a route method.
 
 ## Error handling
+
+As long as some runtime errors happen, you can do something with them. It's possible
+to register multiple `@ErrorHandler` for a controller. Those are called when an error happens
+during the execution of the method or the parameter parsing process. You can register an
+`@ErrorHandler` for a specific (or multiple specific) error classes and even register your
+own errors.
+
+`TestController.ts`:
+
+```typescript
+/* imports. */
+
+@Controller('test')
+export class TestController {
+    @Get()
+    public get(): string {
+        throw new Error('not implemented yet.');
+    }
+    
+    @ErrorHandler()
+    public errorHandler(request: Request, response: Response, error: Error): void {
+        console.log('Oh noes!');
+        response.status(500).end();
+    }
+}
+```
+
+The defined errorhandler will be called for all errors that happen since there is no specific
+error type defined. Another example with a specialized error handler could be:
+
+`TestController.ts`:
+
+```typescript
+/* imports. */
+
+@Controller('test')
+export class TestController {
+    @Get()
+    public get(@Query('size', {required: true}) size: number): any {
+        mongoDb.find(/*...*/);
+    }
+    
+    @ErrorHandler()
+    public errorHandler(request: Request, response: Response, error: Error): void {
+        console.log('Oh noes!');
+        response.status(500).end();
+    }
+    
+     @ErrorHandler(RequiredParameterNotProvidedError, ParameterParseError)
+    public badReq(request: Request, response: Response, error: Error): void {
+        console.log('This is a bad request from the client.');
+        response.status(400).end();
+    }
+}
+```
+
+In the example above, if `mongoDb` throws an error or something bad happens there,
+the `errorHandler` function is called because the error will be wrapped in a `RouteError`.
+But when the client delivers a string as the query parameter "size", or if the client
+does not even provide the parameter, `badReq` will be called instead of `errorHandler`.
+
+*Note*: They won't be called both! Only the helpers for a given type are called. If no
+helpers are found for an error type, the default is called.
+
+You can register multiple error handlers for the same or default errors, but you need to
+keep in mind that you only send the express headers once.
