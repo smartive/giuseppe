@@ -212,6 +212,32 @@ describe('ParamDecorators', () => {
             spy.should.not.be.called;
         });
 
+        it('should validate correctly with multiple validators', () => {
+            let isNotEmpty = v => v.length > 0;
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {validator: [isStringValidator, isNotEmpty]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let ctrl: any = new Ctrl();
+
+            ctrl.func({query: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null);
+
+            spy.should.not.be.called;
+        });
+
         it('should throw on validation error', () => {
             @Controller()
             class Ctrl {

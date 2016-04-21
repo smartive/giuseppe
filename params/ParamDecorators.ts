@@ -18,6 +18,14 @@ export enum ParamType {
     Header
 }
 
+
+/**
+ * Validator for the given parameter. This validator is executed if set and if the return value is false, an error is thrown.
+ * @param {any} value - The parsed value of the parameter.
+ * @returns {boolean} - True when the validation was successful, otherwise false.
+ */
+export type Validator = <T>(value: T) => boolean;
+
 /**
  * Interface for parameter options. Contains optional settings for each parameter that accepts this interface.
  */
@@ -28,11 +36,9 @@ export interface ParamOptions {
     required?: boolean;
 
     /**
-     * Validator for the given parameter. This validator is executed if set and if the return value is false, an error is thrown.
-     * @param {any} value - The parsed value of the parameter.
-     * @returns {boolean} - True when the validation was successful, otherwise false.
+     * Adds one or more validator(s) to the parameter.
      */
-    validator?: (value: any) => boolean;
+    validator?: Validator|Validator[];
 }
 
 /**
