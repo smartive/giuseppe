@@ -23,8 +23,8 @@ To install this package, simply run
 npm i --save giuseppe
 ```
 
-If not all `typings` are installed - actually they should, since the postinstall hook 
-tells npm to do so - you need to manually install the typings for this package.
+If not all `typings` are installed for giuseppe
+you need to manually install the typings for this package.
 
 The dependend typings are:
 - `es6-shim`
