@@ -4,7 +4,7 @@ import {Route} from '../routes/RouteDecorators';
 import {Controller} from '../controllers/ControllerDecorator';
 import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationFailedError} from '../errors/Errors';
 import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
-import {IsStringValidator, IsNumberValidator} from '../validators/Validators';
+import {isStringValidator, isNumberValidator} from '../validators/Validators';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -148,7 +148,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Query('test', {validator: IsStringValidator}) test: string): any {
+                public func(@Query('test', {validator: isStringValidator}) test: string): any {
                     return {};
                 }
             }
@@ -172,7 +172,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Query('test', {validator: IsNumberValidator}) test: number): any {
+                public func(@Query('test', {validator: isNumberValidator}) test: number): any {
                     return {};
                 }
             }
@@ -412,7 +412,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Body({validator: IsStringValidator}) test: string): any {
+                public func(@Body({validator: isStringValidator}) test: string): any {
                     return {};
                 }
             }
@@ -436,7 +436,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Body({validator: IsNumberValidator}) test: number): any {
+                public func(@Body({validator: isNumberValidator}) test: number): any {
                     return {};
                 }
             }
@@ -677,7 +677,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Header('test', {validator: IsStringValidator}) test: string): any {
+                public func(@Header('test', {validator: isStringValidator}) test: string): any {
                     return {};
                 }
             }
@@ -706,7 +706,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Header('test', {validator: IsNumberValidator}) test: number): any {
+                public func(@Header('test', {validator: isNumberValidator}) test: number): any {
                     return {};
                 }
             }
