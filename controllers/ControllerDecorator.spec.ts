@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {Controller, registerControllers, resetControllerRegistrations} from './ControllerDecorator';
 import {Router} from 'express';
-import {Get, Post, Put, Delete, ROUTES_KEY} from '../routes/RouteDecorators';
+import {Get, Post, Put, Delete, ROUTES_KEY, Route} from '../routes/RouteDecorators';
 import {SinonSpy} from '~sinon/lib/sinon';
 import {DuplicateRouteDeclarationError, HttpVerbNotSupportedError} from '../errors/Errors';
 import chai = require('chai');
@@ -11,20 +11,64 @@ import sinonChai = require('sinon-chai');
 chai.should();
 chai.use(sinonChai);
 
+class TestRouter {
+    public routes: {[id: string]: Function} = {};
+
+    public get(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public put(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public post(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public delete(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+}
+
 describe('Controller', () => {
 
-    describe('Decorator', () => {
+    afterEach(() => {
+        resetControllerRegistrations();
+    });
 
-        afterEach(() => {
-            resetControllerRegistrations();
-        });
+    describe('Decorator', () => {
 
         it('should return Controller decorator', () => {
             Controller().should.be.a('function')
                 .and.have.lengthOf(1);
         });
 
-        it('should set the correct this context');
+        it('should set the correct this context', () => {
+
+            @Controller()
+            class Ctrl {
+                private test = 'foobar';
+
+                @Route()
+                public func(): string {
+                    this.should.be.an.instanceOf(Ctrl);
+                    this.test.should.equal('foobar');
+                    return this.test;
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                json: () => {
+                },
+                send: () => {
+                }
+            }, null]);
+        });
 
     });
 
@@ -38,10 +82,6 @@ describe('Controller', () => {
             sinon.stub(router, 'put');
             sinon.stub(router, 'post');
             sinon.stub(router, 'delete');
-        });
-
-        afterEach(() => {
-            resetControllerRegistrations();
         });
 
         it('should register 1 controller with 1 function correctly', () => {
