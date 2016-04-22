@@ -44,14 +44,14 @@ function parseParam(value: any, param: Param) {
 
     if (param.options && param.options.validator) {
         let isValid = value => {
-                let predicates = param.options.validator;
+            let predicates = param.options.validator;
 
-                if (Array.isArray(predicates)) {
-                    return  (predicates as Predicate[]).every(p => p(value));
-                }
+            if (Array.isArray(predicates)) {
+                return (predicates as Predicate[]).every(p => p(value));
+            }
 
-                return (predicates as Predicate)(value);
-            };
+            return (predicates as Predicate)(value);
+        };
 
         if (isValid(parsed)) {
             return parsed;
