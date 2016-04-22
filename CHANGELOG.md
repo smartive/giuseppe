@@ -8,9 +8,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Possibility to define multiple validators.
 - Documentation.
 - Code coverage reporting.
-- [#9] Possibility to define multiple validators. via [#24]
-- Documentation
-- Code coverage reporting. via [#26]
 - `.gitattributes` to run a 3-way file level merge for `CHANGELOG.md`
 
 ### Fixed
