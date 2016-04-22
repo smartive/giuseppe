@@ -43,8 +43,17 @@ function parseParam(value: any, param: Param) {
     }
 
     if (param.options && param.options.validator) {
-        let validator = param.options.validator;
-        if (Array.isArray(validator) && (validator as Predicate[]).every(v => v(parsed)) || (validator as Predicate)(parsed)) {
+        let isValid = value => {
+                let predicates = param.options.validator;
+
+                if (Array.isArray(predicates)) {
+                    return  (predicates as Predicate[]).every(p => p(value));
+                }
+
+                return (predicates as Predicate)(value);
+            };
+
+        if (isValid(parsed)) {
             return parsed;
         }
         throw new ParamValidationFailedError(param.name);

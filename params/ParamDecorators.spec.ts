@@ -228,12 +228,14 @@ describe('ParamDecorators', () => {
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({query: {test: 'foobar'}}, {
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
 
             spy.should.not.be.called;
         });
@@ -269,7 +271,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Query('test', {validator: [isStringValidator, isNumberValidator]}) test: number): any {
+                public func(@Query('test', {validator: [isStringValidator, isNumberValidator]}) test: string): any {
                     return {};
                 }
             }
@@ -279,9 +281,14 @@ describe('ParamDecorators', () => {
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({query: {test: 'foobar'}}, {}, null);
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
