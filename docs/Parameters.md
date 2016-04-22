@@ -1,6 +1,6 @@
 # Parameters
 
-Giuseppe does support the injection of several types of parameters. If
+giuseppe does support the injection of several types of parameters. If
 you decorate your route function parameters, they will be registered
 in the functions metadata and are injected at runtime. If some type of
 parameter injection is missing, feel free to open an issue or a pull
