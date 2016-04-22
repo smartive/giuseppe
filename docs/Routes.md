@@ -12,7 +12,7 @@ By now, the following http methods are supported:
 - Head
 
 The main decorated used for a route is `@Route`. There are aliases for all
-http methods (`@Get`, `@Put`, `@Post`, `@Delete` and `Head`) so simplify the usage.
+http methods (`@Get`, `@Put`, `@Post`, `@Delete` and `@Head`) so simplify the usage.
 
 If no route string is provided, the base path of the controller and the
 base url of the registration function are used. The whole decoration
