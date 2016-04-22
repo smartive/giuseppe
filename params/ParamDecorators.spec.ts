@@ -265,6 +265,28 @@ describe('ParamDecorators', () => {
             spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
         });
 
+        it('should throw if a validation fails', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {validator: [isStringValidator, isNumberValidator]}) test: number): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let ctrl: any = new Ctrl();
+
+            ctrl.func({query: {test: 'foobar'}}, {}, null);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
+        });
+
     });
 
     describe('UrlParam', () => {
