@@ -1,13 +1,13 @@
 {
   "name": "giuseppe",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "A controller routing system for expressJS with typescript decorators and annotations",
   "main": "index.js",
   "scripts": {
     "bootstrap": "npm install -q && typings install",
     "clean": "rimraf build",
-    "pretest": "npm run bootstrap && npm run clean && tsc",
-    "test": "mocha --ui bdd --recursive ./build",
+    "precitest": "npm run bootstrap && npm run clean && tsc",
+    "citest": "istanbul cover _mocha --report lcovonly -- --ui bdd --recursive ./build",
     "develop": "npm run clean && tsc --sourceMap -w"
   },
   "repository": {
@@ -27,6 +27,10 @@
     {
       "name": "Dominique Wirz",
       "email": "dominique@smartive.ch"
+    },
+    {
+      "name": "Moreno Feltscher",
+      "email": "moreno@smartive.ch"
     }
   ],
   "license": "MIT",
@@ -43,7 +47,9 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
+    "mocha-lcov-reporter": "^1.2.0",
     "rimraf": "^2.5.2",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",

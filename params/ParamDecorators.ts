@@ -4,7 +4,7 @@ import 'reflect-metadata';
  * Reflect metadata key for parameter list.
  * @type {string}
  */
-export const paramsKey = 'params';
+export const PARAMS_KEY = 'params';
 
 /**
  * Enum for parameter type.
@@ -18,6 +18,15 @@ export enum ParamType {
     Header
 }
 
+
+/**
+ * Predicate for the given parameter. This validator is executed if set and if the return value is false, an error is thrown.
+ *
+ * @param {any} value - The parsed value of the parameter.
+ * @returns {boolean} - True when the validation was successful, otherwise false.
+ */
+export type Predicate = <T>(value: T) => boolean;
+
 /**
  * Interface for parameter options. Contains optional settings for each parameter that accepts this interface.
  */
@@ -28,11 +37,9 @@ export interface ParamOptions {
     required?: boolean;
 
     /**
-     * Validator for the given parameter. This validator is executed if set and if the return value is false, an error is thrown.
-     * @param {any} value - The parsed value of the parameter.
-     * @returns {boolean} - True when the validation was successful, otherwise false.
+     * Adds one or more validator(s) to the parameter.
      */
-    validator?: (value: any) => boolean;
+    validator?: Predicate|Predicate[];
 }
 
 /**
@@ -48,11 +55,11 @@ export class Param {
 function param(type: ParamType, name: string, options?: ParamOptions) {
     return (target: Object, propertyKey: string, parameterIndex: number) => {
         let paramtypes = Reflect.getMetadata('design:paramtypes', target, propertyKey);
-        let params: Param[] = Reflect.getOwnMetadata(paramsKey, target, propertyKey) || [];
+        let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, target, propertyKey) || [];
 
         params.push(new Param(type, name, paramtypes[parameterIndex], parameterIndex, options));
 
-        Reflect.defineMetadata(paramsKey, params, target, propertyKey);
+        Reflect.defineMetadata(PARAMS_KEY, params, target, propertyKey);
     };
 }
 

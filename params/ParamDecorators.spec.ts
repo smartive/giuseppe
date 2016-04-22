@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import {Query, paramsKey, Param, ParamType, UrlParam, Body, Req, Res, Header} from './ParamDecorators';
+import {Query, PARAMS_KEY, Param, ParamType, UrlParam, Body, Req, Res, Header} from './ParamDecorators';
 import {Route} from '../routes/RouteDecorators';
-import {Controller} from '../controllers/ControllerDecorator';
+import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
 import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationFailedError} from '../errors/Errors';
-import {ErrorHandlerManager, errorHandlerKey} from '../errors/ErrorHandlerDecorator';
-import {IsStringValidator, IsNumberValidator} from '../validators/Validators';
+import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {isStringValidator, isNumberValidator} from '../validators/Validators';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -12,7 +12,31 @@ import sinonChai = require('sinon-chai');
 let should = chai.should();
 chai.use(sinonChai);
 
+class TestRouter {
+    public routes: {[id: string]: Function} = {};
+
+    public get(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public put(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public post(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public delete(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+}
+
 describe('ParamDecorators', () => {
+
+    afterEach(() => {
+        resetControllerRegistrations();
+    });
 
     describe('Query', () => {
 
@@ -29,7 +53,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -52,11 +76,14 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({query: {test: 'foobar'}}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should parse the correct value', () => {
@@ -69,11 +96,14 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({query: {test: 'foobar'}}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should throw on non provided required parameter', () => {
@@ -88,11 +118,16 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({query: {notProvided: 'foobar'}}, {}, null);
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {notProvided: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(RequiredParameterNotProvidedError);
@@ -108,12 +143,14 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({query: {}}, {
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {}}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should throw on parameter parsing error', () => {
@@ -134,11 +171,16 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({query: {test: 'foobar'}}, {}, null);
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(ParameterParseError);
@@ -148,7 +190,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Query('test', {validator: IsStringValidator}) test: string): any {
+                public func(@Query('test', {validator: isStringValidator}) test: string): any {
                     return {};
                 }
             }
@@ -156,14 +198,44 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({query: {test: 'foobar'}}, {
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
+
+            spy.should.not.be.called;
+        });
+
+        it('should validate correctly with multiple validators', () => {
+            let isNotEmpty = v => v.length > 0;
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {validator: [isStringValidator, isNotEmpty]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.not.be.called;
         });
@@ -172,7 +244,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Query('test', {validator: IsNumberValidator}) test: number): any {
+                public func(@Query('test', {validator: isNumberValidator}) test: number): any {
                     return {};
                 }
             }
@@ -180,11 +252,43 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({query: {test: 'foobar'}}, {}, null);
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
+        });
+
+        it('should throw if any validation fails', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {validator: [isStringValidator, isNumberValidator]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
@@ -207,7 +311,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -230,11 +334,14 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({params: {test: 'foobar'}}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/:test'].apply(this, [{params: {test: 'foobar'}}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should parse the correct value', () => {
@@ -247,11 +354,14 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({params: {test: '2'}}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/:test'].apply(this, [{params: {test: '2'}}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should throw on non provided url parameter', () => {
@@ -266,11 +376,16 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({params: {}}, {}, null);
+            registerControllers('', (router as any));
+
+            router.routes['/:test'].apply(this, [{params: {}}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(RequiredParameterNotProvidedError);
@@ -293,7 +408,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -316,11 +431,14 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({body: 'foobar'}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should parse the correct value', () => {
@@ -333,11 +451,14 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({body: 'foobar'}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should throw on non provided required parameter', () => {
@@ -352,11 +473,16 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({query: {notProvided: 'foobar'}}, {}, null);
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(RequiredParameterNotProvidedError);
@@ -372,12 +498,14 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({query: {}}, {
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should throw on parameter parsing error', () => {
@@ -398,11 +526,16 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({body: {test: 'foobar'}}, {}, null);
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(ParameterParseError);
@@ -412,7 +545,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Body({validator: IsStringValidator}) test: string): any {
+                public func(@Body({validator: isStringValidator}) test: string): any {
                     return {};
                 }
             }
@@ -420,14 +553,44 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({body: 'foobar'}, {
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
+
+            spy.should.not.be.called;
+        });
+
+        it('should validate correctly with multiple validators', () => {
+            let isNotEmpty = v => v.length > 0;
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Body({validator: [isStringValidator, isNotEmpty]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.not.be.called;
         });
@@ -436,7 +599,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Body({validator: IsNumberValidator}) test: number): any {
+                public func(@Body({validator: isNumberValidator}) test: number): any {
                     return {};
                 }
             }
@@ -444,11 +607,43 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({body: 'foobar'}, {}, null);
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
+        });
+
+        it('should throw if any validation fails', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Body({validator: [isStringValidator, isNumberValidator]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
@@ -471,7 +666,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -494,11 +689,14 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({params: {test: 'foobar'}}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{params: {test: 'foobar'}}, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
     });
@@ -518,7 +716,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -541,12 +739,15 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({params: {test: 'foobar'}}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
                 json: () => {
                 },
                 foo: 'bar'
-            }, null);
+            }, null]);
         });
 
     });
@@ -566,7 +767,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(paramsKey, Ctrl.prototype, 'func');
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
@@ -589,8 +790,11 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
                 headers: {test: 'foobar'},
                 get: function (name) {
                     return this.headers[name];
@@ -598,7 +802,7 @@ describe('ParamDecorators', () => {
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should parse the correct value', () => {
@@ -611,16 +815,19 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
-            ctrl.func({
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
                 headers: {test: 'foobar'},
                 get: function (name) {
-                    return this.headers[name]
+                    return this.headers[name];
                 }
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should throw on non provided required parameter', () => {
@@ -635,16 +842,21 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
                 headers: {notProvided: 'foobar'},
                 get: function (name) {
-                    this.headers[name]
+                    return this.headers[name];
                 }
-            }, {}, null);
+            }, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(RequiredParameterNotProvidedError);
@@ -660,24 +872,26 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
                 headers: {notProvided: 'foobar'},
                 get: function (name) {
-                    this.headers[name]
+                    return this.headers[name];
                 }
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
         });
 
         it('should validate correctly', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Header('test', {validator: IsStringValidator}) test: string): any {
+                public func(@Header('test', {validator: isStringValidator}) test: string): any {
                     return {};
                 }
             }
@@ -685,19 +899,55 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
                 headers: {test: 'foobar'},
                 get: function (name) {
-                    this.headers[name]
+                    return this.headers[name];
                 }
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
+
+            spy.should.not.be.called;
+        });
+
+
+        it('should validate correctly with multiple validators', () => {
+            let isNotEmpty = v => v.length > 0;
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test', {validator: [isStringValidator, isNotEmpty]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {test: 'foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.not.be.called;
         });
@@ -706,7 +956,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Header('test', {validator: IsNumberValidator}) test: number): any {
+                public func(@Header('test', {validator: isNumberValidator}) test: number): any {
                     return {};
                 }
             }
@@ -714,19 +964,53 @@ describe('ParamDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
                 headers: {test: 'foobar'},
                 get: function (name) {
-                    return this.headers[name]
+                    return this.headers[name];
                 }
             }, {
                 json: () => {
                 }
-            }, null);
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
+        });
+
+        it('should throw if any validation fails', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test', {validator: [isStringValidator, isNumberValidator]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {test: 'foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);

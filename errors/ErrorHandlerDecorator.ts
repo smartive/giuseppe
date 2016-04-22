@@ -5,14 +5,28 @@ import {
     ErrorHandlerWrongReturnTypeError
 } from '../errors/Errors';
 import {Request, Response} from 'express';
+import httpStatus = require('http-status');
 
-const argumentCount = 3;
+const ARGUMENT_COUNT = 3;
 
 /**
  * Reflect metadata key for error handler manager.
  * @type {string}
  */
-export const errorHandlerKey = 'errorHandler';
+export const ERRORHANDLER_KEY = 'errorHandler';
+
+/**
+ * Default error handler. Does console.error with the error and sets the
+ * http response code to 500.
+ *
+ * @param {Request} req - express request object
+ * @param {Response} res - express response object
+ * @param {Error} err - error that happend
+ */
+export const DEFAULT_ERROR_HANDLER = (req, res, err) => {
+    console.error(err);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).end();
+};
 
 /**
  * @typedef ErrorHandlerFunction
@@ -87,7 +101,7 @@ export class ErrorHandlerManager {
 export function ErrorHandler(...errors: Function[]) {
     return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
         let paramtypes = Reflect.getMetadata('design:paramtypes', target, propertyKey);
-        if (paramtypes.length !== argumentCount) {
+        if (paramtypes.length !== ARGUMENT_COUNT) {
             throw new ErrorHandlerWrongArgumentsError();
         }
 
@@ -102,12 +116,12 @@ export function ErrorHandler(...errors: Function[]) {
             throw new ErrorHandlerWrongReturnTypeError();
         }
 
-        let handler: ErrorHandlerManager = Reflect.getMetadata(errorHandlerKey, target.constructor) || new ErrorHandlerManager();
+        let handler: ErrorHandlerManager = Reflect.getMetadata(ERRORHANDLER_KEY, target.constructor) || new ErrorHandlerManager();
         if (errors.length) {
             errors.forEach(e => handler.addHandler(descriptor.value, e));
         } else {
             handler.addHandler(descriptor.value);
         }
-        Reflect.defineMetadata(errorHandlerKey, handler, target.constructor);
+        Reflect.defineMetadata(ERRORHANDLER_KEY, handler, target.constructor);
     };
 }

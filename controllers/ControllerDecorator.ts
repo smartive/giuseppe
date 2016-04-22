@@ -1,13 +1,114 @@
 import 'reflect-metadata';
-import {Router} from 'express';
-import {RouteMethod, routesKey} from '../routes/RouteDecorators';
-import {HttpVerbNotSupportedError, DuplicateRouteDeclarationError} from '../errors/Errors';
+import {Router, Request, Response} from 'express';
+import {RouteMethod, ROUTES_KEY, RouteRegistration} from '../routes/RouteDecorators';
+import {
+    HttpVerbNotSupportedError,
+    DuplicateRouteDeclarationError,
+    ParameterConstructorArgumentsError,
+    WrongReturnTypeError,
+    RouteError,
+    RequiredParameterNotProvidedError,
+    ParameterParseError,
+    ParamValidationFailedError,
+    HeadHasWrongReturnTypeError
+} from '../errors/Errors';
+import {Param, Predicate, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
+import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
+import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
     definedRoutes = [];
 
+const PRIMITIVE_TYPES = [Object, String, Array, Number, Boolean],
+    NON_JSON_TYPES = [String, Number, Boolean];
+
 class ControllerRegistration {
-    constructor(public controller: Object, public prefix?: string) {
+    constructor(public controller: any, public prefix?: string) {
+    }
+}
+
+function parseParam(value: any, param: Param) {
+    let ctor = param.type as any;
+
+    if ((value === null || value === undefined) && param.options && param.options.required) {
+        throw new RequiredParameterNotProvidedError(param.name);
+    } else if (value === null || value === undefined) {
+        return undefined;
+    }
+
+    let parsed;
+    try {
+        parsed = PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(value) : new ctor(value);
+    } catch (e) {
+        throw new ParameterParseError(param.name, e);
+    }
+
+    if (param.options && param.options.validator) {
+        let isValid = value => {
+            let predicates = param.options.validator;
+
+            if (Array.isArray(predicates)) {
+                return (predicates as Predicate[]).every(p => p(value));
+            }
+
+            return (predicates as Predicate)(value);
+        };
+
+        if (isValid(parsed)) {
+            return parsed;
+        }
+        throw new ParamValidationFailedError(param.name);
+    } else {
+        return parsed;
+    }
+}
+
+function getParamValues(params: Param[], request: Request, response: Response) {
+    let paramValues = [];
+    params.forEach((p: Param) => {
+        switch (p.paramType) {
+            case ParamType.Request:
+                paramValues[p.index] = request;
+                return;
+            case ParamType.Response:
+                paramValues[p.index] = response;
+                return;
+            case ParamType.Body:
+                paramValues[p.index] = parseParam(request.body, p);
+                return;
+            case ParamType.Url:
+                paramValues[p.index] = parseParam(request.params[p.name], p);
+                return;
+            case ParamType.Query:
+                paramValues[p.index] = parseParam(request.query[p.name], p);
+                return;
+            case ParamType.Header:
+                paramValues[p.index] = parseParam(request.get(p.name), p);
+                return;
+        }
+    });
+    return paramValues;
+}
+
+function registerRoute(route: RouteRegistration, router: Router, routeUrl: string) {
+    switch (route.method) {
+        case RouteMethod.Get:
+            router.get(routeUrl, (route.descriptor.value as any));
+            break;
+        case RouteMethod.Put:
+            router.put(routeUrl, (route.descriptor.value as any));
+            break;
+        case RouteMethod.Post:
+            router.post(routeUrl, (route.descriptor.value as any));
+            break;
+        case RouteMethod.Delete:
+            router.delete(routeUrl, (route.descriptor.value as any));
+            break;
+        case RouteMethod.Head:
+            router.head(routeUrl, (route.descriptor.value as any));
+            break;
+        default:
+            throw new HttpVerbNotSupportedError(route.method);
     }
 }
 
@@ -42,36 +143,89 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
     }
 
     controllers.forEach(ctrl => {
-        let routes = Reflect.getOwnMetadata(routesKey, ctrl.controller) || [];
+        let routes = Reflect.getOwnMetadata(ROUTES_KEY, ctrl.controller) || [],
+            instance = new ctrl.controller();
 
-        routes.forEach(route => {
-            let routeUrl = url + [ctrl.prefix, route.path].filter(Boolean).join('/'),
-                routeId = routeUrl + route.method.toString();
-
-            if (routeUrl.length > 1 && routeUrl[routeUrl.length - 1] === '/') {
-                routeUrl = routeUrl.substr(0, routeUrl.length - 1);
-            }
+        routes.forEach((route: RouteRegistration) => {
+            let ctrlTarget = ctrl.controller,
+                routeTarget = ctrlTarget.prototype,
+                routeUrl = url + [ctrl.prefix, route.path].filter(Boolean).join('/'),
+                routeId = routeUrl + route.method.toString(),
+                returnType = Reflect.getMetadata('design:returntype', routeTarget, route.propertyKey),
+                params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, routeTarget, route.propertyKey) || [],
+                method = route.descriptor.value,
+                hasResponseParam = !!params.filter(p => p.paramType === ParamType.Response).length;
 
             if (definedRoutes.indexOf(routeId) !== -1) {
                 throw new DuplicateRouteDeclarationError(routeUrl, route.method);
             }
 
-            switch (route.method) {
-                case RouteMethod.Get:
-                    router.get(routeUrl, (route.func as any));
-                    break;
-                case RouteMethod.Put:
-                    router.put(routeUrl, (route.func as any));
-                    break;
-                case RouteMethod.Post:
-                    router.post(routeUrl, (route.func as any));
-                    break;
-                case RouteMethod.Delete:
-                    router.delete(routeUrl, (route.func as any));
-                    break;
-                default:
-                    throw new HttpVerbNotSupportedError(route.method);
+            if (route.method === RouteMethod.Head && returnType !== Boolean) {
+                throw new HeadHasWrongReturnTypeError();
             }
+
+            params.forEach(p => {
+                if (p.type.length < 1) {
+                    throw new ParameterConstructorArgumentsError(p.name);
+                }
+            });
+
+            if (routeUrl.length > 1 && routeUrl[routeUrl.length - 1] === '/') {
+                routeUrl = routeUrl.substr(0, routeUrl.length - 1);
+            }
+
+            params = params.sort((p1, p2) => (p1.index < p2.index) ? -1 : 1);
+
+            route.descriptor.value = (request: Request, response: Response, next) => {
+                let errorHandlers: ErrorHandlerManager = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
+                    paramValues = [];
+
+                if (!errorHandlers) {
+                    errorHandlers = new ErrorHandlerManager();
+                    errorHandlers.addHandler(DEFAULT_ERROR_HANDLER);
+                }
+
+                try {
+                    paramValues = getParamValues(params, request, response);
+                } catch (e) {
+                    errorHandlers.callHandlers(request, response, e);
+                    // This return is needed, since the controller
+                    // would try to call the route method (even on error).
+                    return;
+                }
+
+                try {
+                    let result = method.apply(instance, paramValues),
+                        responseFunction = result => {
+                            if (NON_JSON_TYPES.indexOf(result.constructor) !== -1) {
+                                response.send(result);
+                            } else {
+                                response.json(result);
+                            }
+                        };
+                    if (!returnType && hasResponseParam) {
+                        return;
+                    }
+                    if (!returnType && !hasResponseParam) {
+                        return response.status(httpStatus.NO_CONTENT).end();
+                    }
+                    if (!(result instanceof returnType) && !(result.constructor === returnType)) {
+                        throw new WrongReturnTypeError(route.propertyKey, returnType, result.constructor);
+                    }
+                    if (route.method === RouteMethod.Head && returnType === Boolean) {
+                        return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
+                    }
+                    if (returnType === Promise) {
+                        (result as Promise<any>).then(responseFunction, err => errorHandlers.callHandlers(request, response, new RouteError(route.propertyKey, err)));
+                    } else {
+                        responseFunction(result);
+                    }
+                } catch (e) {
+                    errorHandlers.callHandlers(request, response, new RouteError(route.propertyKey, e));
+                }
+            };
+
+            registerRoute(route, router, routeUrl);
             definedRoutes.push(routeId);
         });
     });

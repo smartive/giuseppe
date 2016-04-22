@@ -35,6 +35,19 @@ export class DuplicateRouteDeclarationError extends Error {
 }
 
 /**
+ * Error that is thrown when a head route has a non boolean return type.
+ * (Error will happen at startup)
+ *
+ * @class
+ */
+export class HeadHasWrongReturnTypeError extends Error {
+    constructor() {
+        super();
+        this.message = 'Head route must have return type boolean';
+    }
+}
+
+/**
  * Error that is thrown when an error handler accepts the wrong arguments.
  * (Error will happen at startup)
  *

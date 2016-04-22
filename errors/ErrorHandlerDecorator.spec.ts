@@ -1,7 +1,7 @@
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
-import {ErrorHandlerManager, ErrorHandler, errorHandlerKey} from './ErrorHandlerDecorator';
+import {ErrorHandlerManager, ErrorHandler, ERRORHANDLER_KEY} from './ErrorHandlerDecorator';
 import {
     ErrorHandlerWrongArgumentsError,
     ErrorHandlerWrongArgumentTypesError,
@@ -142,7 +142,7 @@ describe('ErrorHandlerDecorators', () => {
                 }
             }
 
-            let errorManager: any = Reflect.getMetadata(errorHandlerKey, Ctrl);
+            let errorManager: any = Reflect.getMetadata(ERRORHANDLER_KEY, Ctrl);
 
             errorManager.handlers.default
                 .should.be.an('array')
@@ -161,7 +161,7 @@ describe('ErrorHandlerDecorators', () => {
                 }
             }
 
-            let errorManager: any = Reflect.getMetadata(errorHandlerKey, Ctrl);
+            let errorManager: any = Reflect.getMetadata(ERRORHANDLER_KEY, Ctrl);
 
             errorManager.handlers.default
                 .should.be.an('array')
