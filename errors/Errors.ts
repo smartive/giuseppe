@@ -40,7 +40,7 @@ export class DuplicateRouteDeclarationError extends Error {
  *
  * @class
  */
-export class HeadWrongReturnTypeError extends Error {
+export class HeadHasWrongReturnTypeError extends Error {
     constructor() {
         super();
         this.message = 'Head route must have return type boolean';

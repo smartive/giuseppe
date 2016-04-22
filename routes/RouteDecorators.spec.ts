@@ -14,7 +14,7 @@ import {
     ParameterConstructorArgumentsError,
     RouteError,
     WrongReturnTypeError,
-    HeadWrongReturnTypeError
+    HeadHasWrongReturnTypeError
 } from '../errors/Errors';
 import {Query, Res} from '../params/ParamDecorators';
 import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
@@ -43,6 +43,10 @@ class TestRouter {
     }
 
     public delete(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public head(route: string, func: Function): void {
         this.routes[route] = func;
     }
 }
@@ -120,6 +124,23 @@ describe('RouteDecorators', () => {
             };
 
             fn.should.throw(ParameterConstructorArgumentsError);
+        });
+
+        it('should throw when route type is head and return type is not boolean', () => {
+            let fn = () => {
+                class Foobar {
+                }
+                @Controller()
+                class Ctrl {
+                    @Head()
+                    public func(): any {
+                    }
+                }
+
+                registerControllers();
+            };
+
+            fn.should.throw(HeadHasWrongReturnTypeError);
         });
 
         it('should not throw on class with correct constructor', () => {
@@ -304,35 +325,6 @@ describe('RouteDecorators', () => {
             }, null]);
 
             stub.should.be.calledWithExactly(404);
-        });
-
-        it('should throw when route type is head and return type is not boolean', () => {
-            @Controller()
-            class Ctrl {
-                @Head()
-                public func(): string {
-                    return '';
-                }
-            }
-
-            let handler = new ErrorHandlerManager(),
-                spy = sinon.spy();
-            handler.addHandler(spy);
-            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
-
-            let router = new TestRouter();
-
-            registerControllers('', (router as any));
-
-            router.routes['/'].apply(this, [{}, {
-                json: () => {
-                },
-                send: () => {
-                }
-            }, null]);
-
-            spy.should.be.calledOnce;
-            spy.args[0][2].should.be.an.instanceOf(HeadWrongReturnTypeError);
         });
 
         it('should throw when it returns the wrong return type', () => {
