@@ -4,7 +4,7 @@ import 'reflect-metadata';
  * Reflect metadata key for parameter list.
  * @type {string}
  */
-export const paramsKey = 'params';
+export const PARAMS_KEY = 'params';
 
 /**
  * Enum for parameter type.
@@ -48,11 +48,11 @@ export class Param {
 function param(type: ParamType, name: string, options?: ParamOptions) {
     return (target: Object, propertyKey: string, parameterIndex: number) => {
         let paramtypes = Reflect.getMetadata('design:paramtypes', target, propertyKey);
-        let params: Param[] = Reflect.getOwnMetadata(paramsKey, target, propertyKey) || [];
+        let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, target, propertyKey) || [];
 
         params.push(new Param(type, name, paramtypes[parameterIndex], parameterIndex, options));
 
-        Reflect.defineMetadata(paramsKey, params, target, propertyKey);
+        Reflect.defineMetadata(PARAMS_KEY, params, target, propertyKey);
     };
 }
 

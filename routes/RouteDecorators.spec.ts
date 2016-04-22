@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import {Get, Put, Post, Delete, Route, routesKey, RouteRegistration, RouteMethod} from '../routes/RouteDecorators';
+import {Get, Put, Post, Delete, Route, ROUTES_KEY, RouteRegistration, RouteMethod} from '../routes/RouteDecorators';
 import {ParameterConstructorArgumentsError, RouteError, WrongReturnTypeError} from '../errors/Errors';
 import {Query, Res} from '../params/ParamDecorators';
-import {Controller} from '../controllers/ControllerDecorator';
+import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
 import {Response} from 'express';
-import {ErrorHandlerManager, errorHandlerKey} from '../errors/ErrorHandlerDecorator';
+import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -12,7 +12,31 @@ import sinonChai = require('sinon-chai');
 let should = chai.should();
 chai.use(sinonChai);
 
+class TestRouter {
+    public routes: {[id: string]: Function} = {};
+
+    public get(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public put(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public post(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public delete(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+}
+
 describe('RouteDecorators', () => {
+
+    afterEach(() => {
+        resetControllerRegistrations();
+    });
 
     describe('Get', () => {
 
@@ -61,12 +85,14 @@ describe('RouteDecorators', () => {
             let fn = () => {
                 class Foobar {
                 }
+                @Controller()
                 class Ctrl {
                     @Route()
                     public func(@Query('foobar') foobar: Foobar): any {
-
                     }
                 }
+
+                registerControllers();
             };
 
             fn.should.throw(ParameterConstructorArgumentsError);
@@ -78,12 +104,15 @@ describe('RouteDecorators', () => {
                     constructor(value: any) {
                     }
                 }
+                @Controller()
                 class Ctrl {
                     @Route()
                     public func(@Query('foobar') foobar: Foobar): any {
 
                     }
                 }
+
+                registerControllers();
             };
 
             fn.should.not.throw(ParameterConstructorArgumentsError);
@@ -91,31 +120,34 @@ describe('RouteDecorators', () => {
 
         it('should not throw on javascript native type constructor', () => {
             let fn = () => {
+                @Controller()
                 class Ctrl {
                     @Route()
                     public func(@Query('foobar') foobar: number): any {
 
                     }
                 }
+                registerControllers();
             };
 
             fn.should.not.throw(ParameterConstructorArgumentsError);
         });
 
         it('should add correct metadata to controller', () => {
+            @Controller()
             class Ctrl {
                 @Route()
                 public func(): void {
                 }
             }
 
-            let routes = Reflect.getMetadata(routesKey, Ctrl);
+            let routes = Reflect.getMetadata(ROUTES_KEY, Ctrl);
 
             routes.should.be.an('array').with.lengthOf(1);
 
             let route: RouteRegistration = routes[0];
 
-            route.func.should.equal(Ctrl.prototype.func);
+            route.descriptor.value.should.equal(Ctrl.prototype.func);
             route.method.should.equal(RouteMethod.Get);
             route.path.should.equal('');
         });
@@ -131,18 +163,18 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let routes = Reflect.getMetadata(routesKey, Ctrl);
+            let routes = Reflect.getMetadata(ROUTES_KEY, Ctrl);
 
             routes.should.be.an('array').with.lengthOf(2);
 
             let firstRoute: RouteRegistration = routes[0];
             let secondRoute: RouteRegistration = routes[1];
 
-            firstRoute.func.should.equal(Ctrl.prototype.func);
+            firstRoute.descriptor.value.should.equal(Ctrl.prototype.func);
             firstRoute.method.should.equal(RouteMethod.Get);
             firstRoute.path.should.equal('');
 
-            secondRoute.func.should.equal(Ctrl.prototype.funcTest);
+            secondRoute.descriptor.value.should.equal(Ctrl.prototype.funcTest);
             secondRoute.method.should.equal(RouteMethod.Put);
             secondRoute.path.should.equal('test');
         });
@@ -159,9 +191,18 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            should.not.exist(ctrl.func());
+            registerControllers('', (router as any));
+
+            let ret = router.routes['/'].apply(this, [{}, {
+                json: () => {
+                },
+                send: () => {
+                }
+            }, null]);
+
+            should.not.exist(ret);
         });
 
         it('should call response.status with NO_CONTENT when it has no response param', () => {
@@ -172,7 +213,7 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl(),
+            let router = new TestRouter(),
                 stub = sinon.stub();
 
             stub.returns({
@@ -180,9 +221,11 @@ describe('RouteDecorators', () => {
                 }
             });
 
-            ctrl.func({}, {
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
                 status: stub
-            });
+            }, null]);
 
             stub.should.be.calledWithExactly(204);
         });
@@ -199,11 +242,18 @@ describe('RouteDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 spy = sinon.spy();
             handler.addHandler(spy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl();
+            let router = new TestRouter();
 
-            ctrl.func({}, {}, null);
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                json: () => {
+                },
+                send: () => {
+                }
+            }, null]);
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(RouteError);
@@ -222,14 +272,19 @@ describe('RouteDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 errSpy = sinon.spy();
             handler.addHandler(errSpy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl(),
-                spy = sinon.spy();
+            let spy = sinon.spy();
 
-            ctrl.func({}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                json: () => {
+                },
                 send: spy
-            });
+            }, null]);
 
             setTimeout(() => {
                 errSpy.should.not.be.called;
@@ -250,14 +305,19 @@ describe('RouteDecorators', () => {
             let handler = new ErrorHandlerManager(),
                 errSpy = sinon.spy();
             handler.addHandler(errSpy);
-            Reflect.defineMetadata(errorHandlerKey, handler, Ctrl);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
 
-            let ctrl: any = new Ctrl(),
-                spy = sinon.spy();
+            let spy = sinon.spy();
 
-            ctrl.func({}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                json: () => {
+                },
                 send: spy
-            });
+            }, null]);
 
             setTimeout(() => {
                 errSpy.should.be.called;
@@ -277,12 +337,17 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl(),
-                spy = sinon.spy();
+            let spy = sinon.spy();
 
-            ctrl.func({}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                json: () => {
+                },
                 send: spy
-            });
+            }, null]);
 
             spy.should.be.calledWithExactly('foobar');
         });
@@ -296,12 +361,15 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let ctrl: any = new Ctrl(),
-                spy = sinon.spy();
+            let spy = sinon.spy();
 
-            ctrl.func({}, {
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
                 json: spy
-            });
+            }, null]);
 
             spy.should.be.calledWithExactly({foo: 'bar'});
         });

@@ -4,7 +4,7 @@
  * @param {any} value - Value to check.
  * @returns {boolean} - True if the constructor of the given value is "String", otherwise false.
  */
-export function IsStringValidator(value: any): boolean {
+export function isStringValidator(value: any): boolean {
     return value !== null && value !== undefined && value.constructor === String;
 }
 
@@ -14,6 +14,6 @@ export function IsStringValidator(value: any): boolean {
  * @param {any} value - Value to check.
  * @returns {boolean} - True if the constructor of the given value is "Number" and the value is not NaN, otherwise false.
  */
-export function IsNumberValidator(value: any): boolean {
+export function isNumberValidator(value: any): boolean {
     return value !== null && value !== undefined && value.constructor === Number && !isNaN(value);
 }
