@@ -5,7 +5,7 @@ giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](ht
 
 ##### A bunch of badges
 
-[![Build Status](https://travis-ci.org/smartive/giuseppe.svg)](https://travis-ci.org/smartive/giuseppe)
+[![Build Status](https://travis-ci.org/smartive/giuseppe.svg)](https://travis-ci.org/smartive/giuseppe) [![npm](https://img.shields.io/npm/v/npm.svg?maxAge=2592000)](https://www.npmjs.com/package/giuseppe)
 
 ## Table of contents
 
@@ -34,7 +34,7 @@ please find a more detailed documentation in the `docs/` folder.
 To install this package, simply run
 
 ```bash
-npm i --save giuseppe
+npm install --save giuseppe
 ```
 
 If not all `typings` are installed for giuseppe
