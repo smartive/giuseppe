@@ -29,4 +29,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 [#17]: https://github.com/smartive/giuseppe/issues/17
 [#18]: https://github.com/smartive/giuseppe/issues/18
+[#9]: https://github.com/smartive/giuseppe/issues/9
+
 [#21]: https://github.com/smartive/giuseppe/pull/21
+[#24]: https://github.com/smartive/giuseppe/pull/24
