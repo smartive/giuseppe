@@ -5,7 +5,7 @@ giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](ht
 
 ##### A bunch of badges
 
-[![Build Status](https://travis-ci.org/smartive/giuseppe.svg)](https://travis-ci.org/smartive/giuseppe) [![npm](https://img.shields.io/npm/v/npm.svg?maxAge=2592000)](https://www.npmjs.com/package/giuseppe)
+[![Build Status](https://travis-ci.org/smartive/giuseppe.svg)](https://travis-ci.org/smartive/giuseppe) [![npm](https://img.shields.io/npm/package/giuseppe.svg?maxAge=2592000)](https://www.npmjs.com/package/giuseppe)
 
 ## Table of contents
 
