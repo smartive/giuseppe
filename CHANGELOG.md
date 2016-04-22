@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-- [#24] Added possibility to define multiple validators.
+- [#9] Possibility to define multiple validators. via [#24]
 - Documentation
 
 ### Fixed
