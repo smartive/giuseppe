@@ -6,8 +6,9 @@
   "scripts": {
     "bootstrap": "npm install -q && typings install",
     "clean": "rimraf build",
-    "pretest": "npm run bootstrap && npm run clean && tsc",
-    "test": "mocha --ui bdd --recursive ./build",
+    "precitest": "npm run bootstrap && npm run clean && tsc",
+    "citest": "istanbul cover _mocha --report lcovonly -- --ui bdd --recursive ./build",
+    "postcitest": "cat ./coverage/lcov.info | coveralls",
     "develop": "npm run clean && tsc --sourceMap -w"
   },
   "repository": {
@@ -43,7 +44,10 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.9",
+    "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
+    "mocha-lcov-reporter": "^1.2.0",
     "rimraf": "^2.5.2",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
