@@ -12,19 +12,14 @@ import {
     ParamValidationFailedError
 } from '../errors/Errors';
 import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
-import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
 import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
     definedRoutes = [];
 
-const primitiveTypes = [Object, String, Array, Number, Boolean],
-    nonJsonTypes = [String, Number, Boolean];
-
-const defaultErrorHandler = (req, res, err) => {
-    console.error(err);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).end();
-};
+const PRIMITIVE_TYPES = [Object, String, Array, Number, Boolean],
+    NON_JSON_TYPES = [String, Number, Boolean];
 
 let parseParam = (value: any, param: Param) => {
     let ctor = param.type as any;
@@ -37,7 +32,7 @@ let parseParam = (value: any, param: Param) => {
 
     let parsed;
     try {
-        parsed = primitiveTypes.indexOf(ctor) !== -1 ? ctor(value) : new ctor(value);
+        parsed = PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(value) : new ctor(value);
     } catch (e) {
         throw new ParameterParseError(param.name, e);
     }
@@ -123,7 +118,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
 
                 if (!errorHandlers) {
                     errorHandlers = new ErrorHandlerManager();
-                    errorHandlers.addHandler(defaultErrorHandler);
+                    errorHandlers.addHandler(DEFAULT_ERROR_HANDLER);
                 }
 
                 try {
@@ -157,7 +152,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 try {
                     let result = method.apply(instance, paramValues),
                         responseFunction = result => {
-                            if (nonJsonTypes.indexOf(result.constructor) !== -1) {
+                            if (NON_JSON_TYPES.indexOf(result.constructor) !== -1) {
                                 response.send(result);
                             } else {
                                 response.json(result);

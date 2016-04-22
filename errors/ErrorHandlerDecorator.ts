@@ -5,6 +5,7 @@ import {
     ErrorHandlerWrongReturnTypeError
 } from '../errors/Errors';
 import {Request, Response} from 'express';
+import httpStatus = require('http-status');
 
 const ARGUMENT_COUNT = 3;
 
@@ -13,6 +14,19 @@ const ARGUMENT_COUNT = 3;
  * @type {string}
  */
 export const ERRORHANDLER_KEY = 'errorHandler';
+
+/**
+ * Default error handler. Does console.error with the error and sets the
+ * http response code to 500.
+ *
+ * @param {Request} req - express request object
+ * @param {Response} res - express response object
+ * @param {Error} err - error that happend
+ */
+export const DEFAULT_ERROR_HANDLER = (req, res, err) => {
+    console.error(err);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).end();
+};
 
 /**
  * @typedef ErrorHandlerFunction
