@@ -8,10 +8,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Possibility to define multiple validators.
 - Documentation.
 - Code coverage reporting.
+- `.gitattributes` to run a 3-way file level merge for `CHANGELOG.md`
 
 ### Fixed
 - Routes had wrong `this` context set.
 - Renamed const variables and exported validators to correct cases.
+
+### Changed
+- Removed coveralls from `package.json` and moved its installation to Travis configuration
 
 ## [0.3.0] - 2016-04-20
 ### Added

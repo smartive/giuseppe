@@ -8,7 +8,6 @@
     "clean": "rimraf build",
     "precitest": "npm run bootstrap && npm run clean && tsc",
     "citest": "istanbul cover _mocha --report lcovonly -- --ui bdd --recursive ./build",
-    "postcitest": "cat ./coverage/lcov.info | coveralls",
     "develop": "npm run clean && tsc --sourceMap -w"
   },
   "repository": {
@@ -28,6 +27,10 @@
     {
       "name": "Dominique Wirz",
       "email": "dominique@smartive.ch"
+    },
+    {
+      "name": "Moreno Feltscher",
+      "email": "moreno@smartive.ch"
     }
   ],
   "license": "MIT",
@@ -44,7 +47,6 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "coveralls": "^2.11.9",
     "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
     "mocha-lcov-reporter": "^1.2.0",
