@@ -13,7 +13,8 @@ export enum RouteMethod {
     Get,
     Put,
     Post,
-    Delete
+    Delete,
+    Head
 }
 
 /**
@@ -80,4 +81,14 @@ export function Post(route: string = '') {
  */
 export function Delete(route: string = '') {
     return Route(route, RouteMethod.Delete);
+}
+
+/**
+ * Alias function for @Route(string, RouteMethod.Head)
+ *
+ * @param {string} [route=''] - The routed endpoint of the method. If omitted, the base route is taken.
+ * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'Head'.
+ */
+export function Head(route: string = '') {
+    return Route(route, RouteMethod.Head);
 }

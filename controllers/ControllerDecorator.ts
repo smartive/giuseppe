@@ -103,6 +103,9 @@ function registerRoute(route: RouteRegistration, router: Router, routeUrl: strin
         case RouteMethod.Delete:
             router.delete(routeUrl, (route.descriptor.value as any));
             break;
+        case RouteMethod.Head:
+            router.head(routeUrl, (route.descriptor.value as any));
+            break;
         default:
             throw new HttpVerbNotSupportedError(route.method);
     }

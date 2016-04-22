@@ -1,6 +1,21 @@
 import 'reflect-metadata';
-import {Get, Put, Post, Delete, Route, ROUTES_KEY, RouteRegistration, RouteMethod} from '../routes/RouteDecorators';
-import {ParameterConstructorArgumentsError, RouteError, WrongReturnTypeError} from '../errors/Errors';
+import {
+    Get,
+    Put,
+    Post,
+    Delete,
+    Route,
+    Head,
+    ROUTES_KEY,
+    RouteRegistration,
+    RouteMethod
+} from '../routes/RouteDecorators';
+import {
+    ParameterConstructorArgumentsError,
+    RouteError,
+    WrongReturnTypeError,
+    HeadWrongReturnTypeError
+} from '../errors/Errors';
 import {Query, Res} from '../params/ParamDecorators';
 import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
 import {Response} from 'express';
@@ -69,6 +84,15 @@ describe('RouteDecorators', () => {
 
         it('should return a Route decorator', () => {
             Delete().should.be.a('function')
+                .and.have.lengthOf(3);
+        });
+
+    });
+
+    describe('Head', () => {
+
+        it('should return a Route decorator', () => {
+            Head().should.be.a('function')
                 .and.have.lengthOf(3);
         });
 
@@ -228,6 +252,87 @@ describe('RouteDecorators', () => {
             }, null]);
 
             stub.should.be.calledWithExactly(204);
+        });
+
+        it('should call response.status with OK when function returns true', () => {
+            @Controller()
+            class Ctrl {
+                @Head()
+                public func(): boolean {
+                    return true;
+                }
+            }
+
+            let router = new TestRouter(),
+                stub = sinon.stub();
+
+            stub.returns({
+                end: () => {
+                }
+            });
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                status: stub
+            }, null]);
+
+            stub.should.be.calledWithExactly(200);
+        });
+
+        it('should call response.status with NOT_FOUND when function returns false', () => {
+            @Controller()
+            class Ctrl {
+                @Head()
+                public func(): boolean {
+                    return false;
+                }
+            }
+
+            let router = new TestRouter(),
+                stub = sinon.stub();
+
+            stub.returns({
+                end: () => {
+                }
+            });
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                status: stub
+            }, null]);
+
+            stub.should.be.calledWithExactly(404);
+        });
+
+        it('should throw when route type is head and return type is not boolean', () => {
+            @Controller()
+            class Ctrl {
+                @Head()
+                public func(): string {
+                    return '';
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                json: () => {
+                },
+                send: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(HeadWrongReturnTypeError);
         });
 
         it('should throw when it returns the wrong return type', () => {
