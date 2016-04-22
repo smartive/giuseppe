@@ -21,7 +21,12 @@ let controllers: ControllerRegistration[] = [],
 const PRIMITIVE_TYPES = [Object, String, Array, Number, Boolean],
     NON_JSON_TYPES = [String, Number, Boolean];
 
-let parseParam = (value: any, param: Param) => {
+class ControllerRegistration {
+    constructor(public controller: any, public prefix?: string) {
+    }
+}
+
+function parseParam(value: any, param: Param) {
     let ctor = param.type as any;
 
     if ((value === null || value === undefined) && param.options && param.options.required) {
@@ -44,11 +49,6 @@ let parseParam = (value: any, param: Param) => {
         throw new ParamValidationFailedError(param.name);
     } else {
         return parsed;
-    }
-};
-
-class ControllerRegistration {
-    constructor(public controller: any, public prefix?: string) {
     }
 }
 
