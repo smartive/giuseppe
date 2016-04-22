@@ -11,7 +11,7 @@ import {
     ParameterParseError,
     ParamValidationFailedError
 } from '../errors/Errors';
-import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
+import {Param, Predicate, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
 import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
 import httpStatus = require('http-status');
 
@@ -43,7 +43,17 @@ function parseParam(value: any, param: Param) {
     }
 
     if (param.options && param.options.validator) {
-        if (param.options.validator(parsed)) {
+        let isValid = value => {
+            let predicates = param.options.validator;
+
+            if (Array.isArray(predicates)) {
+                return (predicates as Predicate[]).every(p => p(value));
+            }
+
+            return (predicates as Predicate)(value);
+        };
+
+        if (isValid(parsed)) {
             return parsed;
         }
         throw new ParamValidationFailedError(param.name);
