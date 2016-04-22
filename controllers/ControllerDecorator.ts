@@ -9,7 +9,8 @@ import {
     RouteError,
     RequiredParameterNotProvidedError,
     ParameterParseError,
-    ParamValidationFailedError
+    ParamValidationFailedError,
+    HeadHasWrongReturnTypeError
 } from '../errors/Errors';
 import {Param, Predicate, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
 import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
@@ -103,6 +104,9 @@ function registerRoute(route: RouteRegistration, router: Router, routeUrl: strin
         case RouteMethod.Delete:
             router.delete(routeUrl, (route.descriptor.value as any));
             break;
+        case RouteMethod.Head:
+            router.head(routeUrl, (route.descriptor.value as any));
+            break;
         default:
             throw new HttpVerbNotSupportedError(route.method);
     }
@@ -156,6 +160,10 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 throw new DuplicateRouteDeclarationError(routeUrl, route.method);
             }
 
+            if (route.method === RouteMethod.Head && returnType !== Boolean) {
+                throw new HeadHasWrongReturnTypeError();
+            }
+
             params.forEach(p => {
                 if (p.type.length < 1) {
                     throw new ParameterConstructorArgumentsError(p.name);
@@ -203,6 +211,9 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                     }
                     if (!(result instanceof returnType) && !(result.constructor === returnType)) {
                         throw new WrongReturnTypeError(route.propertyKey, returnType, result.constructor);
+                    }
+                    if (route.method === RouteMethod.Head && returnType === Boolean) {
+                        return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
                     }
                     if (returnType === Promise) {
                         (result as Promise<any>).then(responseFunction, err => errorHandlers.callHandlers(request, response, new RouteError(route.propertyKey, err)));

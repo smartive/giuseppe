@@ -1,6 +1,21 @@
 import 'reflect-metadata';
-import {Get, Put, Post, Delete, Route, ROUTES_KEY, RouteRegistration, RouteMethod} from '../routes/RouteDecorators';
-import {ParameterConstructorArgumentsError, RouteError, WrongReturnTypeError} from '../errors/Errors';
+import {
+    Get,
+    Put,
+    Post,
+    Delete,
+    Route,
+    Head,
+    ROUTES_KEY,
+    RouteRegistration,
+    RouteMethod
+} from '../routes/RouteDecorators';
+import {
+    ParameterConstructorArgumentsError,
+    RouteError,
+    WrongReturnTypeError,
+    HeadHasWrongReturnTypeError
+} from '../errors/Errors';
 import {Query, Res} from '../params/ParamDecorators';
 import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
 import {Response} from 'express';
@@ -28,6 +43,10 @@ class TestRouter {
     }
 
     public delete(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public head(route: string, func: Function): void {
         this.routes[route] = func;
     }
 }
@@ -74,6 +93,15 @@ describe('RouteDecorators', () => {
 
     });
 
+    describe('Head', () => {
+
+        it('should return a Route decorator', () => {
+            Head().should.be.a('function')
+                .and.have.lengthOf(3);
+        });
+
+    });
+
     describe('Route', () => {
 
         it('should return a Route decorator', () => {
@@ -96,6 +124,23 @@ describe('RouteDecorators', () => {
             };
 
             fn.should.throw(ParameterConstructorArgumentsError);
+        });
+
+        it('should throw when route type is head and return type is not boolean', () => {
+            let fn = () => {
+                class Foobar {
+                }
+                @Controller()
+                class Ctrl {
+                    @Head()
+                    public func(): any {
+                    }
+                }
+
+                registerControllers();
+            };
+
+            fn.should.throw(HeadHasWrongReturnTypeError);
         });
 
         it('should not throw on class with correct constructor', () => {
@@ -228,6 +273,58 @@ describe('RouteDecorators', () => {
             }, null]);
 
             stub.should.be.calledWithExactly(204);
+        });
+
+        it('should call response.status with OK when function returns true', () => {
+            @Controller()
+            class Ctrl {
+                @Head()
+                public func(): boolean {
+                    return true;
+                }
+            }
+
+            let router = new TestRouter(),
+                stub = sinon.stub();
+
+            stub.returns({
+                end: () => {
+                }
+            });
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                status: stub
+            }, null]);
+
+            stub.should.be.calledWithExactly(200);
+        });
+
+        it('should call response.status with NOT_FOUND when function returns false', () => {
+            @Controller()
+            class Ctrl {
+                @Head()
+                public func(): boolean {
+                    return false;
+                }
+            }
+
+            let router = new TestRouter(),
+                stub = sinon.stub();
+
+            stub.returns({
+                end: () => {
+                }
+            });
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                status: stub
+            }, null]);
+
+            stub.should.be.calledWithExactly(404);
         });
 
         it('should throw when it returns the wrong return type', () => {
