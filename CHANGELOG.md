@@ -4,14 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-- [#12] HTTP head as route annotation. via [#27]
-- [#9] Possibility to define multiple validators. via [#24]
-- Documentation
-- Code coverage reporting. via [#26]
+- HTTP head as route annotation.
+- Possibility to define multiple validators.
+- Documentation.
+- Code coverage reporting.
 
 ### Fixed
-- [#17] Routes had wrong `this` context set. via [#21]
-- [#18] Renamed const variables and exported validators to correct cases. via [#21]
+- Routes had wrong `this` context set.
+- Renamed const variables and exported validators to correct cases.
 
 ## [0.3.0] - 2016-04-20
 ### Added
@@ -28,13 +28,3 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [Unreleased]: https://github.com/smartive/giuseppe/compare/v0.3.0...develop
 [0.3.0]: https://github.com/smartive/giuseppe/compare/v0.2.0...v0.3.0
 [0.2.1]: https://github.com/smartive/giuseppe/tree/v0.2.1
-
-[#17]: https://github.com/smartive/giuseppe/issues/17
-[#18]: https://github.com/smartive/giuseppe/issues/18
-[#9]: https://github.com/smartive/giuseppe/issues/9
-[#17]: https://github.com/smartive/giuseppe/issues/12
-
-[#21]: https://github.com/smartive/giuseppe/pull/21
-[#24]: https://github.com/smartive/giuseppe/pull/24
-[#26]: https://github.com/smartive/giuseppe/pull/26
-[#27]: https://github.com/smartive/giuseppe/pull/27
