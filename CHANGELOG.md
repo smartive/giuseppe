@@ -13,6 +13,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Routes had wrong `this` context set.
 - Renamed const variables and exported validators to correct cases.
 
+### Changed
+- Removed coveralls from `package.json` and moved its installation to Travis configuration
+
 ## [0.3.0] - 2016-04-20
 ### Added
 - `@Header` parameter description.
