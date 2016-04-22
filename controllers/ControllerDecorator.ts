@@ -12,7 +12,7 @@ import {
     ParamValidationFailedError
 } from '../errors/Errors';
 import {Param, Predicate, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
-import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
 import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
