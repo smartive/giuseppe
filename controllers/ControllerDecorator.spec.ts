@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {Controller, registerControllers, resetControllerRegistrations} from './ControllerDecorator';
 import {Router} from 'express';
-import {Get, Post, Put, Delete, ROUTES_KEY, Route} from '../routes/RouteDecorators';
+import {Get, Post, Put, Delete, Head, ROUTES_KEY, Route} from '../routes/RouteDecorators';
 import {SinonSpy} from '~sinon/lib/sinon';
 import {DuplicateRouteDeclarationError, HttpVerbNotSupportedError} from '../errors/Errors';
 import chai = require('chai');
@@ -27,6 +27,10 @@ class TestRouter {
     }
 
     public delete(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public head(route: string, func: Function): void {
         this.routes[route] = func;
     }
 }
@@ -82,6 +86,7 @@ describe('Controller', () => {
             sinon.stub(router, 'put');
             sinon.stub(router, 'post');
             sinon.stub(router, 'delete');
+            sinon.stub(router, 'head');
         });
 
         it('should register 1 controller with 1 function correctly', () => {
@@ -221,17 +226,23 @@ describe('Controller', () => {
                 @Delete('func1')
                 public funcDelete(): void {
                 }
+
+                @Head('func1')
+                public funcHead(): boolean {
+                    return true;
+                }
             }
 
             registerControllers('', router);
 
             let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
-            routes.should.be.an('array').with.lengthOf(4);
+            routes.should.be.an('array').with.lengthOf(5);
 
             router.get.should.be.calledWithExactly('/func1', routes[0].descriptor.value);
             router.put.should.be.calledWithExactly('/func1', routes[1].descriptor.value);
             router.post.should.be.calledWithExactly('/func1', routes[2].descriptor.value);
             router.delete.should.be.calledWithExactly('/func1', routes[3].descriptor.value);
+            router.head.should.be.calledWithExactly('/func1', routes[4].descriptor.value);
         });
 
         it('should use baseUrl correctly', () => {
