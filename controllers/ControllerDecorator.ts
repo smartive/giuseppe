@@ -11,8 +11,8 @@ import {
     ParameterParseError,
     ParamValidationFailedError
 } from '../errors/Errors';
-import {Param, Validator, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
-import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
+import {Param, Predicate, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
+import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
@@ -44,7 +44,7 @@ function parseParam(value: any, param: Param) {
 
     if (param.options && param.options.validator) {
         let validator = param.options.validator;
-        if (Array.isArray(validator) && (validator as Validator[]).every(v => v(parsed)) || (validator as Validator)(parsed)) {
+        if (Array.isArray(validator) && (validator as Predicate[]).every(v => v(parsed)) || (validator as Predicate)(parsed)) {
             return parsed;
         }
         throw new ParamValidationFailedError(param.name);

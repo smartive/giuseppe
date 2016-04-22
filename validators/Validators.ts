@@ -1,5 +1,5 @@
 /**
- * Validator that checks if the constructor of a given value is "String".
+ * Predicate that checks if the constructor of a given value is "String".
  *
  * @param {any} value - Value to check.
  * @returns {boolean} - True if the constructor of the given value is "String", otherwise false.
@@ -9,7 +9,7 @@ export function isStringValidator(value: any): boolean {
 }
 
 /**
- * Validator that checks if the constructor of a given value is "Number" and the value is not NaN.
+ * Predicate that checks if the constructor of a given value is "Number" and the value is not NaN.
  *
  * @param {any} value - Value to check.
  * @returns {boolean} - True if the constructor of the given value is "Number" and the value is not NaN, otherwise false.
