@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-- [#12] HTTP head as route annotation. via [#26]
+- [#12] HTTP head as route annotation. via [#27]
 - [#9] Possibility to define multiple validators. via [#24]
 - Documentation
 - Code coverage reporting. via [#26]
@@ -36,4 +36,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 [#21]: https://github.com/smartive/giuseppe/pull/21
 [#24]: https://github.com/smartive/giuseppe/pull/24
-[#26]: https://github.com/smartive/giuseppe/pull/26
+[#27]: https://github.com/smartive/giuseppe/pull/27
