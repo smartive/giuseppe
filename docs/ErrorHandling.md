@@ -20,6 +20,7 @@ All errors are documented with JSDoc in the [Errors.ts](../errors/Errors.ts) fil
    a value inside the `RouteRegistration` that is not part of the enum `RouteMethod`.
 - `DuplicateRouteDeclarationError`: A specific route is registered twice. 
    (`PUT` and `POST` to `/api/test` are two different routes).
+- `HeadHasWrongReturnTypeError`: A head-route has not the return type boolean.
 - `ErrorHandlerWrongArgumentsError`: A registered `@ErrorHandler` has the wrong arguments count.
 - `ErrorHandlerWrongArgumentTypesError`: A registered `@ErrorHandler` has the wrong argument types.
 - `ErrorHandlerWrongReturnTypeError`: An `@ErrorHandler` should always return `void`.
