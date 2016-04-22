@@ -52,6 +52,52 @@ function parseParam(value: any, param: Param) {
     }
 }
 
+function getParamValues(params: Param[], request: Request, response: Response) {
+    let paramValues = [];
+    params.forEach((p: Param) => {
+        switch (p.paramType) {
+            case ParamType.Request:
+                paramValues[p.index] = request;
+                return;
+            case ParamType.Response:
+                paramValues[p.index] = response;
+                return;
+            case ParamType.Body:
+                paramValues[p.index] = parseParam(request.body, p);
+                return;
+            case ParamType.Url:
+                paramValues[p.index] = parseParam(request.params[p.name], p);
+                return;
+            case ParamType.Query:
+                paramValues[p.index] = parseParam(request.query[p.name], p);
+                return;
+            case ParamType.Header:
+                paramValues[p.index] = parseParam(request.get(p.name), p);
+                return;
+        }
+    });
+    return paramValues;
+}
+
+function registerRoute(route: RouteRegistration, router: Router, routeUrl: string) {
+    switch (route.method) {
+        case RouteMethod.Get:
+            router.get(routeUrl, (route.descriptor.value as any));
+            break;
+        case RouteMethod.Put:
+            router.put(routeUrl, (route.descriptor.value as any));
+            break;
+        case RouteMethod.Post:
+            router.post(routeUrl, (route.descriptor.value as any));
+            break;
+        case RouteMethod.Delete:
+            router.delete(routeUrl, (route.descriptor.value as any));
+            break;
+        default:
+            throw new HttpVerbNotSupportedError(route.method);
+    }
+}
+
 /**
  * Controller decorator; decorates a class to be a rest api controller. A controller registers itself to an
  * expressJS router when "registerControllers" is called.
@@ -122,30 +168,11 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 }
 
                 try {
-                    params.forEach((p: Param) => {
-                        switch (p.paramType) {
-                            case ParamType.Request:
-                                paramValues[p.index] = request;
-                                return;
-                            case ParamType.Response:
-                                paramValues[p.index] = response;
-                                return;
-                            case ParamType.Body:
-                                paramValues[p.index] = parseParam(request.body, p);
-                                return;
-                            case ParamType.Url:
-                                paramValues[p.index] = parseParam(request.params[p.name], p);
-                                return;
-                            case ParamType.Query:
-                                paramValues[p.index] = parseParam(request.query[p.name], p);
-                                return;
-                            case ParamType.Header:
-                                paramValues[p.index] = parseParam(request.get(p.name), p);
-                                return;
-                        }
-                    });
+                    paramValues = getParamValues(params, request, response);
                 } catch (e) {
                     errorHandlers.callHandlers(request, response, e);
+                    // This return is needed, since the controller
+                    // would try to call the route method (even on error).
                     return;
                 }
 
@@ -177,22 +204,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 }
             };
 
-            switch (route.method) {
-                case RouteMethod.Get:
-                    router.get(routeUrl, (route.descriptor.value as any));
-                    break;
-                case RouteMethod.Put:
-                    router.put(routeUrl, (route.descriptor.value as any));
-                    break;
-                case RouteMethod.Post:
-                    router.post(routeUrl, (route.descriptor.value as any));
-                    break;
-                case RouteMethod.Delete:
-                    router.delete(routeUrl, (route.descriptor.value as any));
-                    break;
-                default:
-                    throw new HttpVerbNotSupportedError(route.method);
-            }
+            registerRoute(route, router, routeUrl);
             definedRoutes.push(routeId);
         });
     });
