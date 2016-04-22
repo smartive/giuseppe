@@ -3,6 +3,20 @@
 giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](http://expressjs.com/) using [TypeScript](https://www.typescriptlang.org/) decorators and annotations named after the great Italian componist Giuseppe Verdi. Like Verdi, it composes things, but not a great piece of musical history! We compose routes for you. giuseppe is dedicated to
 [Express](http://expressjs.com/) and depends on it. We were tired of writing all the route registrations by ourselves.
 
+##### A bunch of badges
+
+![travis ci](https://img.shields.io/travis/smartive/giuseppe.svg)
+
+## Table of contents
+
+- [Docs](#docs)
+- [Installation](#installation)
+- [Basic usage](#basic-usage)
+- [Testing](#testing)
+- [Contribute](#contribute)
+- [Changelog](#changelog)
+- [Licence](#licence)
+
 ## Docs
 
 This readme will give a short overview over the usable features. For more detailed information,
@@ -139,13 +153,6 @@ install the typings and compiles giuseppe.
 We're happy if you have any contributions! Every participation counts. Feel free to
 open pull requests, issues or use any other form of contribution. Maybe we'll
 set up a `CONTRIBUTING.md` file in the future. soon(tm) :smile:.
-
-## Contributers
-
-The author of the package is [Christoph Bühler](https://github.com/buehler)
-but without the help of [smartive](https://smartive.ch), this package would not
-have been possible. All the people of smartive contributed to this package in their
-own awesome way and will maintain it in the future.
 
 [Full list of contributors](https://github.com/smartive/giuseppe/graphs/contributors)
 
