@@ -21,6 +21,7 @@ export enum ParamType {
 
 /**
  * Predicate for the given parameter. This validator is executed if set and if the return value is false, an error is thrown.
+ *
  * @param {any} value - The parsed value of the parameter.
  * @returns {boolean} - True when the validation was successful, otherwise false.
  */
