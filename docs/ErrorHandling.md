@@ -11,7 +11,7 @@ Those errors happen during the application startup. They will crash your applica
 not helpfull to use the api when those errors happen. When you decorate a class with a TypeScript
 decorator (e.g. `@Controller`), your transpiled JavaScript uses helper functions for that.
 When you load a decorated class (i.e. `import {...} from ...;`), this decoration code is
-executed. Giuseppe prevents some horrible random situations by throwing error objects 
+executed. giuseppe prevents some horrible random situations by throwing error objects 
 during the design time (e.g. on duplicate routes, express just uses the first one).
 
 All errors are documented with JSDoc in the [Errors.ts](../errors/Errors.ts) file. A brief overview is given:
