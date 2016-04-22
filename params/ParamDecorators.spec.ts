@@ -267,7 +267,7 @@ describe('ParamDecorators', () => {
             spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
         });
 
-        it('should throw if a validation fails', () => {
+        it('should throw if any validation fails', () => {
             @Controller()
             class Ctrl {
                 @Route()
@@ -567,11 +567,66 @@ describe('ParamDecorators', () => {
             spy.should.not.be.called;
         });
 
+        it('should validate correctly with multiple validators', () => {
+            let isNotEmpty = v => v.length > 0;
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Body({validator: [isStringValidator, isNotEmpty]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.not.be.called;
+        });
+
         it('should throw on validation error', () => {
             @Controller()
             class Ctrl {
                 @Route()
                 public func(@Body({validator: isNumberValidator}) test: number): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
+        });
+
+        it('should throw if any validation fails', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Body({validator: [isStringValidator, isNumberValidator]}) test: string): any {
                     return {};
                 }
             }
@@ -863,11 +918,77 @@ describe('ParamDecorators', () => {
             spy.should.not.be.called;
         });
 
+
+        it('should validate correctly with multiple validators', () => {
+            let isNotEmpty = v => v.length > 0;
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test', {validator: [isStringValidator, isNotEmpty]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {test: 'foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.not.be.called;
+        });
+
         it('should throw on validation error', () => {
             @Controller()
             class Ctrl {
                 @Route()
                 public func(@Header('test', {validator: isNumberValidator}) test: number): any {
+                    return {};
+                }
+            }
+
+            let handler = new ErrorHandlerManager(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {test: 'foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
+        });
+
+        it('should throw if any validation fails', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Header('test', {validator: [isStringValidator, isNumberValidator]}) test: string): any {
                     return {};
                 }
             }
