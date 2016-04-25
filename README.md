@@ -145,8 +145,8 @@ can run the ninety-ish tests with
 npm test
 ```
 
-Actually you cannot do something wrong, since the `pretest` hook will install the dependencies,
-install the typings and compiles giuseppe. 
+If you get any errors, maybe you didn't install the dependencies. There is a `npm run bootstrap`
+command that will install them for you.
 
 ## Contribute
 
