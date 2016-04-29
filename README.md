@@ -33,9 +33,7 @@ please find a more detailed documentation in the `docs/` folder.
 
 To install this package, simply run
 
-```bash
-npm install --save giuseppe
-```
+[![NPM](https://nodei.co/npm/giuseppe.png?downloads=true&stars=true)](https://nodei.co/npm/giuseppe/)
 
 If not all `typings` are installed for giuseppe
 you need to manually install the typings for this package.
@@ -135,6 +133,11 @@ name `data`. If it's not provided, undefined is injected.
 
 This was a short example of the possiblities of giuseppe. Please find a more detailed version
 of the documentation in the [links at the start](#docs) and/or the `docs/` folder.
+
+#### Examples
+
+There are many examples located in the [examples](examples) folder!
+Please have a look there for various use cases :smile:.
 
 ## Testing
 
