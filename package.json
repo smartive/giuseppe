@@ -9,7 +9,7 @@
     "pretest": "npm run clean && tsc",
     "test": "mocha --ui bdd --recursive ./build",
     "precitest": "npm run bootstrap && npm run clean && tsc",
-    "citest": "istanbul cover _mocha --report lcovonly -- --ui bdd --recursive ./build",
+    "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd --recursive ./build",
     "develop": "npm run clean && tsc --sourceMap -w"
   },
   "repository": {

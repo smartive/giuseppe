@@ -4,7 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
-- `npm test` command
+- `npm test` command not working.
+- Removed *.spec files from coverage test.
 
 ## [0.4.0] - 2016-04-22
 ### Added
