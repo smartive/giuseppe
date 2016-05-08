@@ -38,7 +38,11 @@ function parseParam(value: any, param: Param) {
 
     let parsed;
     try {
-        parsed = PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(value) : new ctor(value);
+        if (value.constructor === ctor) {
+            parsed = value;
+        } else {
+            parsed = PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(value) : new ctor(value);
+        }
     } catch (e) {
         throw new ParameterParseError(param.name, e);
     }
