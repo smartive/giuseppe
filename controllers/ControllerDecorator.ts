@@ -12,8 +12,9 @@ import {
     ParamValidationFailedError,
     HeadHasWrongReturnTypeError
 } from '../errors/Errors';
-import {Param, Predicate, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
+import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
 import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
+import {Validator} from '../validators/Validators';
 import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
@@ -60,10 +61,10 @@ function parseParam(value: any, param: Param) {
             let predicates = param.options.validator;
 
             if (Array.isArray(predicates)) {
-                return (predicates as Predicate[]).every(p => p(value));
+                return (predicates as Validator[]).every(p => p(value));
             }
 
-            return (predicates as Predicate)(value);
+            return (predicates as Validator)(value);
         };
 
         if (isValid(parsed)) {
