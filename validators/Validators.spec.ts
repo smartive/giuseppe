@@ -69,18 +69,18 @@ describe('Validators', () => {
         });
 
         it('should validate min correctly', () => {
-            isNumber(4)(4).should.be.true;
-            isNumber(5)(4).should.be.false;
+            isNumber({min: 4})(4).should.be.true;
+            isNumber({min: 5})(4).should.be.false;
         });
 
         it('should validate max correctly', () => {
-            isNumber(null, 4)(4).should.be.true;
-            isNumber(null, 3)(4).should.be.false;
+            isNumber({max: 4})(4).should.be.true;
+            isNumber({max: 3})(4).should.be.false;
         });
 
         it('should validate multipleOf correctly', () => {
-            isNumber(null, null, 4)(4).should.be.true;
-            isNumber(null, null, 5)(4).should.be.false;
+            isNumber({multipleOf: 4})(4).should.be.true;
+            isNumber({multipleOf: 5})(4).should.be.false;
         });
 
     });

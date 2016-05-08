@@ -1,5 +1,5 @@
 function isNullOrUndefined(value: any): boolean {
-    return value === null && value === undefined;
+    return value === null || value === undefined;
 }
 
 /**
@@ -44,7 +44,7 @@ export function isString({allowEmpty = false, minLength, maxLength}: {allowEmpty
  * @param {number} [multipleOf] - Let empty string "" be a valid result.
  * @returns {Validator} - Validator function for the given parameters.
  */
-export function isNumber(min?: number, max?: number, multipleOf?: number): Validator {
+export function isNumber({min, max, multipleOf}: {min?: number, max?: number, multipleOf?: number} = {}): Validator {
     return (value: number) => {
         if (isNullOrUndefined(value) || typeof value !== 'number' || isNaN(value)) {
             return false;
