@@ -14,11 +14,11 @@ export type Validator = <T>(value: T) => boolean;
  * Function that creates a string validator with some properties.
  *
  * @param {boolean} [allowEmpty=false] - Let empty string "" be a valid result.
- * @param {number} [minLength=0] - Let empty string "" be a valid result.
+ * @param {number} [minLength] - Let empty string "" be a valid result.
  * @param {number} [maxLength] - Let empty string "" be a valid result.
  * @returns {Validator} - Validator function for the given parameters.
  */
-export function isString(allowEmpty: boolean = false, minLength: number = 0, maxLength?: number): Validator {
+export function isString({allowEmpty = false, minLength, maxLength}: {allowEmpty?: boolean, minLength?: number, maxLength?: number} = {}): Validator {
     return (value: string) => {
         if (isNullOrUndefined(value) || typeof value !== 'string') {
             return false;
@@ -28,7 +28,7 @@ export function isString(allowEmpty: boolean = false, minLength: number = 0, max
             return false;
         }
 
-        if (minLength >= 0 && value.length < minLength) {
+        if (minLength && value.length < minLength) {
             return false;
         }
 
@@ -50,14 +50,14 @@ export function isNumber(min?: number, max?: number, multipleOf?: number): Valid
             return false;
         }
 
-        if (min !== undefined && value < min) {
+        if (!isNullOrUndefined(min) && value < min) {
             return false;
         }
 
-        if (max !== undefined && value > max) {
+        if (!isNullOrUndefined(max) && value > max) {
             return false;
         }
 
-        return !(multipleOf !== undefined && value % multipleOf !== 0);
+        return !(!isNullOrUndefined(multipleOf) && value % multipleOf !== 0);
     };
 }

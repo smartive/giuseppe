@@ -16,7 +16,7 @@ describe('Validators', () => {
 
         it('should validate an empty string correctly', () => {
             isString()('').should.be.false;
-            isString(true)('').should.be.true;
+            isString({allowEmpty: true})('').should.be.true;
         });
 
         it('should validate a non string correctly', () => {
@@ -34,9 +34,15 @@ describe('Validators', () => {
             isString()(undefined).should.be.false;
         });
 
-        it('should validator min length correctly');
+        it('should validator min length correctly', () => {
+            isString({minLength: 3})('aaa').should.be.true;
+            isString({minLength: 4})('aaa').should.be.false;
+        });
 
-        it('should validator max length correctly');
+        it('should validator max length correctly', () => {
+            isString({maxLength: 3})('aaa').should.be.true;
+            isString({maxLength: 2})('aaa').should.be.false;
+        });
 
     });
 
@@ -62,11 +68,20 @@ describe('Validators', () => {
             isNumber()(undefined).should.be.false;
         });
 
-        it('should validate min correctly');
+        it('should validate min correctly', () => {
+            isNumber(4)(4).should.be.true;
+            isNumber(5)(4).should.be.false;
+        });
 
-        it('should validate max correctly');
+        it('should validate max correctly', () => {
+            isNumber(null, 4)(4).should.be.true;
+            isNumber(null, 3)(4).should.be.false;
+        });
 
-        it('should validate multipleOf correctly');
+        it('should validate multipleOf correctly', () => {
+            isNumber(null, null, 4)(4).should.be.true;
+            isNumber(null, null, 5)(4).should.be.false;
+        });
 
     });
 
