@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Validators are now factories.
+- Validators have new names (*breaking*)
 
 ### Fixed
 - `npm test` command not working.
