@@ -1,5 +1,5 @@
 function isNullOrUndefined(value: any): boolean {
-    return value !== null && value !== undefined;
+    return value === null && value === undefined;
 }
 
 /**
@@ -46,7 +46,7 @@ export function isString(allowEmpty: boolean = false, minLength: number = 0, max
  */
 export function isNumber(min?: number, max?: number, multipleOf?: number): Validator {
     return (value: number) => {
-        if (isNullOrUndefined(value) || typeof value !== 'number') {
+        if (isNullOrUndefined(value) || typeof value !== 'number' || isNaN(value)) {
             return false;
         }
 

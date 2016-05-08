@@ -1,7 +1,7 @@
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
-import {isStringValidator, isNumberValidator} from './Validators';
+import {isString, isNumber} from './Validators';
 
 let should = chai.should();
 chai.use(sinonChai);
@@ -11,51 +11,62 @@ describe('Validators', () => {
     describe('String validator', () => {
 
         it('should validate a string correctly', () => {
-            isStringValidator('a string').should.be.true;
+            isString()('a string').should.be.true;
         });
 
         it('should validate an empty string correctly', () => {
-            isStringValidator('').should.be.true;
+            isString()('').should.be.false;
+            isString(true)('').should.be.true;
         });
 
         it('should validate a non string correctly', () => {
-            isStringValidator(1).should.be.false;
-            isStringValidator(NaN).should.be.false;
-            isStringValidator({}).should.be.false;
-            isStringValidator([]).should.be.false;
+            isString()(1).should.be.false;
+            isString()(NaN).should.be.false;
+            isString()({}).should.be.false;
+            isString()([]).should.be.false;
         });
 
         it('should validate a null value correctly', () => {
-            isStringValidator(null).should.be.false;
+            isString()(null).should.be.false;
         });
 
         it('should validate an undefined value correctly', () => {
-            isStringValidator(undefined).should.be.false;
+            isString()(undefined).should.be.false;
         });
+
+        it('should validator min length correctly');
+
+        it('should validator max length correctly');
 
     });
 
     describe('Number validator', () => {
 
         it('should validate a number correctly', () => {
-            isNumberValidator(1).should.be.true;
+            isNumber()(1).should.be.true;
         });
 
         it('should validate a non number correctly', () => {
-            isNumberValidator('a string').should.be.false;
+            isNumber()('a string').should.be.false;
         });
 
         it('should validate a NaN correctly', () => {
-            isNumberValidator(NaN).should.be.false;
+            isNumber()(NaN).should.be.false;
         });
 
         it('should validate a null value correctly', () => {
-            isNumberValidator(null).should.be.false;
+            isNumber()(null).should.be.false;
         });
 
         it('should validate an undefined value correctly', () => {
-            isNumberValidator(undefined).should.be.false;
+            isNumber()(undefined).should.be.false;
         });
+
+        it('should validate min correctly');
+
+        it('should validate max correctly');
+
+        it('should validate multipleOf correctly');
 
     });
 
