@@ -14,8 +14,8 @@ export type Validator = <T>(value: T) => boolean;
  * Function that creates a string validator with some properties.
  *
  * @param {boolean} [allowEmpty=false] - Let empty string "" be a valid result.
- * @param {number} [minLength] - Let empty string "" be a valid result.
- * @param {number} [maxLength] - Let empty string "" be a valid result.
+ * @param {number} [minLength] - Minimum length of the string.
+ * @param {number} [maxLength] - Maximum length of the string.
  * @returns {Validator} - Validator function for the given parameters.
  */
 export function isString({allowEmpty = false, minLength, maxLength}: {allowEmpty?: boolean, minLength?: number, maxLength?: number} = {}): Validator {
@@ -39,9 +39,9 @@ export function isString({allowEmpty = false, minLength, maxLength}: {allowEmpty
 /**
  * Function that creates a number validator with some properties.
  *
- * @param {number} [min] - Let empty string "" be a valid result.
- * @param {number} [max] - Let empty string "" be a valid result.
- * @param {number} [multipleOf] - Let empty string "" be a valid result.
+ * @param {number} [min] - Lowest possible value.
+ * @param {number} [max] - Highest possible value.
+ * @param {number} [multipleOf] - The value must be a multiple of this (i.e. value mod multipleOf === 0).
  * @returns {Validator} - Validator function for the given parameters.
  */
 export function isNumber({min, max, multipleOf}: {min?: number, max?: number, multipleOf?: number} = {}): Validator {
