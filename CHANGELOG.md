@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `npm test` command not working.
 - Removed *.spec files from coverage test.
 - Already parsed values are not parsed again.
+- Fixed this context in error handlers
 
 ## [0.4.0] - 2016-04-22
 ### Added
