@@ -205,7 +205,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 try {
                     paramValues = getParamValues(params, request, response);
                 } catch (e) {
-                    errorHandlers.callHandlers(request, response, e);
+                    errorHandlers.callHandlers(instance, request, response, e);
                     // This return is needed, since the controller
                     // would try to call the route method (even on error).
                     return;
@@ -233,12 +233,12 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                         return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
                     }
                     if (returnType === Promise) {
-                        (result as Promise<any>).then(responseFunction, err => errorHandlers.callHandlers(request, response, new RouteError(route.propertyKey, err)));
+                        (result as Promise<any>).then(responseFunction, err => errorHandlers.callHandlers(instance, request, response, new RouteError(route.propertyKey, err)));
                     } else {
                         responseFunction(result);
                     }
                 } catch (e) {
-                    errorHandlers.callHandlers(request, response, new RouteError(route.propertyKey, e));
+                    errorHandlers.callHandlers(instance, request, response, new RouteError(route.propertyKey, e));
                 }
             };
 
