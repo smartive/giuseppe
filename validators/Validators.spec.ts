@@ -35,13 +35,13 @@ describe('Validators', () => {
         });
 
         it('should validator min length correctly', () => {
-            isString({minLength: 3})('aaa').should.be.true;
-            isString({minLength: 4})('aaa').should.be.false;
+            isString({min: 3})('aaa').should.be.true;
+            isString({min: 4})('aaa').should.be.false;
         });
 
         it('should validator max length correctly', () => {
-            isString({maxLength: 3})('aaa').should.be.true;
-            isString({maxLength: 2})('aaa').should.be.false;
+            isString({max: 3})('aaa').should.be.true;
+            isString({max: 2})('aaa').should.be.false;
         });
 
     });

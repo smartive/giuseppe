@@ -14,11 +14,11 @@ export type Validator = <T>(value: T) => boolean;
  * Function that creates a string validator with some properties.
  *
  * @param {boolean} [allowEmpty=false] - Let empty string "" be a valid result.
- * @param {number} [minLength] - Minimum length of the string.
- * @param {number} [maxLength] - Maximum length of the string.
+ * @param {number} [min] - Minimum length of the string.
+ * @param {number} [max] - Maximum length of the string.
  * @returns {Validator} - Validator function for the given parameters.
  */
-export function isString({allowEmpty = false, minLength, maxLength}: {allowEmpty?: boolean, minLength?: number, maxLength?: number} = {}): Validator {
+export function isString({allowEmpty = false, min, max}: {allowEmpty?: boolean, min?: number, max?: number} = {}): Validator {
     return (value: string) => {
         if (isNullOrUndefined(value) || typeof value !== 'string') {
             return false;
@@ -28,11 +28,11 @@ export function isString({allowEmpty = false, minLength, maxLength}: {allowEmpty
             return false;
         }
 
-        if (minLength && value.length < minLength) {
+        if (min && value.length < min) {
             return false;
         }
 
-        return !(maxLength && value.length > maxLength);
+        return !(max && value.length > max);
     };
 }
 
