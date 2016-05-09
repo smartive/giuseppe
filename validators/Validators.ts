@@ -61,3 +61,29 @@ export function isNumber({min, max, multipleOf}: {min?: number, max?: number, mu
         return !(!isNullOrUndefined(multipleOf) && value % multipleOf !== 0);
     };
 }
+
+/**
+ * Function that creates an array validator with some properties.
+ *
+ * @param {number} [min] - Minimum items in array.
+ * @param {number} [max] - Maximum items in array.
+ * @param {Function} [type] - The constructor function (i.e. the type) of the items in the array.
+ * @returns {Validator} - Validator function for the given parameters.
+ */
+export function isArray({min, max, type}: {min?: number, max?: number, type?: Function} = {}): Validator {
+    return (value: any[]) => {
+        if (isNullOrUndefined(value) || !Array.isArray(value)) {
+            return false;
+        }
+
+        if (!isNullOrUndefined(min) && value.length < min) {
+            return false;
+        }
+
+        if (!isNullOrUndefined(max) && value.length > max) {
+            return false;
+        }
+
+        return !(!isNullOrUndefined(type) && !value.every(o => o.constructor === type));
+    };
+}
