@@ -80,12 +80,13 @@ export class ErrorHandlerManager {
     /**
      * Calls all error handlers for a given error.
      *
+     * @param {any} context - Context of the error handler.
      * @param {Request} request - ExpressJS request object.
      * @param {Response} response - ExpressJS response object.
      * @param {Error} error - Error object that was thrown.
      */
-    public callHandlers(request: Request, response: Response, error: Error): void {
-        this.getHandlers(error).forEach(o => o(request, response, error));
+    public callHandlers(context: any, request: Request, response: Response, error: Error): void {
+        this.getHandlers(error).forEach(o => o.call(context, request, response, error));
     }
 }
 

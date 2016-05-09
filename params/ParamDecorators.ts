@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import {Validator} from '../validators/Validators';
 
 /**
  * Reflect metadata key for parameter list.
@@ -18,15 +19,6 @@ export enum ParamType {
     Header
 }
 
-
-/**
- * Predicate for the given parameter. This validator is executed if set and if the return value is false, an error is thrown.
- *
- * @param {any} value - The parsed value of the parameter.
- * @returns {boolean} - True when the validation was successful, otherwise false.
- */
-export type Predicate = <T>(value: T) => boolean;
-
 /**
  * Interface for parameter options. Contains optional settings for each parameter that accepts this interface.
  */
@@ -39,7 +31,7 @@ export interface ParamOptions {
     /**
      * Adds one or more validator(s) to the parameter.
      */
-    validator?: Predicate|Predicate[];
+    validator?: Validator|Validator[];
 }
 
 /**

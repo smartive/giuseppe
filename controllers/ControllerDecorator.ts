@@ -12,15 +12,24 @@ import {
     ParamValidationFailedError,
     HeadHasWrongReturnTypeError
 } from '../errors/Errors';
-import {Param, Predicate, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
+import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
 import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
+import {Validator} from '../validators/Validators';
 import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
-    definedRoutes = [];
+    definedRoutes = [],
+    bodyParserInstalled = false;
 
 const PRIMITIVE_TYPES = [Object, String, Array, Number, Boolean],
     NON_JSON_TYPES = [String, Number, Boolean];
+
+try {
+    require('body-parser');
+    bodyParserInstalled = true;
+} catch (e) {
+    bodyParserInstalled = false;
+}
 
 class ControllerRegistration {
     constructor(public controller: any, public prefix?: string) {
@@ -38,7 +47,11 @@ function parseParam(value: any, param: Param) {
 
     let parsed;
     try {
-        parsed = PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(value) : new ctor(value);
+        if (value.constructor === ctor) {
+            parsed = value;
+        } else {
+            parsed = PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(value) : new ctor(value);
+        }
     } catch (e) {
         throw new ParameterParseError(param.name, e);
     }
@@ -48,10 +61,10 @@ function parseParam(value: any, param: Param) {
             let predicates = param.options.validator;
 
             if (Array.isArray(predicates)) {
-                return (predicates as Predicate[]).every(p => p(value));
+                return (predicates as Validator[]).every(p => p(value));
             }
 
-            return (predicates as Predicate)(value);
+            return (predicates as Validator)(value);
         };
 
         if (isValid(parsed)) {
@@ -164,6 +177,10 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 throw new HeadHasWrongReturnTypeError();
             }
 
+            if (params.some((p: Param) => p.paramType === ParamType.Body) && !bodyParserInstalled) {
+                console.warn(`The route ${routeUrl} of controller '${instance.constructor.name}' uses a @Body parameter, but there is no 'body-parser' package installed.`);
+            }
+
             params.forEach(p => {
                 if (p.type.length < 1) {
                     throw new ParameterConstructorArgumentsError(p.name);
@@ -188,7 +205,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 try {
                     paramValues = getParamValues(params, request, response);
                 } catch (e) {
-                    errorHandlers.callHandlers(request, response, e);
+                    errorHandlers.callHandlers(instance, request, response, e);
                     // This return is needed, since the controller
                     // would try to call the route method (even on error).
                     return;
@@ -216,12 +233,12 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                         return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
                     }
                     if (returnType === Promise) {
-                        (result as Promise<any>).then(responseFunction, err => errorHandlers.callHandlers(request, response, new RouteError(route.propertyKey, err)));
+                        (result as Promise<any>).then(responseFunction, err => errorHandlers.callHandlers(instance, request, response, new RouteError(route.propertyKey, err)));
                     } else {
                         responseFunction(result);
                     }
                 } catch (e) {
-                    errorHandlers.callHandlers(request, response, new RouteError(route.propertyKey, e));
+                    errorHandlers.callHandlers(instance, request, response, new RouteError(route.propertyKey, e));
                 }
             };
 

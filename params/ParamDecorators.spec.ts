@@ -4,7 +4,7 @@ import {Route} from '../routes/RouteDecorators';
 import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
 import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationFailedError} from '../errors/Errors';
 import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
-import {isStringValidator, isNumberValidator} from '../validators/Validators';
+import {isString, isNumber} from '../validators/Validators';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -190,7 +190,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Query('test', {validator: isStringValidator}) test: string): any {
+                public func(@Query('test', {validator: isString()}) test: string): any {
                     return {};
                 }
             }
@@ -218,7 +218,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Query('test', {validator: [isStringValidator, isNotEmpty]}) test: string): any {
+                public func(@Query('test', {validator: [isString(), isNotEmpty]}) test: string): any {
                     return {};
                 }
             }
@@ -244,7 +244,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Query('test', {validator: isNumberValidator}) test: number): any {
+                public func(@Query('test', {validator: isNumber()}) test: number): any {
                     return {};
                 }
             }
@@ -271,7 +271,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Query('test', {validator: [isStringValidator, isNumberValidator]}) test: string): any {
+                public func(@Query('test', {validator: [isString(), isNumber()]}) test: string): any {
                     return {};
                 }
             }
@@ -545,7 +545,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Body({validator: isStringValidator}) test: string): any {
+                public func(@Body({validator: isString()}) test: string): any {
                     return {};
                 }
             }
@@ -573,7 +573,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Body({validator: [isStringValidator, isNotEmpty]}) test: string): any {
+                public func(@Body({validator: [isString(), isNotEmpty]}) test: string): any {
                     return {};
                 }
             }
@@ -599,7 +599,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Body({validator: isNumberValidator}) test: number): any {
+                public func(@Body({validator: isNumber()}) test: number): any {
                     return {};
                 }
             }
@@ -626,7 +626,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Body({validator: [isStringValidator, isNumberValidator]}) test: string): any {
+                public func(@Body({validator: [isString(), isNumber()]}) test: string): any {
                     return {};
                 }
             }
@@ -891,7 +891,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Header('test', {validator: isStringValidator}) test: string): any {
+                public func(@Header('test', {validator: isString()}) test: string): any {
                     return {};
                 }
             }
@@ -925,7 +925,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Header('test', {validator: [isStringValidator, isNotEmpty]}) test: string): any {
+                public func(@Header('test', {validator: [isString(), isNotEmpty]}) test: string): any {
                     return {};
                 }
             }
@@ -956,7 +956,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Header('test', {validator: isNumberValidator}) test: number): any {
+                public func(@Header('test', {validator: isNumber()}) test: number): any {
                     return {};
                 }
             }
@@ -988,7 +988,7 @@ describe('ParamDecorators', () => {
             @Controller()
             class Ctrl {
                 @Route()
-                public func(@Header('test', {validator: [isStringValidator, isNumberValidator]}) test: string): any {
+                public func(@Header('test', {validator: [isString(), isNumber()]}) test: string): any {
                     return {};
                 }
             }
@@ -1014,6 +1014,32 @@ describe('ParamDecorators', () => {
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
+        });
+
+    });
+
+    describe('Decorated method', () => {
+
+        it('should be called with correct type in param', () => {
+            const arr = [1, 2, 3];
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test') test: number[]): any {
+                    test.should.equal(arr);
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: arr}}, {
+                json: () => {
+                }
+            }, null]);
         });
 
     });

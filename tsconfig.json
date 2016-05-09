@@ -13,6 +13,7 @@
   "exclude": [
     "node_modules",
     "build",
+    "examples",
     "typings/browser.d.ts",
     "typings/browser"
   ]

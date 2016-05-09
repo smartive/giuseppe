@@ -7,9 +7,35 @@ import {
     ErrorHandlerWrongArgumentTypesError,
     ErrorHandlerWrongReturnTypeError
 } from './Errors';
+import {Route} from '../routes/RouteDecorators';
+import {Controller, registerControllers} from '../controllers/ControllerDecorator';
 
 let should = chai.should();
 chai.use(sinonChai);
+
+class TestRouter {
+    public routes: {[id: string]: Function} = {};
+
+    public get(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public put(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public post(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public delete(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
+    public head(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+}
 
 describe('ErrorHandlerDecorators', () => {
 
@@ -72,7 +98,7 @@ describe('ErrorHandlerDecorators', () => {
             manager.addHandler(spy);
             manager.addHandler(spy2);
 
-            manager.callHandlers(null, null, new Error());
+            manager.callHandlers(null, null, null, new Error());
 
             spy.should.be.calledOnce;
             spy2.should.be.calledOnce;
@@ -87,7 +113,7 @@ describe('ErrorHandlerDecorators', () => {
             manager.addHandler(spy2, ErrorHandlerWrongArgumentsError);
             manager.addHandler(spy3);
 
-            manager.callHandlers(null, null, new ErrorHandlerWrongArgumentsError());
+            manager.callHandlers(null, null, null, new ErrorHandlerWrongArgumentsError());
 
             spy.should.be.calledOnce;
             spy2.should.be.calledOnce;
@@ -178,6 +204,36 @@ describe('ErrorHandlerDecorators', () => {
                 .with.lengthOf(1)
                 .that.deep.equals([Ctrl.prototype.func2]);
         });
+
+        it('should set the correct this context', () => {
+            @Controller()
+            class Ctrl {
+                private test = 'foobar';
+
+                @Route()
+                public func() {
+                    throw 'Foobar';
+                }
+
+                @ErrorHandler()
+                public error(req: Object, res: Object, err: Error): void {
+                    this.should.be.an.instanceOf(Ctrl);
+                    this.test.should.equal('foobar');
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{}, {
+                json: () => {
+                },
+                send: () => {
+                }
+            }, null]);
+        });
+
 
     });
 
