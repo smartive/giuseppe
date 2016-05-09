@@ -17,10 +17,18 @@ import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../e
 import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
-    definedRoutes = [];
+    definedRoutes = [],
+    bodyParserInstalled = false;
 
 const PRIMITIVE_TYPES = [Object, String, Array, Number, Boolean],
     NON_JSON_TYPES = [String, Number, Boolean];
+
+try {
+    require('body-parser');
+    bodyParserInstalled = true;
+} catch (e) {
+    bodyParserInstalled = false;
+}
 
 class ControllerRegistration {
     constructor(public controller: any, public prefix?: string) {
@@ -166,6 +174,10 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
 
             if (route.method === RouteMethod.Head && returnType !== Boolean) {
                 throw new HeadHasWrongReturnTypeError();
+            }
+
+            if (params.some((p: Param) => p.paramType === ParamType.Body) && !bodyParserInstalled) {
+                console.warn(`The route ${routeUrl} of controller '${instance.constructor.name}' uses a @Body parameter, but there is no 'body-parser' package installed.`);
             }
 
             params.forEach(p => {

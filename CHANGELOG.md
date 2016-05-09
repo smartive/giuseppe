@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Various example apps
+- Warning message (`console.warn`) if `@Body` is used without `body-parser` package.
 
 ### Fixed
 - `npm test` command not working.
