@@ -6,6 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Various example apps
 - Warning message (`console.warn`) if `@Body` is used without `body-parser` package.
+- More validators (i.e. parametrized)
+
+### Changed
+- Validators are now factories.
+- Validators have new names (*breaking*)
 
 ### Fixed
 - `npm test` command not working.
