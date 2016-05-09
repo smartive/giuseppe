@@ -24,7 +24,7 @@ export function isString({allowEmpty = false, min, max}: {allowEmpty?: boolean, 
             return false;
         }
 
-        if ((!allowEmpty && value === '')) {
+        if (!allowEmpty && value === '') {
             return false;
         }
 
