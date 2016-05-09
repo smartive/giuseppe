@@ -1018,4 +1018,30 @@ describe('ParamDecorators', () => {
 
     });
 
+    describe('Decorated method', () => {
+
+        it('should be called with correct type in param', () => {
+            const arr = [1, 2, 3];
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test') test: number[]): any {
+                    test.should.equal(arr);
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: arr}}, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+    });
+
 });
