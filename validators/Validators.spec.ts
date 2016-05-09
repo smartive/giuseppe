@@ -1,7 +1,7 @@
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
-import {isString, isNumber} from './Validators';
+import {isString, isNumber, isArray} from './Validators';
 
 let should = chai.should();
 chai.use(sinonChai);
@@ -81,6 +81,41 @@ describe('Validators', () => {
         it('should validate multipleOf correctly', () => {
             isNumber({multipleOf: 4})(4).should.be.true;
             isNumber({multipleOf: 5})(4).should.be.false;
+        });
+
+    });
+
+    describe('Array validator', () => {
+
+        it('should validate an array correctly', () => {
+            isArray()([]).should.be.true;
+        });
+
+        it('should validate a non array correctly', () => {
+            isArray()('a string').should.be.false;
+        });
+
+        it('should validate a null value correctly', () => {
+            isArray()(null).should.be.false;
+        });
+
+        it('should validate an undefined value correctly', () => {
+            isArray()(undefined).should.be.false;
+        });
+
+        it('should validate min correctly', () => {
+            isArray({min: 4})([1, 2, 3, 4]).should.be.true;
+            isArray({min: 5})([1, 2, 3, 4]).should.be.false;
+        });
+
+        it('should validate max correctly', () => {
+            isArray({max: 4})([1, 2, 3, 4]).should.be.true;
+            isArray({max: 3})([1, 2, 3, 4]).should.be.false;
+        });
+
+        it('should validate type correctly', () => {
+            isArray({type: Number})([1, 2, 3]).should.be.true;
+            isArray({type: Number})([1, 2, '3']).should.be.false;
         });
 
     });
