@@ -15,6 +15,7 @@ import {
 import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
 import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
 import {Validator} from '../validators/Validators';
+import {RequestHandler} from 'express-serve-static-core';
 import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
@@ -32,7 +33,7 @@ try {
 }
 
 class ControllerRegistration {
-    constructor(public controller: any, public prefix?: string) {
+    constructor(public controller: any, public prefix?: string, public middlewares: RequestHandler[] = []) {
     }
 }
 
@@ -130,11 +131,12 @@ function registerRoute(route: RouteRegistration, router: Router, routeUrl: strin
  * expressJS router when "registerControllers" is called.
  *
  * @param {string} [routePrefix] - Prefix for the whole controller. This path is added to all routes.
+ * @param {RequestHandler[]} [middlewares] - Middleware functions for the controller to be executed before the routing functions.
  * @returns {(Function) => void} - Decorator for the controller class.
  */
-export function Controller(routePrefix?: string) {
+export function Controller(routePrefix?: string, ...middlewares: RequestHandler[]) {
     return (controller: any) => {
-        controllers.push(new ControllerRegistration(controller, routePrefix));
+        controllers.push(new ControllerRegistration(controller, routePrefix, middlewares));
     };
 }
 
