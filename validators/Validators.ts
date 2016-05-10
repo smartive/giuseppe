@@ -68,7 +68,7 @@ export function isNumber({min, max, multipleOf}: {min?: number, max?: number, mu
  * @param {number} [min] - Minimum items in array.
  * @param {number} [max] - Maximum items in array.
  * @param {Function|Function[]} [type] - The constructor function(s) (i.e. the type(s)) of the items in the array.
- * @param {Validator|Validator[]} [validator] - One or multiple (array) validators for the array items.
+ * @param {Validator|Validator[]} [validator] - One or multiple (array) validators for the array items. If multiple are provided, they are logically ANDed.
  * @returns {Validator} - Validator function for the given parameters.
  */
 export function isArray({min, max, type, validator}: {min?: number, max?: number, type?: Function|Function[], validator?: Validator|Validator[]} = {}): Validator {
