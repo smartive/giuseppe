@@ -86,15 +86,15 @@ export function isArray({min, max, type, validator}: {min?: number, max?: number
         }
 
         if (!isNullOrUndefined(type)) {
-            if (Array.isArray(type) && !value.every(o => type.indexOf(o.constructor) !== -1)) {
-                return false;
-            } else if (!value.every(o => o.constructor === type)) {
+            if (Array.isArray(type) && !value.every(o => type.indexOf(o.constructor) !== -1) ||
+                !Array.isArray(type) && !value.every(o => o.constructor === type)) {
                 return false;
             }
         }
 
         if (!isNullOrUndefined(validator)) {
-            if (Array.isArray(validator) && !value.every(o => validator.every(v => v(o))) || !value.every(o => (<Validator>validator)(o))) {
+            if (Array.isArray(validator) && !value.every(o => validator.every(v => v(o))) ||
+                !Array.isArray(validator) && !value.every(o => (<Validator>validator)(o))) {
                 return false;
             }
         }

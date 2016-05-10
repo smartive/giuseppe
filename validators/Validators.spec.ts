@@ -118,6 +118,15 @@ describe('Validators', () => {
             isArray({type: Number})([1, 2, '3']).should.be.false;
         });
 
+        it('should validate multiple types correctly', () => {
+            isArray({type: [Number, String]})([1, 2, '3']).should.be.true;
+            isArray({type: [Number, String]})([1, {}, '3']).should.be.false;
+        });
+
+        it('should validate a validator correctly');
+
+        it('should validate multiple validators correctly');
+
     });
 
 });
