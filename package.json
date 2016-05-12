@@ -7,7 +7,7 @@
     "bootstrap": "npm install -q && typings install",
     "clean": "rimraf build",
     "pretest": "npm run clean && tsc",
-    "test": "mocha --ui bdd --recursive ./build",
+    "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd --recursive ./build",
     "precitest": "npm run bootstrap && npm run clean && tsc",
     "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd --recursive ./build",
     "develop": "npm run clean && tsc --sourceMap -w"
