@@ -104,22 +104,22 @@ function getParamValues(params: Param[], request: Request, response: Response) {
     return paramValues;
 }
 
-function registerRoute(route: RouteRegistration, router: Router, routeUrl: string) {
+function registerRoute(route: RouteRegistration, router: Router, routeUrl: string, middlewares: RequestHandler[]) {
     switch (route.method) {
         case RouteMethod.Get:
-            router.get(routeUrl, (route.descriptor.value as any));
+            router.get(routeUrl, ...middlewares, (route.descriptor.value as any));
             break;
         case RouteMethod.Put:
-            router.put(routeUrl, (route.descriptor.value as any));
+            router.put(routeUrl, ...middlewares, (route.descriptor.value as any));
             break;
         case RouteMethod.Post:
-            router.post(routeUrl, (route.descriptor.value as any));
+            router.post(routeUrl, ...middlewares, (route.descriptor.value as any));
             break;
         case RouteMethod.Delete:
-            router.delete(routeUrl, (route.descriptor.value as any));
+            router.delete(routeUrl, ...middlewares, (route.descriptor.value as any));
             break;
         case RouteMethod.Head:
-            router.head(routeUrl, (route.descriptor.value as any));
+            router.head(routeUrl, ...middlewares, (route.descriptor.value as any));
             break;
         default:
             throw new HttpVerbNotSupportedError(route.method);
@@ -168,6 +168,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 routeId = routeUrl + route.method.toString(),
                 returnType = Reflect.getMetadata('design:returntype', routeTarget, route.propertyKey),
                 params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, routeTarget, route.propertyKey) || [],
+                middlewares = [...ctrl.middlewares, ...route.middlewares],
                 method = route.descriptor.value,
                 hasResponseParam = !!params.filter(p => p.paramType === ParamType.Response).length;
 
@@ -244,7 +245,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 }
             };
 
-            registerRoute(route, router, routeUrl);
+            registerRoute(route, router, routeUrl, middlewares);
             definedRoutes.push(routeId);
         });
     });

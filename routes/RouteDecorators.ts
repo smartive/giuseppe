@@ -9,13 +9,6 @@ import {RequestHandler} from 'express-serve-static-core';
 export const ROUTES_KEY = 'routes';
 
 /**
- * Reflect metadata key for the registered middlewares of the route.
- *
- * @type {string}
- */
-export const ROUTE_MIDDLEWARE_KEY = 'route:middlewares';
-
-/**
  * Enum for the possible route http methods.
  */
 export enum RouteMethod {
@@ -32,14 +25,14 @@ export enum RouteMethod {
  * @class
  */
 export class RouteRegistration {
-    constructor(public path: string, public method: RouteMethod, public descriptor: PropertyDescriptor, public propertyKey: string) {
+    constructor(public path: string, public method: RouteMethod, public descriptor: PropertyDescriptor, public propertyKey: string, public middlewares: RequestHandler[] = []) {
     }
 }
 
 function routeDecorator(route: string = '', httpMethod: RouteMethod = RouteMethod.Get, middlewares: RequestHandler[] = []) {
     return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
         let routes = Reflect.getMetadata(ROUTES_KEY, target.constructor) || [];
-        routes.push(new RouteRegistration(route || '', httpMethod, descriptor, propertyKey));
+        routes.push(new RouteRegistration(route || '', httpMethod, descriptor, propertyKey, middlewares));
         Reflect.defineMetadata(ROUTES_KEY, routes, target.constructor);
     };
 }
@@ -50,6 +43,7 @@ function routeDecorator(route: string = '', httpMethod: RouteMethod = RouteMetho
  *
  * @param {string} [route=''] - The routed endpoint of the method. If omitted, the base route is taken.
  * @param {RouteMethod} httpMethod - The http verb to use for this route.
+ * @param {RequestHandler[]} middlewares - The used middleware(s) for this route.
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function.
  */
 export function Route(route: string = '', httpMethod: RouteMethod = RouteMethod.Get, ...middlewares: RequestHandler[]) {
@@ -60,6 +54,7 @@ export function Route(route: string = '', httpMethod: RouteMethod = RouteMethod.
  * Alias function for @Route(string, RouteMethod.Get)
  *
  * @param {string} [route=''] - The routed endpoint of the method. If omitted, the base route is taken.
+ * @param {RequestHandler[]} middlewares - The used middleware(s) for this route.
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'GET'.
  */
 export function Get(route: string = '', ...middlewares: RequestHandler[]) {
@@ -70,6 +65,7 @@ export function Get(route: string = '', ...middlewares: RequestHandler[]) {
  * Alias function for @Route(string, RouteMethod.Put)
  *
  * @param {string} [route=''] - The routed endpoint of the method. If omitted, the base route is taken.
+ * @param {RequestHandler[]} middlewares - The used middleware(s) for this route.
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'PUT'.
  */
 export function Put(route: string = '', ...middlewares: RequestHandler[]) {
@@ -80,6 +76,7 @@ export function Put(route: string = '', ...middlewares: RequestHandler[]) {
  * Alias function for @Route(string, RouteMethod.Post)
  *
  * @param {string} [route=''] - The routed endpoint of the method. If omitted, the base route is taken.
+ * @param {RequestHandler[]} middlewares - The used middleware(s) for this route.
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'POST'.
  */
 export function Post(route: string = '', ...middlewares: RequestHandler[]) {
@@ -90,6 +87,7 @@ export function Post(route: string = '', ...middlewares: RequestHandler[]) {
  * Alias function for @Route(string, RouteMethod.Delete)
  *
  * @param {string} [route=''] - The routed endpoint of the method. If omitted, the base route is taken.
+ * @param {RequestHandler[]} middlewares - The used middleware(s) for this route.
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'DELETE'.
  */
 export function Delete(route: string = '', ...middlewares: RequestHandler[]) {
@@ -100,6 +98,7 @@ export function Delete(route: string = '', ...middlewares: RequestHandler[]) {
  * Alias function for @Route(string, RouteMethod.Head)
  *
  * @param {string} [route=''] - The routed endpoint of the method. If omitted, the base route is taken.
+ * @param {RequestHandler[]} middlewares - The used middleware(s) for this route.
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'Head'.
  */
 export function Head(route: string = '', ...middlewares: RequestHandler[]) {

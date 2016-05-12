@@ -29,7 +29,13 @@ class DemoController {
         return this.demos;
     }
 
-    @Get(':id')
+    @Get(':id', (req, res, next) => {
+        console.log('route middleware 1');
+        next();
+    }, (req, res, next) => {
+        console.log('route middleware 2');
+        next();
+    })
     public getDemo(@UrlParam('id') id: number): Demo {
         let filtered = this.demos.filter(d => d.id === id);
         if (!filtered.length) {
