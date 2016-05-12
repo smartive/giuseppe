@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - isArray validator can now validate items with validators and multiple types.
+- `@Controller` and all route decorators do accept `RequestHandler` as middlewares.
 
 ## [0.5.0] - 2016-05-09
 ### Added
