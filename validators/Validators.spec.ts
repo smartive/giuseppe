@@ -118,6 +118,21 @@ describe('Validators', () => {
             isArray({type: Number})([1, 2, '3']).should.be.false;
         });
 
+        it('should validate multiple types correctly', () => {
+            isArray({type: [Number, String]})([1, 2, '3']).should.be.true;
+            isArray({type: [Number, String]})([1, {}, '3']).should.be.false;
+        });
+
+        it('should validate a validator correctly', () => {
+            isArray({validator: isString({min: 3})})(['aaa', 'bbb', 'ccc']).should.be.true;
+            isArray({validator: isString({min: 3})})(['aaa', 'bb', 'ccc']).should.be.false;
+        });
+
+        it('should validate multiple validators correctly', () => {
+            isArray({validator: [isString({min: 3}), isString({max: 5})]})(['aaa', 'bbb', 'ccc']).should.be.true;
+            isArray({validator: [isString({min: 3}), isString({max: 5})]})(['aaa', 'bbbbbb', 'ccc']).should.be.false;
+        });
+
     });
 
 });
