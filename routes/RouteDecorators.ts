@@ -29,14 +29,6 @@ export class RouteRegistration {
     }
 }
 
-function routeDecorator(route: string = '', httpMethod: RouteMethod = RouteMethod.Get, middlewares: RequestHandler[] = []) {
-    return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-        let routes = Reflect.getMetadata(ROUTES_KEY, target.constructor) || [];
-        routes.push(new RouteRegistration(route || '', httpMethod, descriptor, propertyKey, middlewares));
-        Reflect.defineMetadata(ROUTES_KEY, routes, target.constructor);
-    };
-}
-
 /**
  * Declares the given method as an api route. Adds the route registration to the controller.
  * All route registrations are decorated and registered during the registerControllers method.
@@ -47,7 +39,11 @@ function routeDecorator(route: string = '', httpMethod: RouteMethod = RouteMetho
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function.
  */
 export function Route(route: string = '', httpMethod: RouteMethod = RouteMethod.Get, ...middlewares: RequestHandler[]) {
-    return routeDecorator(route, httpMethod, middlewares);
+    return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+        let routes = Reflect.getMetadata(ROUTES_KEY, target.constructor) || [];
+        routes.push(new RouteRegistration(route || '', httpMethod, descriptor, propertyKey, middlewares));
+        Reflect.defineMetadata(ROUTES_KEY, routes, target.constructor);
+    };
 }
 
 /**
@@ -58,7 +54,7 @@ export function Route(route: string = '', httpMethod: RouteMethod = RouteMethod.
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'GET'.
  */
 export function Get(route: string = '', ...middlewares: RequestHandler[]) {
-    return routeDecorator(route, RouteMethod.Get, middlewares);
+    return Route(route, RouteMethod.Get, ...middlewares);
 }
 
 /**
@@ -69,7 +65,7 @@ export function Get(route: string = '', ...middlewares: RequestHandler[]) {
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'PUT'.
  */
 export function Put(route: string = '', ...middlewares: RequestHandler[]) {
-    return routeDecorator(route, RouteMethod.Put, middlewares);
+    return Route(route, RouteMethod.Put, ...middlewares);
 }
 
 /**
@@ -80,7 +76,7 @@ export function Put(route: string = '', ...middlewares: RequestHandler[]) {
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'POST'.
  */
 export function Post(route: string = '', ...middlewares: RequestHandler[]) {
-    return routeDecorator(route, RouteMethod.Post, middlewares);
+    return Route(route, RouteMethod.Post, ...middlewares);
 }
 
 /**
@@ -91,7 +87,7 @@ export function Post(route: string = '', ...middlewares: RequestHandler[]) {
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'DELETE'.
  */
 export function Delete(route: string = '', ...middlewares: RequestHandler[]) {
-    return routeDecorator(route, RouteMethod.Delete, middlewares);
+    return Route(route, RouteMethod.Delete, ...middlewares);
 }
 
 /**
@@ -102,5 +98,5 @@ export function Delete(route: string = '', ...middlewares: RequestHandler[]) {
  * @returns {(any, string, PropertyDescriptor) => void} - Method decorator for the given function with the http verb 'Head'.
  */
 export function Head(route: string = '', ...middlewares: RequestHandler[]) {
-    return routeDecorator(route, RouteMethod.Head, middlewares);
+    return Route(route, RouteMethod.Head, ...middlewares);
 }
