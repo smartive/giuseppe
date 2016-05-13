@@ -92,6 +92,59 @@ describe('Middleware', () => {
         spy.should.be.calledOnce;
     });
 
+    it('should not call other route middleware', () => {
+        let spy = sinon.spy();
+
+        @Controller('test')
+        class Ctrl {
+
+            @Get('foo', spy)
+            public func(): string {
+                return '';
+            }
+
+            @Get('bar', spy)
+            public func2(): string {
+                return '';
+            }
+        }
+
+        let router = new TestRouter();
+
+        registerControllers('', (router as any));
+
+        router.call('/test/foo');
+
+        spy.should.be.calledOnce;
+    });
+
+    it('should correctly call multiple routed middlewares', () => {
+        let spy = sinon.spy();
+
+        @Controller('test')
+        class Ctrl {
+
+            @Get('foo', spy)
+            public func(): string {
+                return '';
+            }
+
+            @Get('bar', spy)
+            public func2(): string {
+                return '';
+            }
+        }
+
+        let router = new TestRouter();
+
+        registerControllers('', (router as any));
+
+        router.call('/test/foo');
+        router.call('/test/bar');
+
+        spy.should.be.calledTwice;
+    });
+
     it('should call controller and route middleware', () => {
         let spy = sinon.spy();
 
