@@ -6,7 +6,7 @@ import {
     DuplicateRouteDeclarationError,
     ParameterConstructorArgumentsError,
     WrongReturnTypeError,
-    RouteError,
+    GenericRouteError,
     RequiredParameterNotProvidedError,
     ParameterParseError,
     ParamValidationFailedError,
@@ -236,12 +236,12 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                         return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
                     }
                     if (returnType === Promise) {
-                        (result as Promise<any>).then(responseFunction, err => errorHandlers.callHandlers(instance, request, response, new RouteError(route.propertyKey, err)));
+                        (result as Promise<any>).then(responseFunction, err => errorHandlers.callHandlers(instance, request, response, new GenericRouteError(route.propertyKey, err)));
                     } else {
                         responseFunction(result);
                     }
                 } catch (e) {
-                    errorHandlers.callHandlers(instance, request, response, new RouteError(route.propertyKey, e));
+                    errorHandlers.callHandlers(instance, request, response, new GenericRouteError(route.propertyKey, e));
                 }
             };
 
