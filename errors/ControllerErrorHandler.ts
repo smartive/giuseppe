@@ -55,6 +55,10 @@ export class ControllerErrorHandler {
      * @param {Error} error - Error object that was thrown.
      */
     public handleError<T extends Error>(context: any, request: Request, response: Response, error: T): void {
+        if (!(error instanceof Error)) {
+            error = new Error(error as any) as T;
+        }
+
         let proto = Object.getPrototypeOf(error);
         while (proto) {
             let type = proto.constructor;

@@ -78,4 +78,14 @@ describe('ControllerErrorHandler', () => {
         spy3.should.not.be.called;
     });
 
+    it('should call the default if a non error type is thrown in', () => {
+        let spy = sinon.spy();
+
+        manager.addHandler(spy);
+
+        manager.handleError(null, null, null, 'foobar' as any);
+
+        spy.should.be.called;
+    });
+
 });
