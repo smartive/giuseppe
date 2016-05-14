@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Example code for simple middleware.
 - Example code for passportJS middleware.
 
+### Changed
+- Reworked the error-handler system. Errors are now bubbled until the default is hit.
+
+
 ## [0.5.0] - 2016-05-09
 ### Added
 - Various example apps.
