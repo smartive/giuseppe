@@ -5,10 +5,11 @@ import {ErrorHandler, ERRORHANDLER_KEY} from './ErrorHandlerDecorator';
 import {
     ErrorHandlerWrongArgumentsError,
     ErrorHandlerWrongArgumentTypesError,
-    ErrorHandlerWrongReturnTypeError
+    ErrorHandlerWrongReturnTypeError,
+    WrongReturnTypeError
 } from './Errors';
-import {Route} from '../routes/RouteDecorators';
-import {Controller, registerControllers} from '../controllers/ControllerDecorator';
+import {Route, Get} from '../routes/RouteDecorators';
+import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
 
 let should = chai.should();
 chai.use(sinonChai);
@@ -38,6 +39,10 @@ class TestRouter {
 }
 
 describe('ErrorHandlerDecorators', () => {
+
+    afterEach(() => {
+        resetControllerRegistrations();
+    });
 
     it('should throw on wrong handler argument count', () => {
         let fn = () => {
@@ -147,6 +152,45 @@ describe('ErrorHandlerDecorators', () => {
             send: () => {
             }
         }, null]);
+    });
+
+    it('should call the most specific error handler', () => {
+        @Controller()
+        class Ctrl {
+            @Get()
+            public getErr(): string {
+                throw new WrongReturnTypeError('', String, Number);
+            }
+
+            @ErrorHandler()
+            public func(req: Object, res: Object, err: Error): void {
+            }
+
+            @ErrorHandler(WrongReturnTypeError)
+            public func2(req: Object, res: Object, err: Error): void {
+            }
+        }
+
+        let router = new TestRouter();
+
+        registerControllers('', (router as any));
+
+        let errorManager: any = Reflect.getMetadata(ERRORHANDLER_KEY, Ctrl);
+        let spy = sinon.spy(),
+            spy2 = sinon.spy();
+
+        errorManager.addHandler(spy, Error);
+        errorManager.addHandler(spy2, WrongReturnTypeError);
+
+        router.routes['/'].apply(this, [{}, {
+            json: () => {
+            },
+            send: () => {
+            }
+        }, null]);
+
+        spy.should.not.be.called;
+        spy2.should.be.calledOnce;
     });
 
 });
