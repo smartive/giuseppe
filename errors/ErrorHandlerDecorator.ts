@@ -1,11 +1,10 @@
 import 'reflect-metadata';
 import {
     ErrorHandlerWrongArgumentsError,
-    ErrorHandlerWrongArgumentTypesError,
-    ErrorHandlerWrongReturnTypeError
-} from '../errors/Errors';
-import {Request, Response} from 'express';
-import httpStatus = require('http-status');
+    ErrorHandlerWrongReturnTypeError,
+    ErrorHandlerWrongArgumentTypesError
+} from './Errors';
+import {ControllerErrorHandler} from './ControllerErrorHandler';
 
 const ARGUMENT_COUNT = 3;
 
@@ -14,81 +13,6 @@ const ARGUMENT_COUNT = 3;
  * @type {string}
  */
 export const ERRORHANDLER_KEY = 'errorHandler';
-
-/**
- * Default error handler. Does console.error with the error and sets the
- * http response code to 500.
- *
- * @param {Request} req - express request object
- * @param {Response} res - express response object
- * @param {Error} err - error that happend
- */
-export const DEFAULT_ERROR_HANDLER = (req, res, err) => {
-    console.error(err);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).end();
-};
-
-/**
- * @typedef ErrorHandlerFunction
- * @type {Function}
- * @param {Request} request - ExpressJS request object.
- * @param {Response} response - ExpressJS response object.
- * @param {Error} error - The error that happend.
- */
-export type ErrorHandlerFunction = (request: Request, response: Response, error: Error) => void;
-
-/**
- * Manager object that handles all ErrorHandlerFunctions for a controller. Registers itself in the controllers
- * metadata.
- *
- * @class
- */
-export class ErrorHandlerManager {
-    private handlers: {[id: string]: ErrorHandlerFunction[]} = {'default': []};
-
-    /**
-     * Adds an error handler for the current controller with the given errorType. If the errorType is omitted,
-     * the handler registers the function as a 'default' error handler.
-     *
-     * @param {ErrorHandlerFunction} handler - The error handler to register.
-     * @param {Error} [errorType] - Error class that should be registered. If omitted, the handler is registered as default.
-     */
-    public addHandler(handler: ErrorHandlerFunction, errorType?: Function): void {
-        let name = errorType ? (errorType as any).name : 'default';
-
-        if (!this.handlers[name]) {
-            this.handlers[name] = [];
-        }
-
-        this.handlers[name].push(handler);
-    }
-
-    /**
-     * Get all error handlers for a given error type.
-     *
-     * @param {Error} error
-     * @returns {ErrorHandlerFunction[]} - A list of error handler functions for the given error type. If no type is found, the 'default' is returned.
-     */
-    public getHandlers(error: Error): ErrorHandlerFunction[] {
-        let name = (error.constructor as any).name;
-        if (!this.handlers[name] || !this.handlers[name].length) {
-            return this.handlers['default'];
-        }
-        return this.handlers[name];
-    }
-
-    /**
-     * Calls all error handlers for a given error.
-     *
-     * @param {any} context - Context of the error handler.
-     * @param {Request} request - ExpressJS request object.
-     * @param {Response} response - ExpressJS response object.
-     * @param {Error} error - Error object that was thrown.
-     */
-    public callHandlers(context: any, request: Request, response: Response, error: Error): void {
-        this.getHandlers(error).forEach(o => o.call(context, request, response, error));
-    }
-}
 
 /**
  * Errorhandler decorator; decorates the given function as an error handler for the current controller.
@@ -106,7 +30,7 @@ export function ErrorHandler(...errors: Function[]) {
             throw new ErrorHandlerWrongArgumentsError();
         }
 
-        [Object, Object, Error].forEach((type, index) => {
+        [Object, Object].forEach((type, index) => {
             if (paramtypes[index] !== type) {
                 throw new ErrorHandlerWrongArgumentTypesError();
             }
@@ -117,7 +41,7 @@ export function ErrorHandler(...errors: Function[]) {
             throw new ErrorHandlerWrongReturnTypeError();
         }
 
-        let handler: ErrorHandlerManager = Reflect.getMetadata(ERRORHANDLER_KEY, target.constructor) || new ErrorHandlerManager();
+        let handler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, target.constructor) || new ControllerErrorHandler();
         if (errors.length) {
             errors.forEach(e => handler.addHandler(descriptor.value, e));
         } else {

@@ -10,16 +10,12 @@ import {
     RouteRegistration,
     RouteMethod
 } from '../routes/RouteDecorators';
-import {
-    ParameterConstructorArgumentsError,
-    RouteError,
-    WrongReturnTypeError,
-    HeadHasWrongReturnTypeError
-} from '../errors/Errors';
+import {ParameterConstructorArgumentsError, WrongReturnTypeError, HeadHasWrongReturnTypeError} from '../errors/Errors';
 import {Query, Res} from '../params/ParamDecorators';
 import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
 import {Response} from 'express';
-import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -336,7 +332,7 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -353,8 +349,7 @@ describe('RouteDecorators', () => {
             }, null]);
 
             spy.should.be.calledOnce;
-            spy.args[0][2].should.be.an.instanceOf(RouteError);
-            spy.args[0][2].innerException.should.be.an.instanceOf(WrongReturnTypeError);
+            spy.args[0][2].should.be.an.instanceOf(WrongReturnTypeError);
         });
 
         it('should correctly execute a primitive promise when one is returned', done => {
@@ -366,7 +361,7 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 errSpy = sinon.spy();
             handler.addHandler(errSpy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -399,7 +394,7 @@ describe('RouteDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 errSpy = sinon.spy();
             handler.addHandler(errSpy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -418,8 +413,7 @@ describe('RouteDecorators', () => {
 
             setTimeout(() => {
                 errSpy.should.be.called;
-                errSpy.args[0][2].should.be.an.instanceOf(RouteError);
-                errSpy.args[0][2].innerException.should.be.an.instanceOf(Error);
+                errSpy.args[0][2].should.be.an.instanceOf(Error);
                 spy.should.not.be.called;
                 done();
             }, 100);
