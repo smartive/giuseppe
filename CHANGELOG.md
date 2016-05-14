@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-
+### Added
+- isArray validator can now validate items with validators and multiple types.
+- `@Controller` and all route decorators do optionally accept `RequestHandler` as middlewares.
+- Example code for simple middleware.
+- Example code for passportJS middleware.
 
 ## [0.5.0] - 2016-05-09
 ### Added

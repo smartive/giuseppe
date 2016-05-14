@@ -67,10 +67,11 @@ export function isNumber({min, max, multipleOf}: {min?: number, max?: number, mu
  *
  * @param {number} [min] - Minimum items in array.
  * @param {number} [max] - Maximum items in array.
- * @param {Function} [type] - The constructor function (i.e. the type) of the items in the array.
+ * @param {Function|Function[]} [type] - The constructor function(s) (i.e. the type(s)) of the items in the array.
+ * @param {Validator|Validator[]} [validator] - One or multiple (array) validators for the array items. If multiple are provided, they are logically ANDed.
  * @returns {Validator} - Validator function for the given parameters.
  */
-export function isArray({min, max, type}: {min?: number, max?: number, type?: Function} = {}): Validator {
+export function isArray({min, max, type, validator}: {min?: number, max?: number, type?: Function|Function[], validator?: Validator|Validator[]} = {}): Validator {
     return (value: any[]) => {
         if (isNullOrUndefined(value) || !Array.isArray(value)) {
             return false;
@@ -84,6 +85,20 @@ export function isArray({min, max, type}: {min?: number, max?: number, type?: Fu
             return false;
         }
 
-        return !(!isNullOrUndefined(type) && !value.every(o => o.constructor === type));
+        if (!isNullOrUndefined(type)) {
+            if (Array.isArray(type) && !value.every(o => type.indexOf(o.constructor) !== -1) ||
+                !Array.isArray(type) && !value.every(o => o.constructor === type)) {
+                return false;
+            }
+        }
+
+        if (!isNullOrUndefined(validator)) {
+            if (Array.isArray(validator) && !value.every(o => validator.every(v => v(o))) ||
+                !Array.isArray(validator) && !value.every(o => (<Validator>validator)(o))) {
+                return false;
+            }
+        }
+
+        return true;
     };
 }

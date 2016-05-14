@@ -4,11 +4,12 @@ node_js:
 - '4.2'
 
 script: npm run citest
-after_script: "npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls"
+
+after_script: npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
 
 before_deploy:
-  - npm run bootstrap
-  - tsc --outDir .
+- npm run bootstrap
+- tsc --outDir .
 
 deploy:
   provider: npm
@@ -18,3 +19,9 @@ deploy:
   on:
     tags: true
     repo: smartive/giuseppe
+
+notifications:
+  email: false
+  slack:
+    rooms:
+      secure: fwddM+2N2Z8tgMobufMrOVafvdITMrzVbY9g2/7hxRopC2DiVHJXuxTrvO8H8PvNKHL1tWaFV/R6Dae3EaT58Kugu+5cHUgceP1qh3ZKDAk4dqWqJhELRGa7H5qMi1Pn4Qbso87oF1u6m15jWsZybtcncBJwF6OC2rJID7/0OiP+oJLIvrAQu5tFbyvA42IdK8ifsD+B5s2iodCXDTNvB6eeA3CfJ0S5TKrGRWWGH8ky9omcxYmUNCgRl/fg0OoV66Fu3IT1ZheWsxkW2YTqw5vP8jxcHcuZOkyellD7FqOEGw8WjFw+GTWgrS0V00uRgZ0SycwTN/8lXU1j4j5KcI+s5yzFnP3lDlgEZ6C2oKw/eAG2t55ObZVbNOOgoeZ7208yQMIwjun97JRKCNZuKA9v5SkcMRxNb4d52/STW5bUCsEMC2XptAWUM9Hgb2snrfI3NyNAVZfZ4eoWC8EeBmaE+CyO4yMv5HIjxlimEL0ObR6toYRIdMuVx+GCcDAmU0x6udjfxeAhK3EBlHtoZWCfM4D3/Y2nk+EW11G+bxcREC2rcTolO3P/yj/lKmt+Go7FRglEdPWVR3Ck+SKXfYs1pclbYY2loGwa9PU315bd4G6TDNgZNkxQPnH+Ar2s2KPPMVrAp7XrpBiHGfpNCBXYn1RDCwuIrZ4pH6jqzAc=

@@ -25,6 +25,7 @@ please find a more detailed documentation in the `docs/` folder.
 - [Registration of controllers](docs/Registration.md)
 - [Controllers](docs/Controllers.md)
 - [Routes](docs/Routes.md)
+- [Middleware](docs/Middleware.md)
 - [Parameters](docs/Parameters.md)
 - [Validators](docs/Validators.md)
 - [Error handling](docs/ErrorHandling.md)
