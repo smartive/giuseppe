@@ -58,7 +58,7 @@ and handle the runtime errors. But more on that later, first a brief list of run
 ## Error handling
 
 As long as some runtime errors happen, you can do something with them. It's possible
-to register multiple `@ErrorHandler` for a controller - altough the are replaced. 
+to register multiple `@ErrorHandler` for a controller - although they are replaced.
 Those are called when an error happens during the execution of the 
 method or the parameter parsing process. You can register an
 `@ErrorHandler` for a specific (or multiple specific) error classes and even register your
