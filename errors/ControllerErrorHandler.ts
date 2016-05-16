@@ -43,6 +43,12 @@ export class ControllerErrorHandler {
     public addHandler<T extends Error>(handler: ErrorHandlerFunction<T>, errorType?: Function): void {
         let type = ((errorType || Error) as any).name;
 
+        if (this.handlers[type]) {
+            let oldHandler: any = this.handlers[type],
+                newHandler: any = handler;
+            console.warn(`Duplicate error handler declaration for type '${type}'.\nActual handler: ${oldHandler.name}\nNew handler: ${newHandler.name}`);
+        }
+
         this.handlers[type] = handler;
     }
 
