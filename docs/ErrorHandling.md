@@ -122,6 +122,6 @@ does not even provide the parameter, `badReq` will be called instead of `errorHa
 
 *Note*: They won't be called both! Only the helpers for a given type are called. If no
 helpers are found for an error type, the handler will bubble up the chain until 
-he hits the default.
+it hits the default.
 
 You cannot register multiple handlers on one error type.
