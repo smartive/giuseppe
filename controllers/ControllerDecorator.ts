@@ -51,7 +51,7 @@ function extractParam(request: Request, param: Param): any {
                 return request.query[param.name];
             }
             let aliases = !Array.isArray(options.alias) ? [options.alias] : options.alias as string[];
-            aliases = aliases.map((a: string) => request.query[a]);
+            aliases = aliases.map((a: string) => request.query[a]).filter(Boolean);
             return aliases[0] || request.query[param.name];
         case ParamType.Header:
             return request.get(param.name);
