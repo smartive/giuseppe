@@ -44,9 +44,8 @@ export class ControllerErrorHandler {
         let type = ((errorType || Error) as any).name;
 
         if (this.handlers[type]) {
-            let oldHandler: any = this.handlers[type],
-                newHandler: any = handler;
-            console.warn(`Duplicate error handler declaration for type '${type}'.\nActual handler: ${oldHandler.name}\nNew handler: ${newHandler.name}`);
+            let oldHandler: any = this.handlers[type];
+            console.warn(`Duplicate error handler declaration for type '${type}'.\nActual handler: ${oldHandler.name}\nNew handler: ${(handler as any).name}`);
         }
 
         this.handlers[type] = handler;
