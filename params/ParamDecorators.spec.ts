@@ -87,6 +87,86 @@ describe('ParamDecorators', () => {
             }, null]);
         });
 
+        it('should inject the correct aliased variable', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {alias: 't'}) test: string): any {
+                    test.should.equal('foobar');
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {t: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+        it('should inject the correct multi aliased variable', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {alias: ['t', 'te']}) test: string): any {
+                    test.should.equal('foobar');
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {te: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+        it('should inject the correct variable if no alias hits', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {alias: 't'}) test: string): any {
+                    test.should.equal('foobar');
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+        it('should inject the correct aliased variable if alias and normal name is given', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {alias: 't'}) test: string): any {
+                    test.should.equal('foobar');
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {t: 'foobar', test: 'notFoobar!'}}, {
+                json: () => {
+                }
+            }, null]);
+        });
+
         it('should parse the correct value', () => {
             @Controller()
             class Ctrl {
