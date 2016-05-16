@@ -21,6 +21,7 @@ export interface ParamOptions {
 export interface QueryParamOptions extends ParamOptions {
     /**
      * One or multiple alias(es) for the query parameter (e.g. limit can be aliased with 'l').
+     * If multiple aliases are hit, the first one is returned.
      */
     alias?: string|string[];
 }
