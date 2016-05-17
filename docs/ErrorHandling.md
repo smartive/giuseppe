@@ -33,7 +33,7 @@ The runtime errors happen during the usage of your api. They will *_not_* crash 
 If your controller has no `@ErrorHandler` registered, the following default is used:
 
 ```typescript
-const defaultErrorHandler = (req, res, err) => {
+const DEFAULT_ERROR_HANDLER = (req, res, err) => {
     console.error(err);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).end();
 };
@@ -58,10 +58,13 @@ and handle the runtime errors. But more on that later, first a brief list of run
 ## Error handling
 
 As long as some runtime errors happen, you can do something with them. It's possible
-to register multiple `@ErrorHandler` for a controller. Those are called when an error happens
-during the execution of the method or the parameter parsing process. You can register an
+to register multiple `@ErrorHandler` for a controller - although they are replaced.
+Those are called when an error happens during the execution of the 
+method or the parameter parsing process. You can register an
 `@ErrorHandler` for a specific (or multiple specific) error classes and even register your
-own errors.
+own errors. The most specific errorhandler will be called. If no errorhandler for the given
+error is registered, the handler will "bubble" up the prototype chain of your thrown error and
+will call the default if nothing is registered.
 
 `TestController.ts`:
 
@@ -105,7 +108,7 @@ export class TestController {
     }
     
      @ErrorHandler(RequiredParameterNotProvidedError, ParameterParseError)
-    public badReq(request: Request, response: Response, error: Error): void {
+    public badReq(request: Request, response: Response, error: RequiredParameterNotProvidedError|ParameterParseError): void {
         console.log('This is a bad request from the client.');
         response.status(400).end();
     }
@@ -113,12 +116,12 @@ export class TestController {
 ```
 
 In the example above, if `mongoDb` throws an error or something bad happens there,
-the `errorHandler` function is called because the error will be wrapped in a `RouteError`.
+the `errorHandler` function is called because the error is not specially registered.
 But when the client delivers a string as the query parameter "size", or if the client
 does not even provide the parameter, `badReq` will be called instead of `errorHandler`.
 
 *Note*: They won't be called both! Only the helpers for a given type are called. If no
-helpers are found for an error type, the default is called.
+helpers are found for an error type, the handler will bubble up the chain until 
+it hits the default.
 
-You can register multiple error handlers for the same or default errors, but you need to
-keep in mind that you only send the express headers once.
+You cannot register multiple handlers on one error type.

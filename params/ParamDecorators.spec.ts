@@ -3,8 +3,9 @@ import {Query, PARAMS_KEY, Param, ParamType, UrlParam, Body, Req, Res, Header} f
 import {Route} from '../routes/RouteDecorators';
 import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
 import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationFailedError} from '../errors/Errors';
-import {ErrorHandlerManager, ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {isString, isNumber} from '../validators/Validators';
+import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -115,7 +116,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -168,7 +169,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -195,7 +196,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -223,7 +224,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -249,7 +250,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -276,7 +277,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -373,7 +374,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -470,7 +471,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -523,7 +524,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -550,7 +551,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -578,7 +579,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -604,7 +605,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -631,7 +632,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -839,7 +840,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -896,7 +897,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -930,7 +931,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -961,7 +962,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
@@ -993,7 +994,7 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let handler = new ErrorHandlerManager(),
+            let handler = new ControllerErrorHandler(),
                 spy = sinon.spy();
             handler.addHandler(spy);
             Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);

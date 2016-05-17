@@ -1,10 +1,36 @@
 import {RouteMethod} from '../routes/RouteDecorators';
 
-let format = (text: string, ...args: any[]) => {
-    return text.replace(/{(\d+)}/g, (match, number) => {
-        return typeof args[number] !== 'undefined' ? args[number] : match;
-    });
-};
+/// Error bases
+
+export class DesigntimeError extends Error {
+    constructor() {
+        super();
+    }
+}
+
+export class RuntimeError extends Error {
+    constructor() {
+        super();
+    }
+}
+
+export class ParameterError extends RuntimeError {
+    constructor() {
+        super();
+    }
+}
+
+export class RouteError extends RuntimeError {
+    constructor() {
+        super();
+    }
+}
+
+export class ValidationError extends ParameterError {
+    constructor() {
+        super();
+    }
+}
 
 /// Registration & Controller errors
 
@@ -14,10 +40,10 @@ let format = (text: string, ...args: any[]) => {
  *
  * @class
  */
-export class HttpVerbNotSupportedError extends Error {
+export class HttpVerbNotSupportedError extends DesigntimeError {
     constructor(method: RouteMethod) {
         super();
-        this.message = format('HttpVerb not supported; {0}', method);
+        this.message = `HttpVerb not supported; ${method}`;
     }
 }
 
@@ -27,10 +53,10 @@ export class HttpVerbNotSupportedError extends Error {
  *
  * @class
  */
-export class DuplicateRouteDeclarationError extends Error {
+export class DuplicateRouteDeclarationError extends DesigntimeError {
     constructor(url: string, method: RouteMethod) {
         super();
-        this.message = format('The route to url "{0}" with http method "{1}" is declared twice.', url, RouteMethod[method]);
+        this.message = `The route to url "${url}" with http method "${RouteMethod[method]}" is declared twice.`;
     }
 }
 
@@ -40,7 +66,7 @@ export class DuplicateRouteDeclarationError extends Error {
  *
  * @class
  */
-export class HeadHasWrongReturnTypeError extends Error {
+export class HeadHasWrongReturnTypeError extends DesigntimeError {
     constructor() {
         super();
         this.message = 'Head route must have return type boolean';
@@ -53,7 +79,7 @@ export class HeadHasWrongReturnTypeError extends Error {
  *
  * @class
  */
-export class ErrorHandlerWrongArgumentsError extends Error {
+export class ErrorHandlerWrongArgumentsError extends DesigntimeError {
     constructor() {
         super();
         this.message = 'Error handler must accept exactly request, response and an error object';
@@ -66,7 +92,7 @@ export class ErrorHandlerWrongArgumentsError extends Error {
  *
  * @class
  */
-export class ErrorHandlerWrongArgumentTypesError extends Error {
+export class ErrorHandlerWrongArgumentTypesError extends DesigntimeError {
     constructor() {
         super();
         this.message = 'Error handler arguments must be: Object, Object, Error';
@@ -79,7 +105,7 @@ export class ErrorHandlerWrongArgumentTypesError extends Error {
  *
  * @class
  */
-export class ErrorHandlerWrongReturnTypeError extends Error {
+export class ErrorHandlerWrongReturnTypeError extends DesigntimeError {
     constructor() {
         super();
         this.message = 'Error handler must have return type void';
@@ -94,10 +120,10 @@ export class ErrorHandlerWrongReturnTypeError extends Error {
  *
  * @class
  */
-export class ParameterConstructorArgumentsError extends Error {
+export class ParameterConstructorArgumentsError extends DesigntimeError {
     constructor(name: string) {
         super();
-        this.message = format('The constructor for the parameter "{0}" must accept at least 1 argument', name);
+        this.message = `The constructor for the parameter "${name}" must accept at least 1 argument`;
     }
 }
 
@@ -107,10 +133,10 @@ export class ParameterConstructorArgumentsError extends Error {
  *
  * @class
  */
-export class RequiredParameterNotProvidedError extends Error {
+export class RequiredParameterNotProvidedError extends ParameterError {
     constructor(name: string) {
         super();
-        this.message = format('The required parameter "{0}" was not provided', name);
+        this.message = `The required parameter "${name}" was not provided`;
     }
 }
 
@@ -120,10 +146,10 @@ export class RequiredParameterNotProvidedError extends Error {
  *
  * @class
  */
-export class ParameterParseError extends Error {
+export class ParameterParseError extends ParameterError {
     constructor(name: string, public innerException: Error) {
         super();
-        this.message = format('Parsing of the parameter "{0}" threw an error\nInnerException: {1}', name, innerException);
+        this.message = `Parsing of the parameter "${name}" threw an error.\nInnerException: ${innerException}`;
     }
 }
 
@@ -135,10 +161,10 @@ export class ParameterParseError extends Error {
  *
  * @class
  */
-export class WrongReturnTypeError extends Error {
+export class WrongReturnTypeError extends RouteError {
     constructor(name: string, expected: Function, received: Function) {
         super();
-        this.message = format('The method "{0}" returned the wrong result type.\nExpected: {1}\nReceived: {2}', name, expected, received);
+        this.message = `The method "${name}" returned the wrong result type.\nExpected: ${expected}\nReceived: ${received}`;
     }
 }
 
@@ -148,10 +174,10 @@ export class WrongReturnTypeError extends Error {
  *
  * @class
  */
-export class RouteError extends Error {
+export class GenericRouteError extends RouteError {
     constructor(name: string, public innerException: Error) {
         super();
-        this.message = format('The method "{0}" threw an error.\nInnerException: {1}', name, innerException);
+        this.message = `The method "${name}" threw an error.\nInnerException: ${innerException}`;
     }
 }
 
@@ -163,9 +189,9 @@ export class RouteError extends Error {
  *
  * @class
  */
-export class ParamValidationFailedError extends Error {
+export class ParamValidationFailedError extends ValidationError {
     constructor(name: string) {
         super();
-        this.message = format('The validator for the parameter "{0}" was not valid.', name);
+        this.message = `The validator for the parameter "${name}" was not valid.`;
     }
 }

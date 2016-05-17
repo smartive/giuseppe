@@ -6,16 +6,17 @@ import {
     DuplicateRouteDeclarationError,
     ParameterConstructorArgumentsError,
     WrongReturnTypeError,
-    RouteError,
+    GenericRouteError,
     RequiredParameterNotProvidedError,
     ParameterParseError,
     ParamValidationFailedError,
     HeadHasWrongReturnTypeError
 } from '../errors/Errors';
 import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
-import {ErrorHandlerManager, ERRORHANDLER_KEY, DEFAULT_ERROR_HANDLER} from '../errors/ErrorHandlerDecorator';
+import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {Validator} from '../validators/Validators';
 import {RequestHandler} from 'express-serve-static-core';
+import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
@@ -197,18 +198,24 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
             params = params.sort((p1, p2) => (p1.index < p2.index) ? -1 : 1);
 
             route.descriptor.value = (request: Request, response: Response, next) => {
-                let errorHandlers: ErrorHandlerManager = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
+                let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
                     paramValues = [];
 
-                if (!errorHandlers) {
-                    errorHandlers = new ErrorHandlerManager();
-                    errorHandlers.addHandler(DEFAULT_ERROR_HANDLER);
+                if (!errorHandler) {
+                    errorHandler = new ControllerErrorHandler();
                 }
+
+                let handleError = (error: any) => {
+                    if (!(error instanceof Error)) {
+                        error = new GenericRouteError(route.propertyKey, error);
+                    }
+                    errorHandler.handleError(instance, request, response, error);
+                };
 
                 try {
                     paramValues = getParamValues(params, request, response);
                 } catch (e) {
-                    errorHandlers.callHandlers(instance, request, response, e);
+                    handleError(e);
                     // This return is needed, since the controller
                     // would try to call the route method (even on error).
                     return;
@@ -230,18 +237,18 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                         return response.status(httpStatus.NO_CONTENT).end();
                     }
                     if (!(result instanceof returnType) && !(result.constructor === returnType)) {
-                        throw new WrongReturnTypeError(route.propertyKey, returnType, result.constructor);
+                        handleError(new WrongReturnTypeError(route.propertyKey, returnType, result.constructor));
                     }
                     if (route.method === RouteMethod.Head && returnType === Boolean) {
                         return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
                     }
                     if (returnType === Promise) {
-                        (result as Promise<any>).then(responseFunction, err => errorHandlers.callHandlers(instance, request, response, new RouteError(route.propertyKey, err)));
+                        (result as Promise<any>).then(responseFunction, handleError);
                     } else {
                         responseFunction(result);
                     }
                 } catch (e) {
-                    errorHandlers.callHandlers(instance, request, response, new RouteError(route.propertyKey, e));
+                    handleError(e);
                 }
             };
 
