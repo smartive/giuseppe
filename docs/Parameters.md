@@ -11,6 +11,34 @@ Most parameter decorators receive a `name` and an optional `options` argument.
 The name is used to identify the specific field in express and the options
 to define the behaviour of the param.
 
+## Options
+
+All parameters optionally accept an object for its configuration.
+The configuration options are described below.
+
+### General
+
+As a base for all parameter options there is the following interface:
+```typescript
+export interface ParamOptions {
+    required?: boolean;
+    validator?: Validator|Validator[];
+}
+```
+
+| Option    | Description                                                 |
+| --------- | ----------------------------------------------------------- |
+| required  | marks the parameter as required                             |
+| validator | one or multiple validators that all must evaluate to `true` |
+
+### Query
+
+For the query parameter decorator, there exists special options, which are specified below:
+
+| Option    | Description                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------- |
+| alias     | one or multiple alias(es) for the given query parameter.<br>If multiple aliases are hit, the first one is returned. |
+
 ## Decorators
 
 ### General

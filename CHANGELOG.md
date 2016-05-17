@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `@Controller` and all route decorators do optionally accept `RequestHandler` as middlewares.
 - Example code for simple middleware.
 - Example code for passportJS middleware.
+- Aliases for query parameters.
 
 ### Changed
 - Reworked the error-handler system. Errors are now bubbled until the default is hit.

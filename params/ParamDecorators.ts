@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {Validator} from '../validators/Validators';
+import {ParamOptions, QueryParamOptions} from './ParamOptions';
 
 /**
  * Reflect metadata key for parameter list.
@@ -17,21 +17,6 @@ export enum ParamType {
     Request,
     Response,
     Header
-}
-
-/**
- * Interface for parameter options. Contains optional settings for each parameter that accepts this interface.
- */
-export interface ParamOptions {
-    /**
-     * Defines if the parameter is set as required.
-     */
-    required?: boolean;
-
-    /**
-     * Adds one or more validator(s) to the parameter.
-     */
-    validator?: Validator|Validator[];
 }
 
 /**
@@ -59,10 +44,10 @@ function param(type: ParamType, name: string, options?: ParamOptions) {
  * Declares the current parameter as a query parameter. The route will provide this value from the request.query object.
  *
  * @param {string} name - the name of the parameter (inside the query object)
- * @param {ParamOptions} options - The specific options for this parameter.
+ * @param {QueryParamOptions} options - The specific options for this parameter.
  * @returns {(Object, string, number) => void} - Parameter decorator for the given function.
  */
-export function Query(name: string, options?: ParamOptions) {
+export function Query(name: string, options?: QueryParamOptions) {
     return param(ParamType.Query, name, options);
 }
 

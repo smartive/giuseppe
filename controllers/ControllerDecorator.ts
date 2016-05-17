@@ -16,6 +16,7 @@ import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
 import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {Validator} from '../validators/Validators';
 import {RequestHandler} from 'express-serve-static-core';
+import {QueryParamOptions} from '../params/ParamOptions';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import httpStatus = require('http-status');
 
@@ -35,6 +36,25 @@ try {
 
 class ControllerRegistration {
     constructor(public controller: any, public prefix?: string, public middlewares: RequestHandler[] = []) {
+    }
+}
+
+function extractParam(request: Request, param: Param): any {
+    switch (param.paramType) {
+        case ParamType.Body:
+            return request.body;
+        case ParamType.Url:
+            return request.params[param.name];
+        case ParamType.Query:
+            let options: QueryParamOptions = param.options;
+            if (!options || !options.alias) {
+                return request.query[param.name];
+            }
+            let aliases = !Array.isArray(options.alias) ? [options.alias] : options.alias as string[];
+            aliases = aliases.map((a: string) => request.query[a]).filter(Boolean);
+            return aliases[0] || request.query[param.name];
+        case ParamType.Header:
+            return request.get(param.name);
     }
 }
 
@@ -88,17 +108,8 @@ function getParamValues(params: Param[], request: Request, response: Response) {
             case ParamType.Response:
                 paramValues[p.index] = response;
                 return;
-            case ParamType.Body:
-                paramValues[p.index] = parseParam(request.body, p);
-                return;
-            case ParamType.Url:
-                paramValues[p.index] = parseParam(request.params[p.name], p);
-                return;
-            case ParamType.Query:
-                paramValues[p.index] = parseParam(request.query[p.name], p);
-                return;
-            case ParamType.Header:
-                paramValues[p.index] = parseParam(request.get(p.name), p);
+            default:
+                paramValues[p.index] = parseParam(extractParam(request, p), p);
                 return;
         }
     });
