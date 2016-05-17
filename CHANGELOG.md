@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [0.6.1] - 2016-05-17
+### Fixed
+- `console.warn` for duplicated error handlers does not warn for default anymore.
+
+
 ## [0.6.0] - 2016-05-17
 ### Added
 - isArray validator can now validate items with validators and multiple types.
@@ -63,7 +68,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - First version of giuseppe.
 - Adding base code and travis-CI.
 
-[Unreleased]: https://github.com/smartive/giuseppe/compare/v0.6.0...master
+[Unreleased]: https://github.com/smartive/giuseppe/compare/v0.6.1...master
+[0.6.1]: https://github.com/smartive/giuseppe/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/smartive/giuseppe/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/smartive/giuseppe/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/smartive/giuseppe/compare/v0.3.1...v0.4.0
