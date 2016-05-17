@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+
+## [0.6.0] - 2016-05-17
 ### Added
 - isArray validator can now validate items with validators and multiple types.
 - `@Controller` and all route decorators do optionally accept `RequestHandler` as middlewares.
@@ -60,7 +63,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - First version of giuseppe.
 - Adding base code and travis-CI.
 
-[Unreleased]: https://github.com/smartive/giuseppe/compare/v0.5.0...develop
+[Unreleased]: https://github.com/smartive/giuseppe/compare/v0.6.0...master
+[0.6.0]: https://github.com/smartive/giuseppe/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/smartive/giuseppe/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/smartive/giuseppe/compare/v0.3.1...v0.4.0
 [0.3.0]: https://github.com/smartive/giuseppe/compare/v0.2.0...v0.3.0
