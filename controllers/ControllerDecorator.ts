@@ -66,10 +66,10 @@ function parseParam(value: any, param: Param) {
     } else {
         factory = raw => {
             let ctor = param.type as any;
-            if (value.constructor === ctor) {
-                return value;
+            if (raw.constructor === ctor) {
+                return raw;
             } else {
-                return PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(value) : new ctor(value);
+                return PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(raw) : new ctor(raw);
             }
         };
     }
