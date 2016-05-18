@@ -16,7 +16,7 @@ import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
 import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {Validator} from '../validators/Validators';
 import {RequestHandler} from 'express-serve-static-core';
-import {QueryParamOptions, ParameterFactory} from '../params/ParamOptions';
+import {QueryParamOptions, ParameterFactory, FactoryParameterOptions} from '../params/ParamOptions';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import httpStatus = require('http-status');
 
@@ -61,8 +61,8 @@ function extractParam(request: Request, param: Param): any {
 function parseParam(value: any, param: Param) {
     let factory: ParameterFactory<any>;
 
-    if (param.options && param.options.factory) {
-        factory = param.options.factory;
+    if (param.options && (param.options as FactoryParameterOptions).factory) {
+        factory = (param.options as FactoryParameterOptions).factory;
     } else {
         factory = raw => {
             let ctor = param.type as any;
@@ -206,7 +206,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
             }
 
             params.forEach(p => {
-                if (p.type.length < 1) {
+                if (p.type.length < 1 && !(p.options && (p.options as FactoryParameterOptions).factory)) {
                     throw new ParameterConstructorArgumentsError(p.name);
                 }
             });

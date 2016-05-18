@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {ParamOptions, QueryParamOptions} from './ParamOptions';
+import {ParamOptions, QueryParamOptions, BodyParamOptions} from './ParamOptions';
 
 /**
  * Reflect metadata key for parameter list.
@@ -67,7 +67,7 @@ export function UrlParam(name: string) {
  * @param {ParamOptions} options - The specific options for this parameter.
  * @returns {(Object, string, number) => void} - Parameter decorator for the given function.
  */
-export function Body(options?: ParamOptions) {
+export function Body(options?: BodyParamOptions) {
     return param(ParamType.Body, 'body', options);
 }
 
