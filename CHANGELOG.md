@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-- Parameters do optionally accept a factory function to create the instance.
+- `Query` and `Body` parameters do optionally accept a factory function to create the instance.
 
 ### Changed
 - Updated `typings` to 1.x version: `ambient` dependencies are new `global` dependencies.
