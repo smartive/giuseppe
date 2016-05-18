@@ -267,6 +267,71 @@ describe('ParamDecorators', () => {
             spy.args[0][2].should.be.an.instanceOf(ParameterParseError);
         });
 
+        it('should parse correctly with factory method', () => {
+            class Foobar {
+                public test: string;
+
+                public static create(value: any): Foobar {
+                    let f = new Foobar();
+                    f.test = value;
+                    return f;
+                }
+            }
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {factory: raw => Foobar.create(raw)}) test: Foobar): any {
+                    test.should.be.an.instanceOf(Foobar);
+                    test.test.should.equals('foobar');
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+        it('should throw correctly with factory method', () => {
+            class Foobar {
+                public test: string;
+
+                public static create(value: any): Foobar {
+                    throw new Error();
+                }
+            }
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('test', {factory: raw => Foobar.create(raw)}) test: Foobar): any {
+                    return {};
+                }
+            }
+
+            let handler = new ControllerErrorHandler(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {test: 'foobar'}}, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+        });
+
         it('should validate correctly', () => {
             @Controller()
             class Ctrl {
@@ -620,6 +685,71 @@ describe('ParamDecorators', () => {
 
             spy.should.be.calledOnce;
             spy.args[0][2].should.be.an.instanceOf(ParameterParseError);
+        });
+
+        it('should parse correctly with factory method', () => {
+            class Foobar {
+                public test: string;
+
+                public static create(value: any): Foobar {
+                    let f = new Foobar();
+                    f.test = value;
+                    return f;
+                }
+            }
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Body({factory: raw => Foobar.create(raw)}) test: Foobar): any {
+                    test.should.be.an.instanceOf(Foobar);
+                    test.test.should.equals('foobar');
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+        it('should throw correctly with factory method', () => {
+            class Foobar {
+                public test: string;
+
+                public static create(value: any): Foobar {
+                    throw new Error();
+                }
+            }
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Body({factory: raw => Foobar.create(raw)}) test: Foobar): any {
+                    return {};
+                }
+            }
+
+            let handler = new ControllerErrorHandler(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{body: 'foobar'}, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
         });
 
         it('should validate correctly', () => {
