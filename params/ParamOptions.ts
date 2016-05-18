@@ -1,6 +1,11 @@
 import {Validator} from '../validators/Validators';
 
 /**
+ * Type for the parameter factory function.
+ */
+export type ParameterFactory<T> = (raw: any) => T;
+
+/**
  * Interface for parameter options. Contains optional settings for each parameter that accepts this interface.
  */
 export interface ParamOptions {
@@ -13,6 +18,11 @@ export interface ParamOptions {
      * Adds one or more validator(s) to the parameter.
      */
     validator?: Validator|Validator[];
+
+    /**
+     * Defines the factory function for the parameter.
+     */
+    factory?: ParameterFactory<any>;
 }
 
 /**
