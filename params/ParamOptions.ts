@@ -42,7 +42,7 @@ export interface QueryParamOptions extends ParamOptions, FactoryParameterOptions
 }
 
 /**
- * Interface for query parameter options. Contains basic parameter options and specific options for '@Query' parameters.
+ * Interface for body parameter options. Contains basic parameter options and specific options for '@Body' parameters.
  */
 export interface BodyParamOptions extends ParamOptions, FactoryParameterOptions {
 }
