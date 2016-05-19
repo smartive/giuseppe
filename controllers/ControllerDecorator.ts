@@ -280,6 +280,39 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
     return router;
 }
 
+export function registerControllersFromFolder({folderPath = '.', recursive = false, matchRegExp = /(.*)[.]js/} : {folderPath: string, recursive: boolean, matchRegExp: RegExp},
+    baseUrl: string = '',
+    router: Router = Router()): Promise<Router> {
+
+    let filewalker = require('filewalker'),
+        path = require('path');
+
+    return new Promise<Router>((resolve, reject) => {
+        let controllersPath = path.join(process.cwd(), folderPath);
+        console.info(`Load controllers from path '${controllersPath}' ${recursive ? '' : 'non '}recursive.`);
+
+        filewalker(controllersPath, {recursive, matchRegExp})
+            .on('error', err => {
+                console.error(`Error happened during loading controllers from path: ${err}`);
+                reject(err);
+            })
+            .on('file', controller => {
+                try {
+                    console.info(`Loading controller '${controller}'.`);
+                    require(path.join(controllersPath, controller));
+                } catch (e) {
+                    console.error(`Error happened during load of the '${controller}' controller: ${e}`);
+                    reject(e);
+                }
+            })
+            .on('done', () => {
+                resolve(registerControllers(baseUrl, router));
+            })
+            .walk();
+    });
+
+}
+
 /**
  * Resets the registered controllers and the defined routes array (used for testing).
  */
