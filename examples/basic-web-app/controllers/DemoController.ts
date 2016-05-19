@@ -51,7 +51,7 @@ export class DemoController {
     @ErrorHandler()
     public err(req: Request, res: Response, err: Error): void {
         console.error(err);
-        if (err instanceof RouteError && err.innerException.message === 'not found.') {
+        if (err.message === 'not found.') {
             res.status(404).end();
             return;
         }
