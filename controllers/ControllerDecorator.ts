@@ -280,9 +280,9 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
     return router;
 }
 
-export type ControllerLoaderOptions = {folderPath: string, root: string, recursive: boolean, matchRegExp: RegExp};
+export type ControllerLoaderOptions = {folderPath: string, root?: string, recursive?: boolean, matchRegExp?: RegExp};
 
-export function registerControllersFromFolder({folderPath = '.', root = process.cwd(), recursive = false, matchRegExp = /(.*)[.]js/} : ControllerLoaderOptions,
+export function registerControllersFromFolder({folderPath, root = process.cwd(), recursive = false, matchRegExp = /(.*)[.]js$/} : ControllerLoaderOptions,
     baseUrl: string = '',
     router: Router = Router()): Promise<Router> {
 
