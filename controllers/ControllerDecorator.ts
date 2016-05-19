@@ -16,7 +16,7 @@ import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
 import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {Validator} from '../validators/Validators';
 import {RequestHandler} from 'express-serve-static-core';
-import {QueryParamOptions} from '../params/ParamOptions';
+import {QueryParamOptions, ParameterFactory, FactoryParameterOptions} from '../params/ParamOptions';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import httpStatus = require('http-status');
 
@@ -59,7 +59,20 @@ function extractParam(request: Request, param: Param): any {
 }
 
 function parseParam(value: any, param: Param) {
-    let ctor = param.type as any;
+    let factory: ParameterFactory<any>;
+
+    if (param.options && (param.options as FactoryParameterOptions).factory) {
+        factory = (param.options as FactoryParameterOptions).factory;
+    } else {
+        factory = raw => {
+            let ctor = param.type as any;
+            if (raw.constructor === ctor) {
+                return raw;
+            } else {
+                return PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(raw) : new ctor(raw);
+            }
+        };
+    }
 
     if ((value === null || value === undefined) && param.options && param.options.required) {
         throw new RequiredParameterNotProvidedError(param.name);
@@ -69,11 +82,7 @@ function parseParam(value: any, param: Param) {
 
     let parsed;
     try {
-        if (value.constructor === ctor) {
-            parsed = value;
-        } else {
-            parsed = PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(value) : new ctor(value);
-        }
+        parsed = factory(value);
     } catch (e) {
         throw new ParameterParseError(param.name, e);
     }
@@ -197,7 +206,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
             }
 
             params.forEach(p => {
-                if (p.type.length < 1) {
+                if (p.type.length < 1 && !(p.options && (p.options as FactoryParameterOptions).factory)) {
                     throw new ParameterConstructorArgumentsError(p.name);
                 }
             });

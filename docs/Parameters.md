@@ -28,8 +28,8 @@ export interface ParamOptions {
 
 | Option    | Description                                                 |
 | --------- | ----------------------------------------------------------- |
-| required  | marks the parameter as required                             |
-| validator | one or multiple validators that all must evaluate to `true` |
+| required  | Marks the parameter as required                             |
+| validator | One or multiple validators that all must evaluate to `true` |
 
 ### Query
 
@@ -37,7 +37,16 @@ For the query parameter decorator, there exists special options, which are speci
 
 | Option    | Description                                                                                                         |
 | --------- | ------------------------------------------------------------------------------------------------------------------- |
-| alias     | one or multiple alias(es) for the given query parameter.<br>If multiple aliases are hit, the first one is returned. |
+| alias     | One or multiple alias(es) for the given query parameter.<br>If multiple aliases are hit, the first one is returned. |
+| factory   | A factory method for the type. Accepts an `any` raw value and must return the desired type.                         |
+
+### Body
+
+For the body parameter decorator, there exists special options, which are specified below:
+
+| Option    | Description                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------- |
+| factory   | A factory method for the type. Accepts an `any` raw value and must return the desired type.                         |
 
 ## Decorators
 
