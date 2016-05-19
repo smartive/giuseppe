@@ -7,9 +7,9 @@
     "bootstrap": "npm install -q && typings install",
     "clean": "rimraf build",
     "pretest": "npm run clean && tsc",
-    "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd --recursive ./build",
+    "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd ./build/**/*.spec.js",
     "precitest": "npm run bootstrap && npm run clean && tsc",
-    "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd --recursive ./build",
+    "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd ./build/**/*.spec.js",
     "develop": "npm run clean && tsc --sourceMap -w --pretty"
   },
   "repository": {
