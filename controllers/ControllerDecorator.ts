@@ -280,7 +280,9 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
     return router;
 }
 
-export function registerControllersFromFolder({folderPath = '.', recursive = false, matchRegExp = /(.*)[.]js/} : {folderPath: string, recursive: boolean, matchRegExp: RegExp},
+export type ControllerLoaderOptions = {folderPath: string, root: string, recursive: boolean, matchRegExp: RegExp};
+
+export function registerControllersFromFolder({folderPath = '.', root = process.cwd(), recursive = false, matchRegExp = /(.*)[.]js/} : ControllerLoaderOptions,
     baseUrl: string = '',
     router: Router = Router()): Promise<Router> {
 
@@ -288,7 +290,7 @@ export function registerControllersFromFolder({folderPath = '.', recursive = fal
         path = require('path');
 
     return new Promise<Router>((resolve, reject) => {
-        let controllersPath = path.join(process.cwd(), folderPath);
+        let controllersPath = path.join(root, folderPath);
         console.info(`Load controllers from path '${controllersPath}' ${recursive ? '' : 'non '}recursive.`);
 
         filewalker(controllersPath, {recursive, matchRegExp})
