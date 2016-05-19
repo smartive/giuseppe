@@ -1,5 +1,10 @@
 import 'reflect-metadata';
-import {Controller, registerControllers, resetControllerRegistrations} from './ControllerDecorator';
+import {
+    Controller,
+    registerControllers,
+    resetControllerRegistrations,
+    registerControllersFromFolder
+} from './ControllerDecorator';
 import {Router} from 'express';
 import {Get, Post, Put, Delete, Head, ROUTES_KEY, Route} from '../routes/RouteDecorators';
 import {SinonSpy} from '~sinon/lib/sinon';
@@ -339,6 +344,60 @@ describe('Controller', () => {
             };
 
             fn.should.throw(HttpVerbNotSupportedError);
+        });
+
+    });
+
+    describe('Register from folder function', () => {
+
+        let router: Router;
+
+        beforeEach(() => {
+            router = Router();
+            sinon.stub(router, 'get');
+            sinon.stub(router, 'put');
+            sinon.stub(router, 'post');
+            sinon.stub(router, 'delete');
+            sinon.stub(router, 'head');
+        });
+
+        it('should register 2 controller with 2 function correctly', done => {
+            registerControllersFromFolder({folderPath: './build/.test/controllers/good'}, '', router)
+                .then(() => {
+                    let Ctrl = require('../.test/controllers/good/GoodController1').Ctrl,
+                        Ctrl2 = require('../.test/controllers/good/GoodController2').Ctrl2;
+
+                    let routes1 = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
+                    routes1.should.be.an('array').with.lengthOf(2);
+
+                    let routes2 = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl2);
+                    routes2.should.be.an('array').with.lengthOf(2);
+
+                    router.get.should.be.calledTwice;
+                    router.put.should.not.be.called;
+                    router.post.should.be.calledTwice;
+                    router.delete.should.not.be.called;
+
+                    (router.get as SinonSpy).firstCall.should.be.calledWithExactly('/1/func1', routes1[0].descriptor.value);
+                    (router.get as SinonSpy).secondCall.should.be.calledWithExactly('/2/func1', routes2[0].descriptor.value);
+                    (router.post as SinonSpy).firstCall.should.be.calledWithExactly('/1/func1', routes1[1].descriptor.value);
+                    (router.post as SinonSpy).secondCall.should.be.calledWithExactly('/2/func1', routes2[1].descriptor.value);
+
+                    done();
+                })
+                .catch(err => {
+                    done(err);
+                });
+        });
+
+        it('should reject promise when error happens in process', done => {
+            registerControllersFromFolder({folderPath: './build/.test/controllers/bad'}, '', router)
+                .then(() => {
+                    done(new Error('did not throw!'));
+                })
+                .catch(err => {
+                    done();
+                });
         });
 
     });

@@ -2,7 +2,7 @@ import {Controller} from '../../../controllers/ControllerDecorator';
 import {Get, Post} from '../../../routes/RouteDecorators';
 
 @Controller('1')
-class Ctrl {
+export class Ctrl {
     @Get('func1')
     public funcGet(): void {
     }
