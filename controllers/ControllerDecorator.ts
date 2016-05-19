@@ -280,8 +280,28 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
     return router;
 }
 
+/**
+ * Options for the registerControllersFromFolder function. It is an object with configuration parameters.
+ *
+ * @param {string} folderPath - The root path to start the search for *.js files.
+ * @param {root} [root] - The project root folder (could be different if you start your app with node .)
+ * @param {boolean} [recursive] - Should the function search for *.js in a recursive mode.
+ * @param {RegExp} [matchRegExp] - An optional regular expression for the found files.
+ */
 export type ControllerLoaderOptions = {folderPath: string, root?: string, recursive?: boolean, matchRegExp?: RegExp};
 
+/**
+ * Function that loads and registers all controllers from a given directory. All found files are "required" and
+ * should not throw any errors, or else the promise is rejected.
+ *
+ * @param {string} folderPath - The root path to start the search for the controllers.
+ * @param {string} [root=process.cwd()] - The root of the project. Can be different if you start your app through a script.
+ * @param {boolean} [recursive=false] - Defines if the function searches recursively for controllers.
+ * @param {RegExp} [matchRegExp=/(.*)[.]js$/] - The regular expression that must be mached before a file is required.
+ * @param {string} [baseUrl=''] - Base url for the routing system. Will be prefixed for all controllers.
+ * @param {Router} [router=Router()] - Express router to attach the routes to. If omitted, a new router is instantiated.
+ * @returns {Promise<Router>} - A promise that resolves with the configured router instance. Or rejects when an error happens.
+ */
 export function registerControllersFromFolder({folderPath, root = process.cwd(), recursive = false, matchRegExp = /(.*)[.]js$/} : ControllerLoaderOptions,
     baseUrl: string = '',
     router: Router = Router()): Promise<Router> {
