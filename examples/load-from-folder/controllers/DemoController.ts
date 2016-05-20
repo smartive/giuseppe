@@ -1,26 +1,12 @@
-import {Controller, Get, registerControllers} from '../../index';
-import {ErrorHandler} from '../../errors/ErrorHandlerDecorator';
-import {UrlParam, Body} from '../../params/ParamDecorators';
-import {Put, Post, Delete} from '../../routes/RouteDecorators';
+import {ErrorHandler} from '../../../errors/ErrorHandlerDecorator';
+import {UrlParam, Body} from '../../../params/ParamDecorators';
+import {Put, Post, Delete, Get} from '../../../routes/RouteDecorators';
 import {Request, Response} from 'express';
-import express = require('express');
+import {Controller} from '../../../controllers/ControllerDecorator';
+import {Demo} from '../models/Demo';
 
-class Demo {
-    public id: number;
-
-    constructor(value: any) {
-        this.id = value.id;
-    }
-}
-
-@Controller('demo', (req, res, next) => {
-    console.log('controller middleware 1');
-    next();
-}, (req, res, next) => {
-    console.log('controller middleware 2');
-    next();
-})
-class DemoController {
+@Controller('demo')
+export class DemoController {
     private demos: Demo[] = [];
 
     @Get()
@@ -28,13 +14,7 @@ class DemoController {
         return this.demos;
     }
 
-    @Get(':id', (req, res, next) => {
-        console.log('route middleware 1');
-        next();
-    }, (req, res, next) => {
-        console.log('route middleware 2');
-        next();
-    })
+    @Get(':id')
     public getDemo(@UrlParam('id') id: number): Demo {
         let filtered = this.demos.filter(d => d.id === id);
         if (!filtered.length) {
@@ -77,12 +57,3 @@ class DemoController {
         res.status(500).json({err}).end();
     }
 }
-
-let app = express();
-
-app.use(require('body-parser').json());
-app.use(registerControllers('/api'));
-
-app.listen(8080, () => {
-    console.log('Up and running on port 8080');
-});

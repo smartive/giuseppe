@@ -281,6 +281,61 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
 }
 
 /**
+ * Options for the registerControllersFromFolder function. It is an object with configuration parameters.
+ *
+ * @param {string} folderPath - The root path to start the search for *.js files.
+ * @param {root} [root] - The project root folder (could be different if you start your app with node .)
+ * @param {boolean} [recursive] - Should the function search for *.js in a recursive mode.
+ * @param {RegExp} [matchRegExp] - An optional regular expression for the found files.
+ */
+export type ControllerLoaderOptions = {folderPath: string, root?: string, recursive?: boolean, matchRegExp?: RegExp};
+
+/**
+ * Function that loads and registers all controllers from a given directory. All found files are "required" and
+ * should not throw any errors, or else the promise is rejected.
+ *
+ * @param {string} folderPath - The root path to start the search for the controllers.
+ * @param {string} [root=process.cwd()] - The root of the project. Can be different if you start your app through a script.
+ * @param {boolean} [recursive=false] - Defines if the function searches recursively for controllers.
+ * @param {RegExp} [matchRegExp=/(.*)[.]js$/] - The regular expression that must be mached before a file is required.
+ * @param {string} [baseUrl=''] - Base url for the routing system. Will be prefixed for all controllers.
+ * @param {Router} [router=Router()] - Express router to attach the routes to. If omitted, a new router is instantiated.
+ * @returns {Promise<Router>} - A promise that resolves with the configured router instance. Or rejects when an error happens.
+ */
+export function registerControllersFromFolder({folderPath, root = process.cwd(), recursive = false, matchRegExp = /(.*)[.]js$/} : ControllerLoaderOptions,
+    baseUrl: string = '',
+    router: Router = Router()): Promise<Router> {
+
+    let filewalker = require('filewalker'),
+        path = require('path');
+
+    return new Promise<Router>((resolve, reject) => {
+        let controllersPath = path.join(root, folderPath);
+        console.info(`Load controllers from path '${controllersPath}' ${recursive ? '' : 'non '}recursive.`);
+
+        filewalker(controllersPath, {recursive, matchRegExp})
+            .on('error', err => {
+                console.error(`Error happened during loading controllers from path: ${err}`);
+                reject(err);
+            })
+            .on('file', controller => {
+                try {
+                    console.info(`Loading controller '${controller}'.`);
+                    require(path.join(controllersPath, controller));
+                } catch (e) {
+                    console.error(`Error happened during load of the '${controller}' controller: ${e}`);
+                    reject(e);
+                }
+            })
+            .on('done', () => {
+                resolve(registerControllers(baseUrl, router));
+            })
+            .walk();
+    });
+
+}
+
+/**
  * Resets the registered controllers and the defined routes array (used for testing).
  */
 export function resetControllerRegistrations(): void {

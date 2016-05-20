@@ -7,9 +7,9 @@
     "bootstrap": "npm install -q && typings install",
     "clean": "rimraf build",
     "pretest": "npm run clean && tsc",
-    "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd --recursive ./build",
+    "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd ./build/**/*.spec.js",
     "precitest": "npm run bootstrap && npm run clean && tsc",
-    "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd --recursive ./build",
+    "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd ./build/**/*.spec.js",
     "develop": "npm run clean && tsc --sourceMap -w --pretty"
   },
   "repository": {
@@ -42,6 +42,7 @@
   "homepage": "https://github.com/smartive/giuseppe#readme",
   "dependencies": {
     "express": "^4.13.4",
+    "filewalker": "^0.1.2",
     "http-status": "^0.2.2",
     "reflect-metadata": "^0.1.3",
     "typescript": "^1.8.10",

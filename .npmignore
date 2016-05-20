@@ -20,6 +20,7 @@ typings
 build
 docs
 coverage
+.test
 
 *.ts
 !*.d.ts
