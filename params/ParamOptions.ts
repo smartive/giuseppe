@@ -46,3 +46,9 @@ export interface QueryParamOptions extends ParamOptions, FactoryParameterOptions
  */
 export interface BodyParamOptions extends ParamOptions, FactoryParameterOptions {
 }
+
+/**
+ * Interface for cookie parameter options. Contains basic parameters options and specific options for '@Cookie' parameters.
+ */
+export interface CookieParamOptions extends ParamOptions, FactoryParameterOptions {
+}
