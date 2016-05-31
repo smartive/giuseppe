@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - `Query` and `Body` parameters do optionally accept a factory function to create the instance.
 - `registerControllersFromFolder` function that loads and registers controllers from a folder.
+- `@Cookie` parameter decorator to parse cookies and load them into routes.
 
 ### Changed
 - Updated `typings` to 1.x version: `ambient` dependencies are new `global` dependencies.
