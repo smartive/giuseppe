@@ -29,7 +29,7 @@ let controllers: ControllerRegistration[] = [],
 
         constructor(value: string) {
             let split = value.split('=');
-            this.name = split [0];
+            this.name = split[0];
             this.value = split[1];
         }
     };
