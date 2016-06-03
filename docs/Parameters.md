@@ -48,6 +48,14 @@ For the body parameter decorator, there exists special options, which are specif
 | --------- | ------------------------------------------------------------------------------------------------------------------- |
 | factory   | A factory method for the type. Accepts an `any` raw value and must return the desired type.                         |
 
+### Cookie
+
+For the cookie parameter decorator, there exists special options, which are specified below:
+
+| Option    | Description                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------- |
+| factory   | A factory method for the type. Accepts an `any` raw value and must return the desired type.                         |
+
 ## Decorators
 
 ### General
@@ -202,3 +210,22 @@ or anything like that.
 
 You must pass a name and can pass an optional options argument with the required
 boolean flag and validators.
+
+### Cookie
+
+```typescript
+/* ... */
+
+@Get()
+public getAll(@Cookie('language') lang: string = 'de'): Demo {
+}
+
+/* ... */
+```
+
+Get a request cookie sent by the client. Can be used with the cookie functions
+of express. Those functions provide functionality for setting and clearing
+a cookie.
+
+You must pass a name and can pass an optional options argument with the required
+boolean flag, validators and a possible factory.

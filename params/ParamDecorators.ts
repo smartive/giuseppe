@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {ParamOptions, QueryParamOptions, BodyParamOptions} from './ParamOptions';
+import {ParamOptions, QueryParamOptions, BodyParamOptions, CookieParamOptions} from './ParamOptions';
 
 /**
  * Reflect metadata key for parameter list.
@@ -16,7 +16,8 @@ export enum ParamType {
     Body,
     Request,
     Response,
-    Header
+    Header,
+    Cookie
 }
 
 /**
@@ -96,4 +97,13 @@ export function Res() {
  */
 export function Header(name: string, options?: ParamOptions) {
     return param(ParamType.Header, name, options);
+}
+
+/**
+ * Declares the current parameter as a cookie parameter. The route will provide the corresponding cookie value.
+ *
+ * @returns {(Object, string, number) => void} - Parameter decorator for the given function.
+ */
+export function Cookie(name: string, options?: CookieParamOptions) {
+    return param(ParamType.Cookie, name, options);
 }

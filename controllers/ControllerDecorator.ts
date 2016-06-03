@@ -22,7 +22,17 @@ import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
     definedRoutes = [],
-    bodyParserInstalled = false;
+    bodyParserInstalled = false,
+    CookieHelper = class {
+        public name: string;
+        public value: string;
+
+        constructor(value: string) {
+            let split = value.split('=');
+            this.name = split[0];
+            this.value = split[1];
+        }
+    };
 
 const PRIMITIVE_TYPES = [Object, String, Array, Number, Boolean],
     NON_JSON_TYPES = [String, Number, Boolean];
@@ -55,6 +65,16 @@ function extractParam(request: Request, param: Param): any {
             return aliases[0] || request.query[param.name];
         case ParamType.Header:
             return request.get(param.name);
+        case ParamType.Cookie:
+            let cookies = request.get('cookie');
+            if (!cookies) {
+                return undefined;
+            }
+            let cookie = cookies
+                .split(';')
+                .map(o => new CookieHelper(o.trim()))
+                .filter(o => o.name === param.name)[0];
+            return cookie ? cookie.value : undefined;
     }
 }
 

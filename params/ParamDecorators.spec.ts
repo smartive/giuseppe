@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {Query, PARAMS_KEY, Param, ParamType, UrlParam, Body, Req, Res, Header} from './ParamDecorators';
+import {Query, PARAMS_KEY, Param, ParamType, UrlParam, Body, Req, Res, Header, Cookie} from './ParamDecorators';
 import {Route} from '../routes/RouteDecorators';
 import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
 import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationFailedError} from '../errors/Errors';
@@ -1215,6 +1215,384 @@ describe('ParamDecorators', () => {
 
             router.routes['/'].apply(this, [{
                 headers: {test: 'foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
+        });
+
+    });
+
+    describe('Cookie', () => {
+
+        it('should return a decorator function', () => {
+            Cookie('name').should.be.a('function').with.lengthOf(3);
+        });
+
+        it('should add a correct cookie param registration object to the route', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('name') name: string): any {
+                    return {};
+                }
+            }
+
+            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
+
+            params.should.be.an('array').with.lengthOf(1);
+
+            let param: Param = params[0];
+
+            param.paramType.should.equal(ParamType.Cookie);
+            param.index.should.equal(0);
+            param.name.should.equal('name');
+            should.not.exist(param.options);
+            param.type.should.equal(String);
+        });
+
+        it('should inject the correct variable', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test') test: string): any {
+                    test.should.equal('foobar');
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'test=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+        it('should parse the correct value', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test') test: string): any {
+                    test.should.be.a('string');
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'test=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+        it('should throw on non provided required parameter', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test', {required: true}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ControllerErrorHandler(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'notProvided=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(RequiredParameterNotProvidedError);
+        });
+
+        it('should inject undefined if param is not provided', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test') test: string): any {
+                    should.not.exist(test);
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'foobar=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+        it('should throw on parameter parsing error', () => {
+            class Foobar {
+                constructor(value: any) {
+                    throw new Error();
+                }
+            }
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test') test: Foobar): any {
+                    return {};
+                }
+            }
+
+            let handler = new ControllerErrorHandler(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'test=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParameterParseError);
+        });
+
+        it('should parse correctly with factory method', () => {
+            class Foobar {
+                public test: string;
+
+                public static create(value: any): Foobar {
+                    let f = new Foobar();
+                    f.test = value;
+                    return f;
+                }
+            }
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test', {factory: raw => Foobar.create(raw)}) test: Foobar): any {
+                    test.should.be.an.instanceOf(Foobar);
+                    test.test.should.equals('foobar');
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'test=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+        });
+
+        it('should throw correctly with factory method', () => {
+            class Foobar {
+                public test: string;
+
+                public static create(value: any): Foobar {
+                    throw new Error();
+                }
+            }
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test', {factory: raw => Foobar.create(raw)}) test: Foobar): any {
+                    return {};
+                }
+            }
+
+            let handler = new ControllerErrorHandler(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'test=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+        });
+
+        it('should validate correctly', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test', {validator: isString()}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ControllerErrorHandler(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'test=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.not.be.called;
+        });
+
+        it('should validate correctly with multiple validators', () => {
+            let isNotEmpty = v => v.length > 0;
+
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test', {validator: [isString(), isNotEmpty]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ControllerErrorHandler(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'test=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.not.be.called;
+        });
+
+        it('should throw on validation error', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test', {validator: isNumber()}) test: number): any {
+                    return {};
+                }
+            }
+
+            let handler = new ControllerErrorHandler(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'test=foobar'},
+                get: function (name) {
+                    return this.headers[name];
+                }
+            }, {
+                json: () => {
+                }
+            }, null]);
+
+            spy.should.be.calledOnce;
+            spy.args[0][2].should.be.an.instanceOf(ParamValidationFailedError);
+        });
+
+        it('should throw if any validation fails', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Cookie('test', {validator: [isString(), isNumber()]}) test: string): any {
+                    return {};
+                }
+            }
+
+            let handler = new ControllerErrorHandler(),
+                spy = sinon.spy();
+            handler.addHandler(spy);
+            Reflect.defineMetadata(ERRORHANDLER_KEY, handler, Ctrl);
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{
+                headers: {cookie: 'test=foobar'},
                 get: function (name) {
                     return this.headers[name];
                 }
