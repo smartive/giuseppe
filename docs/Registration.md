@@ -5,6 +5,36 @@ decorated with the `@Controller` annotation, will be registered with an express 
 If you code your class and use `@Get`, `@Post`, ... but you forget to annotate the controller,
 nothing is gonna happen.
 
+## Route ordering
+
+To support wildcard routes, giuseppe does order the routes, before they are
+registered with express. Since express does have a first-match strategy when
+it's routers are matching the routes of the request, giuseppe orders them.
+With this ordering, the more specific routes (i.e. with more url segments
+and less wildcard characters) are registered first and are matched with express.
+
+It's possible to make a `catch all` route with just a `*` character to support
+a single page application for example.
+
+```typescript
+@Controller('*')
+class StaticFileController {
+    @Get()
+    public getFile(@Req() req: Request, @Res() res: Response): void {
+        /* get the file path from the requests url */
+        res.sendFile(/* filepath */);
+    }
+}
+
+@Controller('api/demo')
+class ApiController {
+    /* ... */
+}
+```
+
+In the example above, the routes to `api/demo` are routed correctly, even
+if the static file controller is (technically) loaded first.
+
 ## Registration function
 
 ### Register loaded controllers
