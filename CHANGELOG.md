@@ -14,6 +14,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Updated `typings` to 1.x version: `ambient` dependencies are new `global` dependencies.
 
+### Fixed
+- Double slashes are filtered during registration (`/api//foo` -> `/api/foo`).
+
 
 ## [0.6.1] - 2016-05-17
 ### Fixed
