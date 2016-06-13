@@ -430,7 +430,7 @@ describe('Controller', () => {
 
             spy.getCall(0).should.be.calledWith('/api/stores');
             spy.getCall(1).should.be.calledWith('/api/products');
-            spy.getCall(2).should.be.calledWith('/static/*');
+            spy.getCall(2).should.be.calledWith('/*');
         });
 
     });
