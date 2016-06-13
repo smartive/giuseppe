@@ -21,7 +21,7 @@ import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import httpStatus = require('http-status');
 
 let controllers: ControllerRegistration[] = [],
-    definedRoutes = [],
+    definedRoutes: RegistrationHelper[] = [],
     bodyParserInstalled = false,
     CookieHelper = class {
         public name: string;
@@ -47,6 +47,23 @@ try {
 class ControllerRegistration {
     constructor(public controller: any, public prefix?: string, public middlewares: RequestHandler[] = []) {
     }
+}
+
+class RegistrationHelper {
+    public wildcardCount: number;
+    public segmentCount: number;
+
+    constructor(public routeId: string, public routeUrl: string, public route: RouteRegistration, public middlewares: RequestHandler[]) {
+        this.wildcardCount = this.routeUrl.split('*').length - 1;
+        this.segmentCount = this.routeUrl.split('/').length;
+    }
+}
+
+function wildcardSort(o1: RegistrationHelper, o2: RegistrationHelper): number {
+    if (o1.wildcardCount === o2.wildcardCount) {
+        return 0;
+    }
+    return o1.wildcardCount > o2.wildcardCount ? 1 : -1;
 }
 
 function extractParam(request: Request, param: Param): any {
@@ -145,25 +162,25 @@ function getParamValues(params: Param[], request: Request, response: Response) {
     return paramValues;
 }
 
-function registerRoute(route: RouteRegistration, router: Router, routeUrl: string, middlewares: RequestHandler[]) {
-    switch (route.method) {
+function registerRoute(registration: RegistrationHelper, router: Router) {
+    switch (registration.route.method) {
         case RouteMethod.Get:
-            router.get(routeUrl, ...middlewares, (route.descriptor.value as any));
+            router.get(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
             break;
         case RouteMethod.Put:
-            router.put(routeUrl, ...middlewares, (route.descriptor.value as any));
+            router.put(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
             break;
         case RouteMethod.Post:
-            router.post(routeUrl, ...middlewares, (route.descriptor.value as any));
+            router.post(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
             break;
         case RouteMethod.Delete:
-            router.delete(routeUrl, ...middlewares, (route.descriptor.value as any));
+            router.delete(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
             break;
         case RouteMethod.Head:
-            router.head(routeUrl, ...middlewares, (route.descriptor.value as any));
+            router.head(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
             break;
         default:
-            throw new HttpVerbNotSupportedError(route.method);
+            throw new HttpVerbNotSupportedError(registration.route.method);
     }
 }
 
@@ -198,11 +215,11 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
         url = '/' + url;
     }
 
-    controllers.forEach(ctrl => {
+    for (let ctrl of controllers) {
         let routes = Reflect.getOwnMetadata(ROUTES_KEY, ctrl.controller) || [],
             instance = new ctrl.controller();
 
-        routes.forEach((route: RouteRegistration) => {
+        for (let route of routes) {
             let ctrlTarget = ctrl.controller,
                 routeTarget = ctrlTarget.prototype,
                 routeUrl = url + [ctrl.prefix, route.path].filter(Boolean).join('/'),
@@ -213,7 +230,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 method = route.descriptor.value,
                 hasResponseParam = !!params.filter(p => p.paramType === ParamType.Response).length;
 
-            if (definedRoutes.indexOf(routeId) !== -1) {
+            if (definedRoutes.some(route => route.routeId === routeId)) {
                 throw new DuplicateRouteDeclarationError(routeUrl, route.method);
             }
 
@@ -292,10 +309,24 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 }
             };
 
-            registerRoute(route, router, routeUrl, middlewares);
-            definedRoutes.push(routeId);
-        });
-    });
+            definedRoutes.push(new RegistrationHelper(routeId, routeUrl, route, middlewares));
+        }
+    }
+
+    let map: RegistrationHelper[][] = [];
+    for (let route of definedRoutes) {
+        if (!map[route.segmentCount]) {
+            map[route.segmentCount] = [];
+        }
+
+        map[route.segmentCount].push(route);
+    }
+
+    for (let routes of map.filter(Boolean).reverse()) {
+        for (let route of routes.sort(wildcardSort)) {
+            registerRoute(route, router);
+        }
+    }
 
     return router;
 }
