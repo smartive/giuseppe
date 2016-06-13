@@ -216,12 +216,22 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
             let ctrlTarget = ctrl.controller,
                 routeTarget = ctrlTarget.prototype,
                 routeUrl = url + [ctrl.prefix, route.path].filter(Boolean).join('/'),
-                routeId = routeUrl + route.method.toString(),
                 returnType = Reflect.getMetadata('design:returntype', routeTarget, route.propertyKey),
                 params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, routeTarget, route.propertyKey) || [],
                 middlewares = [...ctrl.middlewares, ...route.middlewares],
                 method = route.descriptor.value,
                 hasResponseParam = !!params.filter(p => p.paramType === ParamType.Response).length;
+
+            let index;
+            if ((index = routeUrl.indexOf('~')) > -1) {
+                routeUrl = routeUrl.substring(index + 1);
+            }
+
+            if (routeUrl.length > 1) {
+                routeUrl = '/' + routeUrl.split('/').filter(Boolean).join('/');
+            }
+
+            let routeId = routeUrl + route.method.toString();
 
             if (definedRoutes.some(route => route.routeId === routeId)) {
                 throw new DuplicateRouteDeclarationError(routeUrl, route.method);
@@ -240,10 +250,6 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                     throw new ParameterConstructorArgumentsError(p.name);
                 }
             });
-
-            if (routeUrl.length > 1 && routeUrl[routeUrl.length - 1] === '/') {
-                routeUrl = routeUrl.substr(0, routeUrl.length - 1);
-            }
 
             params = params.sort((p1, p2) => (p1.index < p2.index) ? -1 : 1);
 
