@@ -1,7 +1,7 @@
 {
   "name": "giuseppe",
-  "version": "0.6.1",
-  "description": "A controller routing system for expressJS with typescript decorators and annotations",
+  "version": "1.0.0-rc.1",
+  "description": "An attributed controller routing system for expressJS with typescript decorators and annotations",
   "main": "index.js",
   "scripts": {
     "bootstrap": "npm install -q && typings install",
@@ -43,19 +43,19 @@
   "dependencies": {
     "express": "^4.13.4",
     "filewalker": "^0.1.2",
-    "http-status": "^0.2.2",
+    "http-status": "^0.2.3",
     "reflect-metadata": "^0.1.3",
-    "typescript": "^1.8.10",
-    "typings": "^1.0.4"
+    "typescript": "^1.8.10"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.3",
-    "mocha": "^2.4.5",
+    "mocha": "^2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
     "rimraf": "^2.5.2",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
-    "tslint": "^3.10.2"
+    "tslint": "^3.11.0",
+    "typings": "^1.1.0"
   }
 }

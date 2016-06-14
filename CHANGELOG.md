@@ -2,8 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-
 ## [Unreleased]
+
+
+## [1.0.0-rc.1]
 ### Added
 - `Query` and `Body` parameters do optionally accept a factory function to create the instance.
 - `registerControllersFromFolder` function that loads and registers controllers from a folder.
@@ -81,7 +83,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - First version of giuseppe.
 - Adding base code and travis-CI.
 
-[Unreleased]: https://github.com/smartive/giuseppe/compare/v0.6.1...master
+[Unreleased]: https://github.com/smartive/giuseppe/compare/v1.0.0-rc.1...master
+[1.0.0-rc.1]: https://github.com/smartive/giuseppe/compare/v0.6.1...v1.0.0-rc.1
 [0.6.1]: https://github.com/smartive/giuseppe/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/smartive/giuseppe/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/smartive/giuseppe/compare/v0.4.0...v0.5.0
