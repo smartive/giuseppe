@@ -37,7 +37,7 @@ if the static file controller is (technically) loaded first.
 
 ## Root routes
 
-If you wan't to overwrite the previous declared route segments, it is possible
+If you want to overwrite the previous declared route segments, it is possible
 with the special character `~`. With this as the starting character of any
 controller or method route decorator, all the route segments are ignored
 and the route is registered from the root of the application.
