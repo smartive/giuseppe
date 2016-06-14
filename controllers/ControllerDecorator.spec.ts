@@ -346,6 +346,93 @@ describe('Controller', () => {
             fn.should.throw(HttpVerbNotSupportedError);
         });
 
+        it('should order more segmented urls before less segmented ones', () => {
+            @Controller('1')
+            class Ctrl {
+                @Get('func1/segmented/4')
+                public funcGet(): void {
+                }
+
+                @Get('func1/thrice')
+                public funcGet2(): void {
+                }
+            }
+
+            @Controller('2')
+            class Ctrl2 {
+                @Get('func1/segmented/5/times')
+                public funcGet(): void {
+                }
+
+                @Get('func1')
+                public funcGet2(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(4);
+
+            spy.getCall(0).should.be.calledWith('/2/func1/segmented/5/times');
+            spy.getCall(1).should.be.calledWith('/1/func1/segmented/4');
+            spy.getCall(2).should.be.calledWith('/1/func1/thrice');
+            spy.getCall(3).should.be.calledWith('/2/func1');
+        });
+
+        it('should order less wildcarded urls before more wildcarded ones', () => {
+            @Controller('1')
+            class Ctrl {
+                @Get('func1/*/2/*')
+                public funcGet(): void {
+                }
+
+                @Get('func1/foo/*/bar')
+                public funcGet2(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(2);
+
+            spy.getCall(0).should.be.calledWith('/1/func1/foo/*/bar');
+            spy.getCall(1).should.be.calledWith('/1/func1/*/2/*');
+        });
+
+        it('should order a list of urls correctly', () => {
+            @Controller('static')
+            class StaticFiles {
+                @Get('*')
+                public funcGet(): void {
+                }
+            }
+
+            @Controller('api')
+            class Api {
+                @Get('stores')
+                public funcGet(): void {
+                }
+
+                @Get('products')
+                public funcGet2(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(3);
+
+            spy.getCall(0).should.be.calledWith('/api/stores');
+            spy.getCall(1).should.be.calledWith('/api/products');
+            spy.getCall(2).should.be.calledWith('/static/*');
+        });
+
     });
 
     describe('Register from folder function', () => {
