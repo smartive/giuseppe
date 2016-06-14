@@ -433,6 +433,87 @@ describe('Controller', () => {
             spy.getCall(2).should.be.calledWith('/static/*');
         });
 
+        it('should filter double slash in a normal route', () => {
+            @Controller('api')
+            class Api {
+                @Get('/stores')
+                public funcGet(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(1);
+
+            spy.getCall(0).should.be.calledWith('/api/stores');
+        });
+
+        it('should filter double slash in a root route', () => {
+            @Controller('')
+            class Api {
+                @Get('~/stores')
+                public funcGet(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(1);
+
+            spy.getCall(0).should.be.calledWith('/stores');
+        });
+
+        it('should register a route from root with ~', () => {
+            @Controller()
+            class StaticFiles {
+                @Get('~/*')
+                public funcGet(): void {
+                }
+            }
+
+            @Controller('stores')
+            class Api {
+                @Get()
+                public funcGet(): void {
+                }
+            }
+
+            registerControllers('api', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(2);
+
+            spy.getCall(0).should.be.calledWith('/api/stores');
+            spy.getCall(1).should.be.calledWith('/*');
+        });
+
+        it('should throw on duplicate routes from root', () => {
+            @Controller()
+            class Ctrl {
+                @Get('~/root')
+                public get1(): void {
+                }
+            }
+
+            @Controller('foobar')
+            class Ctrl2 {
+                @Get('~/root')
+                public get1(): void {
+                }
+            }
+
+            let fn = () => {
+                registerControllers('baseUrl', router);
+            };
+
+            fn.should.throw(DuplicateRouteDeclarationError);
+        });
+
     });
 
     describe('Register from folder function', () => {

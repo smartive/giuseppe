@@ -9,9 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `registerControllersFromFolder` function that loads and registers controllers from a folder.
 - `@Cookie` parameter decorator to parse cookies and load them into routes.
 - Routes are ordered by segment count and then by wildcard count to support wildcard routes.
+- Routes that start with a `~` ignore the route hierarchy and are registered from the root. 
 
 ### Changed
 - Updated `typings` to 1.x version: `ambient` dependencies are new `global` dependencies.
+
+### Fixed
+- Double slashes are filtered during registration (`/api//foo` -> `/api/foo`).
 
 
 ## [0.6.1] - 2016-05-17

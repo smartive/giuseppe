@@ -35,6 +35,35 @@ class ApiController {
 In the example above, the routes to `api/demo` are routed correctly, even
 if the static file controller is (technically) loaded first.
 
+## Root routes
+
+If you want to overwrite the previous declared route segments, it is possible
+with the special character `~`. With this as the starting character of any
+controller or method route decorator, all the route segments are ignored
+and the route is registered from the root of the application.
+
+To clarify the behaviour, have a look at the following example.
+
+```typescript
+@Controller('~/*')          // <-- this gets registered as /*
+class StaticFileController {
+    @Get()
+    public getFile(@Req() req: Request, @Res() res: Response): void {
+        /* get the file path from the requests url */
+        res.sendFile(/* filepath */);
+    }
+}
+
+@Controller('demo')        // <-- this gets registered as /api/demo...
+class ApiController {
+    /* ... */
+}
+
+app.use(registerControllers('api'));
+```
+
+You can even use the `~` character in a `@Get` or any other route decorator.
+
 ## Registration function
 
 ### Register loaded controllers
