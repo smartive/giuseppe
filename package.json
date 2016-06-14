@@ -1,7 +1,7 @@
 {
   "name": "giuseppe",
-  "version": "0.6.1",
-  "description": "A controller routing system for expressJS with typescript decorators and annotations",
+  "version": "1.0.0-rc.1",
+  "description": "An attributed controller routing system for expressJS with typescript decorators and annotations",
   "main": "index.js",
   "scripts": {
     "bootstrap": "npm install -q && typings install",
