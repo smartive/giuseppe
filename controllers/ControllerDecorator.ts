@@ -59,13 +59,6 @@ class RegistrationHelper {
     }
 }
 
-function wildcardSort(o1: RegistrationHelper, o2: RegistrationHelper): number {
-    if (o1.wildcardCount === o2.wildcardCount) {
-        return 0;
-    }
-    return o1.wildcardCount > o2.wildcardCount ? 1 : -1;
-}
-
 function extractParam(request: Request, param: Param): any {
     switch (param.paramType) {
         case ParamType.Body:
@@ -313,20 +306,15 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
         }
     }
 
-    let map: RegistrationHelper[][] = [];
-    for (let route of definedRoutes) {
-        if (!map[route.segmentCount]) {
-            map[route.segmentCount] = [];
-        }
-
-        map[route.segmentCount].push(route);
-    }
-
-    for (let routes of map.filter(Boolean).reverse()) {
-        for (let route of routes.sort(wildcardSort)) {
-            registerRoute(route, router);
-        }
-    }
+    definedRoutes
+        .reduce((segmentSorted, route) => {
+            (segmentSorted[route.segmentCount] || (segmentSorted[route.segmentCount] = [])).push(route);
+            return segmentSorted;
+        }, [])
+        .filter(Boolean)
+        .reverse()
+        .reduce((routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcardCount - r2.wildcardCount)), [])
+        .forEach(r => registerRoute(r, router));
 
     return router;
 }
