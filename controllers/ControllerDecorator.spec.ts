@@ -492,6 +492,56 @@ describe('Controller', () => {
             spy.getCall(1).should.be.calledWith('/*');
         });
 
+        it('should register a controller from root with ~', () => {
+            @Controller('~/')
+            class StaticFiles {
+                @Get('foo')
+                public funcGet(): void {
+                }
+            }
+
+            @Controller('stores')
+            class Api {
+                @Get()
+                public funcGet(): void {
+                }
+            }
+
+            registerControllers('api', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(2);
+
+            spy.getCall(0).should.be.calledWith('/api/stores');
+            spy.getCall(1).should.be.calledWith('/foo');
+        });
+
+        it('should register a controller and a route from root with ~', () => {
+            @Controller('~/another')
+            class StaticFiles {
+                @Get('~/third')
+                public funcGet(): void {
+                }
+            }
+
+            @Controller('stores')
+            class Api {
+                @Get()
+                public funcGet(): void {
+                }
+            }
+
+            registerControllers('api', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(2);
+
+            spy.getCall(0).should.be.calledWith('/api/stores');
+            spy.getCall(1).should.be.calledWith('/third');
+        });
+
         it('should throw on duplicate routes from root', () => {
             @Controller()
             class Ctrl {

@@ -223,7 +223,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 hasResponseParam = !!params.filter(p => p.paramType === ParamType.Response).length;
 
             let index;
-            if ((index = routeUrl.indexOf('~')) > -1) {
+            if ((index = routeUrl.lastIndexOf('~')) > -1) {
                 routeUrl = routeUrl.substring(index + 1);
             }
 
