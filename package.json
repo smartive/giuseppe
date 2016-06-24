@@ -8,7 +8,7 @@
     "clean": "rimraf build",
     "pretest": "npm run clean && tsc",
     "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd ./build/**/*.spec.js",
-    "precitest": "npm install body-parser && npm run bootstrap && npm run clean && tsc",
+    "precitest": "npm install body-parser newman && npm run bootstrap && npm run clean && tsc",
     "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd ./build/**/*.spec.js",
     "develop": "npm run clean && tsc --sourceMap -w --pretty"
   },
@@ -52,7 +52,6 @@
     "istanbul": "^0.4.3",
     "mocha": "^2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
-    "newman": "^2.1.1",
     "rimraf": "^2.5.2",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
