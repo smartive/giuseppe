@@ -1,9 +1,15 @@
 import {Controller} from '../../../controllers/ControllerDecorator';
 import {UrlParam, Body} from '../../../params/ParamDecorators';
 import {Get, Put, Post, Delete, Head} from '../../../routes/RouteDecorators';
+import {ErrorHandler} from '../../../errors/ErrorHandlerDecorator';
+import {Request, Response} from 'express';
 
 class ApiObject {
-    constructor(public id: number, public name: string) {
+    public id: number;
+    public name: string;
+
+    constructor(raw: any) {
+        this.name = raw.name;
     }
 }
 
@@ -38,7 +44,6 @@ class ApiController {
     }
 
     @Post()
-    @Put()
     public create(@Body({required: true}) obj: ApiObject): ApiObject {
         let maxId = this.objects.map(o => o.id).sort().slice(-1)[0] || 0;
         maxId++;
@@ -65,22 +70,9 @@ class ApiController {
         }
         this.objects.splice(this.objects.indexOf(obj), 1);
     }
+
+    @ErrorHandler(ObjectNotFound)
+    public clientErr(req: Request, res: Response, error: ObjectNotFound): void {
+        res.status(404).json({error}).end();
+    }
 }
-/*
-
- class SecureApiController {
-
- }
-
- class WildcardController {
-
- }
-
- class RootRouteController {
-
- }
-
- class EchoController {
-
- }
- */
