@@ -18,7 +18,7 @@ registerControllersFromFolder({folderPath: './build/.test/integration/controller
                     exitCode: true,
                     responseHandler: 'TestResponseHandler'
                 },
-                collection = require('../../../.test/giuseppe.postman_collection.json');
+                collection = require('../../../.test/integration/giuseppe.postman_collection.json');
             if (process.argv.indexOf('--no-newman') === -1) {
                 newman.execute(collection, newmanOptions, process.exit);
             }
