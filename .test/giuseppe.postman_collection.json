@@ -1,0 +1,312 @@
+{
+  "variables": [],
+  "info": {
+    "name": "giuseppe",
+    "_postman_id": "45fd455c-08c9-cf73-97d4-6e2afbd1781c",
+    "description": "Integrationtests for the giuseppe framework to ensure giuseppe works with the current versions of expressJS.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Base api features",
+      "description": "",
+      "item": [
+        {
+          "name": "Get empty api array",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains no elements'] = body.length === 0;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects",
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Get non existing object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "tests['Status code is 404'] = responseCode.code === 404;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects/1",
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Update non existing object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "tests['Status code is 404'] = responseCode.code === 404;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects/1",
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Delete non existing object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "tests['Status code is 404'] = responseCode.code === 404;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects/1",
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Create object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains all information'] = body.name === 'First object';\ntests['Response contains the correct id'] = body.id === 1;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"First object\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Update object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains updated information'] = body.name === 'First object updated';\ntests['Response contains the correct id'] = body.id === 1;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects/1",
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"First object updated\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Delete object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "tests['Status code is 204'] = responseCode.code === 204;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects/1",
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"First object updated\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Exists object (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "tests['Status code is 404'] = responseCode.code === 404;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects/1",
+            "method": "HEAD",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"First object updated\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Create object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains all information'] = body.name === 'First object';\ntests['Response contains the correct id'] = body.id === 1;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"First object\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Exists object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "tests['Status code is 200'] = responseCode.code === 200;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects/1",
+            "method": "HEAD",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"First object updated\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Delete object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": "tests['Status code is 204'] = responseCode.code === 204;"
+              }
+            }
+          ],
+          "request": {
+            "url": "localhost:8080/api/objects/1",
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"First object updated\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

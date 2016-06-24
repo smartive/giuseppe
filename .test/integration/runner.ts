@@ -11,6 +11,14 @@ registerControllersFromFolder({folderPath: './build/.test/integration/controller
     .then(router => {
         app.use(router);
         app.listen(8080, () => {
-            console.log('Up and running on port 8080');
+            let newmanOptions = {
+                    envJson: {},
+                    asLibrary: true,
+                    stopOnError: false,
+                    exitCode: true,
+                    responseHandler: 'TestResponseHandler'
+                },
+                collection = require('../../../.test/giuseppe.postman_collection.json');
+            newman.execute(collection, newmanOptions, process.exit);
         });
     });
