@@ -251,7 +251,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 }
             });
 
-            params = params.sort((p1, p2) => (p1.index < p2.index) ? -1 : 1);
+            params = params.sort((p1, p2) => p1.index - p2.index);
 
             route.descriptor.value = (request: Request, response: Response, next) => {
                 let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
