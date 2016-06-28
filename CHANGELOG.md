@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Postman / Newman integration tests to ensure giuseppe works with the given express version.
+- Possibility to add multiple route decorators to the same function.
 
 ### Fixed
 - When using `~` on a controller and a route, it uses the correct root for the route now.
