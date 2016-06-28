@@ -113,6 +113,86 @@ describe('Controller', () => {
             router.delete.should.not.be.called;
         });
 
+        it('should register 1 controller with 1 functions with 2 decorator correctly', () => {
+            @Controller()
+            class Ctrl {
+                @Get()
+                @Post()
+                public func(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
+            routes.should.be.an('array').with.lengthOf(2);
+            router.get.should.be.calledWith('/');
+            routes[0].propertyKey.should.equal('func');
+            router.put.should.not.be.called;
+            router.post.should.be.calledWith('/');
+            routes[1].propertyKey.should.equal('func');
+            router.delete.should.not.be.called;
+        });
+
+        it('should register 1 controller with 2 functions with 2 decorator correctly', () => {
+            @Controller()
+            class Ctrl {
+                @Get()
+                @Post()
+                public func(): void {
+                }
+
+                @Put()
+                @Delete()
+                public func2(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
+            routes.should.be.an('array').with.lengthOf(4);
+            router.get.should.be.calledWith('/');
+            routes[0].propertyKey.should.equal('func');
+
+            router.post.should.be.calledWith('/');
+            routes[1].propertyKey.should.equal('func');
+
+            router.put.should.be.calledWith('/');
+            routes[2].propertyKey.should.equal('func2');
+
+            router.delete.should.be.calledWith('/');
+            routes[3].propertyKey.should.equal('func2');
+        });
+
+        it('should register 1 controller with 1 function with all decorator correctly', () => {
+            @Controller()
+            class Ctrl {
+                @Get()
+                @Post()
+                @Put()
+                @Delete()
+                public func(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
+            routes.should.be.an('array').with.lengthOf(4);
+            router.get.should.be.calledWith('/');
+            routes[0].propertyKey.should.equal('func');
+
+            router.post.should.be.calledWith('/');
+            routes[1].propertyKey.should.equal('func');
+
+            router.put.should.be.calledWith('/');
+            routes[2].propertyKey.should.equal('func');
+
+            router.delete.should.be.calledWith('/');
+            routes[3].propertyKey.should.equal('func');
+        });
+
         it('should register 2 controller with 1 function correctly', () => {
             @Controller('1')
             class Ctrl {
