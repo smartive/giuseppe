@@ -44,6 +44,7 @@ class ApiController {
     }
 
     @Post()
+    @Put()
     public create(@Body({required: true}) obj: ApiObject): ApiObject {
         let maxId = this.objects.map(o => o.id).sort().slice(-1)[0] || 0;
         maxId++;

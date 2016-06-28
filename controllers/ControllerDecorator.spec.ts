@@ -106,11 +106,91 @@ describe('Controller', () => {
 
             let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
             routes.should.be.an('array').with.lengthOf(1);
-
-            router.get.should.be.calledWithExactly('/', routes[0].descriptor.value);
+            router.get.should.be.calledWith('/');
+            routes[0].propertyKey.should.equal('func');
             router.put.should.not.be.called;
             router.post.should.not.be.called;
             router.delete.should.not.be.called;
+        });
+
+        it('should register 1 controller with 1 functions with 2 decorator correctly', () => {
+            @Controller()
+            class Ctrl {
+                @Get()
+                @Post()
+                public func(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
+            routes.should.be.an('array').with.lengthOf(2);
+            router.get.should.be.calledWith('/');
+            routes[0].propertyKey.should.equal('func');
+            router.put.should.not.be.called;
+            router.post.should.be.calledWith('/');
+            routes[1].propertyKey.should.equal('func');
+            router.delete.should.not.be.called;
+        });
+
+        it('should register 1 controller with 2 functions with 2 decorator correctly', () => {
+            @Controller()
+            class Ctrl {
+                @Get()
+                @Post()
+                public func(): void {
+                }
+
+                @Put()
+                @Delete()
+                public func2(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
+            routes.should.be.an('array').with.lengthOf(4);
+            router.get.should.be.calledWith('/');
+            routes[0].propertyKey.should.equal('func');
+
+            router.post.should.be.calledWith('/');
+            routes[1].propertyKey.should.equal('func');
+
+            router.put.should.be.calledWith('/');
+            routes[2].propertyKey.should.equal('func2');
+
+            router.delete.should.be.calledWith('/');
+            routes[3].propertyKey.should.equal('func2');
+        });
+
+        it('should register 1 controller with 1 function with all decorator correctly', () => {
+            @Controller()
+            class Ctrl {
+                @Get()
+                @Post()
+                @Put()
+                @Delete()
+                public func(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
+            routes.should.be.an('array').with.lengthOf(4);
+            router.get.should.be.calledWith('/');
+            routes[0].propertyKey.should.equal('func');
+
+            router.post.should.be.calledWith('/');
+            routes[1].propertyKey.should.equal('func');
+
+            router.put.should.be.calledWith('/');
+            routes[2].propertyKey.should.equal('func');
+
+            router.delete.should.be.calledWith('/');
+            routes[3].propertyKey.should.equal('func');
         });
 
         it('should register 2 controller with 1 function correctly', () => {
@@ -124,7 +204,7 @@ describe('Controller', () => {
             @Controller('2')
             class Ctrl2 {
                 @Get()
-                public func(): void {
+                public func2(): void {
                 }
             }
 
@@ -141,8 +221,11 @@ describe('Controller', () => {
             let routes2 = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl2);
             routes2.should.be.an('array').with.lengthOf(1);
 
-            (router.get as SinonSpy).firstCall.should.be.calledWithExactly('/1', routes1[0].descriptor.value);
-            (router.get as SinonSpy).secondCall.should.be.calledWithExactly('/2', routes2[0].descriptor.value);
+            (router.get as SinonSpy).firstCall.should.be.calledWith('/1');
+            (router.get as SinonSpy).secondCall.should.be.calledWith('/2');
+
+            routes1[0].propertyKey.should.equal('func');
+            routes2[0].propertyKey.should.equal('func2');
         });
 
         it('should register 1 controller with 2 function correctly', () => {
@@ -167,8 +250,11 @@ describe('Controller', () => {
             router.post.should.be.calledOnce;
             router.delete.should.not.be.called;
 
-            (router.get as SinonSpy).should.be.calledWithExactly('/1/func1', routes[0].descriptor.value);
-            (router.post as SinonSpy).should.be.calledWithExactly('/1/func1', routes[1].descriptor.value);
+            (router.get as SinonSpy).should.be.calledWith('/1/func1');
+            (router.post as SinonSpy).should.be.calledWith('/1/func1');
+
+            routes[0].propertyKey.should.equal('funcGet');
+            routes[1].propertyKey.should.equal('funcPost');
         });
 
         it('should register 2 controller with 2 function correctly', () => {
@@ -207,10 +293,15 @@ describe('Controller', () => {
             router.post.should.be.calledTwice;
             router.delete.should.not.be.called;
 
-            (router.get as SinonSpy).firstCall.should.be.calledWithExactly('/1/func1', routes1[0].descriptor.value);
-            (router.get as SinonSpy).secondCall.should.be.calledWithExactly('/2/func1', routes2[0].descriptor.value);
-            (router.post as SinonSpy).firstCall.should.be.calledWithExactly('/1/func1', routes1[1].descriptor.value);
-            (router.post as SinonSpy).secondCall.should.be.calledWithExactly('/2/func1', routes2[1].descriptor.value);
+            (router.get as SinonSpy).firstCall.should.be.calledWith('/1/func1');
+            (router.get as SinonSpy).secondCall.should.be.calledWith('/2/func1');
+            (router.post as SinonSpy).firstCall.should.be.calledWith('/1/func1');
+            (router.post as SinonSpy).secondCall.should.be.calledWith('/2/func1');
+
+            routes1[0].propertyKey.should.equal('funcGet');
+            routes1[1].propertyKey.should.equal('funcPost');
+            routes2[0].propertyKey.should.equal('funcGet');
+            routes2[1].propertyKey.should.equal('funcPost');
         });
 
         it('should register a full controller with all function correctly', () => {
@@ -243,11 +334,17 @@ describe('Controller', () => {
             let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
             routes.should.be.an('array').with.lengthOf(5);
 
-            router.get.should.be.calledWithExactly('/func1', routes[0].descriptor.value);
-            router.put.should.be.calledWithExactly('/func1', routes[1].descriptor.value);
-            router.post.should.be.calledWithExactly('/func1', routes[2].descriptor.value);
-            router.delete.should.be.calledWithExactly('/func1', routes[3].descriptor.value);
-            router.head.should.be.calledWithExactly('/func1', routes[4].descriptor.value);
+            router.get.should.be.calledWith('/func1');
+            router.put.should.be.calledWith('/func1');
+            router.post.should.be.calledWith('/func1');
+            router.delete.should.be.calledWith('/func1');
+            router.head.should.be.calledWith('/func1');
+
+            routes[0].propertyKey.should.equal('funcGet');
+            routes[1].propertyKey.should.equal('funcPut');
+            routes[2].propertyKey.should.equal('funcPost');
+            routes[3].propertyKey.should.equal('funcDelete');
+            routes[4].propertyKey.should.equal('funcHead');
         });
 
         it('should use baseUrl correctly', () => {
@@ -263,7 +360,7 @@ describe('Controller', () => {
             let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
             routes.should.be.an('array').with.lengthOf(1);
 
-            router.get.should.be.calledWithExactly('/base', routes[0].descriptor.value);
+            router.get.should.be.calledWith('/base');
         });
 
         it('should use controller routePrefix correctly', () => {
@@ -279,7 +376,7 @@ describe('Controller', () => {
             let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
             routes.should.be.an('array').with.lengthOf(1);
 
-            router.get.should.be.calledWithExactly('/ctrl', routes[0].descriptor.value);
+            router.get.should.be.calledWith('/ctrl');
         });
 
         it('should use baseUrl and controller routePrefix correctly', () => {
@@ -295,7 +392,7 @@ describe('Controller', () => {
             let routes = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
             routes.should.be.an('array').with.lengthOf(1);
 
-            router.get.should.be.calledWithExactly('/base/ctrl', routes[0].descriptor.value);
+            router.get.should.be.calledWith('/base/ctrl');
         });
 
         it('should not register an empty controller', () => {
@@ -596,10 +693,10 @@ describe('Controller', () => {
                     router.post.should.be.calledTwice;
                     router.delete.should.not.be.called;
 
-                    (router.get as SinonSpy).firstCall.should.be.calledWithExactly('/1/func1', routes1[0].descriptor.value);
-                    (router.get as SinonSpy).secondCall.should.be.calledWithExactly('/2/func1', routes2[0].descriptor.value);
-                    (router.post as SinonSpy).firstCall.should.be.calledWithExactly('/1/func1', routes1[1].descriptor.value);
-                    (router.post as SinonSpy).secondCall.should.be.calledWithExactly('/2/func1', routes2[1].descriptor.value);
+                    (router.get as SinonSpy).firstCall.should.be.calledWith('/1/func1');
+                    (router.get as SinonSpy).secondCall.should.be.calledWith('/2/func1');
+                    (router.post as SinonSpy).firstCall.should.be.calledWith('/1/func1');
+                    (router.post as SinonSpy).secondCall.should.be.calledWith('/2/func1');
 
                     done();
                 })

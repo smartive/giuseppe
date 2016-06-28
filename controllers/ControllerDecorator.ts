@@ -53,7 +53,7 @@ class RegistrationHelper {
     public wildcardCount: number;
     public segmentCount: number;
 
-    constructor(public routeId: string, public routeUrl: string, public route: RouteRegistration, public middlewares: RequestHandler[]) {
+    constructor(public routeId: string, public routeUrl: string, public route: RouteRegistration, public decoratedMethod: Function, public middlewares: RequestHandler[]) {
         this.wildcardCount = this.routeUrl.split('*').length - 1;
         this.segmentCount = this.routeUrl.split('/').length;
     }
@@ -158,19 +158,19 @@ function getParamValues(params: Param[], request: Request, response: Response) {
 function registerRoute(registration: RegistrationHelper, router: Router) {
     switch (registration.route.method) {
         case RouteMethod.Get:
-            router.get(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
+            router.get(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
             break;
         case RouteMethod.Put:
-            router.put(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
+            router.put(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
             break;
         case RouteMethod.Post:
-            router.post(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
+            router.post(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
             break;
         case RouteMethod.Delete:
-            router.delete(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
+            router.delete(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
             break;
         case RouteMethod.Head:
-            router.head(registration.routeUrl, ...registration.middlewares, (registration.route.descriptor.value as any));
+            router.head(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
             break;
         default:
             throw new HttpVerbNotSupportedError(registration.route.method);
@@ -251,9 +251,9 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 }
             });
 
-            params = params.sort((p1, p2) => (p1.index < p2.index) ? -1 : 1);
+            params = params.sort((p1, p2) => p1.index - p2.index);
 
-            route.descriptor.value = (request: Request, response: Response, next) => {
+            let decoratedMethod = (request: Request, response: Response, next) => {
                 let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
                     paramValues = [];
 
@@ -308,7 +308,7 @@ export function registerControllers(baseUrl: string = '', router: Router = Route
                 }
             };
 
-            definedRoutes.push(new RegistrationHelper(routeId, routeUrl, route, middlewares));
+            definedRoutes.push(new RegistrationHelper(routeId, routeUrl, route, decoratedMethod, middlewares));
         }
     }
 

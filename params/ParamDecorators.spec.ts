@@ -1631,6 +1631,29 @@ describe('ParamDecorators', () => {
             }, null]);
         });
 
+        it('should use the correct param order', () => {
+            @Controller()
+            class Ctrl {
+                @Route()
+                public func(@Query('first') first: string, nonParam: any, @Query('second') second: string): any {
+                    first.should.equal('first');
+                    second.should.equal('second');
+                    should.not.exist(nonParam);
+
+                    return {};
+                }
+            }
+
+            let router = new TestRouter();
+
+            registerControllers('', (router as any));
+
+            router.routes['/'].apply(this, [{query: {first: 'first', second: 'second'}}, {
+                json: () => {
+                }
+            }, null]);
+        });
+
     });
 
 });
