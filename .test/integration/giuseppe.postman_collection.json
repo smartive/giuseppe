@@ -1,778 +1,865 @@
 {
-  "variables": [],
-  "info": {
-    "name": "giuseppe",
-    "_postman_id": "45fd455c-08c9-cf73-97d4-6e2afbd1781c",
-    "description": "Integrationtests for the giuseppe framework to ensure giuseppe works with the current versions of expressJS.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Base api controller",
-      "description": "",
-      "item": [
-        {
-          "name": "Get empty api array",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains no elements'] = body.length === 0;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Get non existing object",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 404'] = responseCode.code === 404;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects/1",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Update non existing object",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 404'] = responseCode.code === 404;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects/1",
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Delete non existing object",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 404'] = responseCode.code === 404;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects/1",
-            "method": "DELETE",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Create object",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains all information'] = body.name === 'First object';\ntests['Response contains the correct id'] = body.id === 1;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects",
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"First object\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Update object",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains updated information'] = body.name === 'First object updated';\ntests['Response contains the correct id'] = body.id === 1;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects/1",
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"First object updated\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Delete object",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 204'] = responseCode.code === 204;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects/1",
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"First object updated\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Exists object (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 404'] = responseCode.code === 404;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects/1",
-            "method": "HEAD",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"First object updated\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Create object",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains all information'] = body.name === 'First object';\ntests['Response contains the correct id'] = body.id === 1;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects",
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"First object\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Exists object",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 200'] = responseCode.code === 200;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects/1",
-            "method": "HEAD",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"First object updated\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Delete object",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 204'] = responseCode.code === 204;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/objects/1",
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"First object updated\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Echo controller",
-      "description": "",
-      "item": [
-        {
-          "name": "Check url param",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct url param'] = body.urlParam === 'my-fancy-id';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/echo/my-fancy-id",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Check query param",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct query param'] = body.query === 'query';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/echo?query=query",
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Check body param",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct body param'] = body.body.name === 'body param';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/echo",
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"body param\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Check header param",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct header param'] = body.header === 'header';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/echo",
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "header",
-                "value": "header",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": ""
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Check all params at once",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct body param'] = body.body.name === 'body param';\ntests['Response contains correct header param'] = body.query === 'query';\ntests['Response contains correct query param'] = body.header === 'header';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/echo?query=query",
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "header",
-                "value": "header",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"body param\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Middleware controller",
-      "description": "",
-      "item": [
-        {
-          "name": "Unauthorized request",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 401'] = responseCode.code === 401;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/secure",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Unauthorized request with 2 middlewares",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 401'] = responseCode.code === 401;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/secure",
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Authorized request",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains secure object'] = body.secure === 'object';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/secure?user=giuseppe&pass=secure",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Authorized but forbidden request with 2 middlewares",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 403'] = responseCode.code === 403;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/secure?user=giuseppe&pass=secure",
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Authorized request with 2 middlewares",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains secure object'] = body.secure === 'object' && body.admin;"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/secure?user=giuseppe&pass=secure&admin=true",
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Root controller",
-      "description": "",
-      "item": [
-        {
-          "name": "Check for the new controller root",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is another-root'] = responseBody === 'another-root';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/another/root",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Check for the new route root",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is a-third-root'] = responseBody === 'a-third-root';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/a-third",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Wildcard controller",
-      "description": "",
-      "item": [
-        {
-          "name": "Wildcard route for all requests",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is catch-all'] = responseBody === 'catch-all';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/wildcard/foo",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Wildcard route for all requests with multiple segments",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is catch-all'] = responseBody === 'catch-all';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/wildcard/foo/bar/baz",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "One wildcard in route",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is one-wildcard'] = responseBody === 'one-wildcard';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/wildcard/giuseppe/is",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Two wildcards in route",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is two-wildcards'] = responseBody === 'two-wildcards';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/wildcard/giuseppe/is/awesome/yea",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Three wildcards in route",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is three-wildcards'] = responseBody === 'three-wildcards';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/wildcard/giuseppe/is/awesome/for/api/coding/yeah",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Three wildcards in route with multiple segments",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is three-wildcards'] = responseBody === 'three-wildcards';"
-              }
-            }
-          ],
-          "request": {
-            "url": "localhost:8080/api/wildcard/giuseppe/is/awesome/for/api/coding/if/you/know/that/yeah",
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    }
-  ]
+	"variables": [],
+	"info": {
+		"name": "giuseppe",
+		"_postman_id": "45fd455c-08c9-cf73-97d4-6e2afbd1781c",
+		"description": "Integrationtests for the giuseppe framework to ensure giuseppe works with the current versions of expressJS.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Base api controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Get empty api array",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains no elements'] = body.length === 0;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get non existing object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 404'] = responseCode.code === 404;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/1",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update non existing object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 404'] = responseCode.code === 404;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/1",
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete non existing object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 404'] = responseCode.code === 404;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/1",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains all information'] = body.name === 'First object';\ntests['Response contains the correct id'] = body.id === 1;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"First object\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create object #2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains all information'] = body.name === 'Second object';\ntests['Response contains the correct id'] = body.id === 2;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Second object\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains updated information'] = body.name === 'First object updated';\ntests['Response contains the correct id'] = body.id === 1;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/1",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"First object updated\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update object #2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains updated information'] = body.name === 'Second object updated';\ntests['Response contains the correct id'] = body.id === 2;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/2",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Second object updated\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 204'] = responseCode.code === 204;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/1",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete object #2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 204'] = responseCode.code === 204;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/2",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Exists object (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 404'] = responseCode.code === 404;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/1",
+						"method": "HEAD",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"First object updated\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains all information'] = body.name === 'First object';\ntests['Response contains the correct id'] = body.id === 1;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"First object\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Exists object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 200'] = responseCode.code === 200;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/1",
+						"method": "HEAD",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"First object updated\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete object",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 204'] = responseCode.code === 204;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/objects/1",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Echo controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Check url param",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct url param'] = body.urlParam === 'my-fancy-id';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/echo/my-fancy-id",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Check query param",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct query param'] = body.query === 'query';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/echo?query=query",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Check body param",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct body param'] = body.body.name === 'body param';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/echo",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"body param\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Check header param",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct header param'] = body.header === 'header';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/echo",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "header",
+								"value": "header",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Check all params at once",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains correct body param'] = body.body.name === 'body param';\ntests['Response contains correct header param'] = body.query === 'query';\ntests['Response contains correct query param'] = body.header === 'header';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/echo?query=query",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "header",
+								"value": "header",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"body param\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Middleware controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Unauthorized request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 401'] = responseCode.code === 401;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/secure",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Unauthorized request with 2 middlewares",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 401'] = responseCode.code === 401;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/secure",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Authorized request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains secure object'] = body.secure === 'object';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/secure?user=giuseppe&pass=secure",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Authorized but forbidden request with 2 middlewares",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 403'] = responseCode.code === 403;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/secure?user=giuseppe&pass=secure",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Authorized request with 2 middlewares",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var body = JSON.parse(responseBody || {});\n\ntests['Status code is 200'] = responseCode.code === 200;\ntests['Response contains secure object'] = body.secure === 'object' && body.admin;"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/secure?user=giuseppe&pass=secure&admin=true",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Root controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Check for the new controller root",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is another-root'] = responseBody === 'another-root';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/another/root",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Check for the new route root",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is a-third-root'] = responseBody === 'a-third-root';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/a-third",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wildcard controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Wildcard route for all requests",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is catch-all'] = responseBody === 'catch-all';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/wildcard/foo",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Wildcard route for all requests with multiple segments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is catch-all'] = responseBody === 'catch-all';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/wildcard/foo/bar/baz",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "One wildcard in route",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is one-wildcard'] = responseBody === 'one-wildcard';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/wildcard/giuseppe/is",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Two wildcards in route",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is two-wildcards'] = responseBody === 'two-wildcards';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/wildcard/giuseppe/is/awesome/yea",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Three wildcards in route",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is three-wildcards'] = responseBody === 'three-wildcards';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/wildcard/giuseppe/is/awesome/for/api/coding/yeah",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Three wildcards in route with multiple segments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests['Status code is 200'] = responseCode.code === 200;\ntests['Response is three-wildcards'] = responseBody === 'three-wildcards';"
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:8080/api/wildcard/giuseppe/is/awesome/for/api/coding/if/you/know/that/yeah",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
 }
