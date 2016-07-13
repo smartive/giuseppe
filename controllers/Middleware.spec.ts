@@ -1,5 +1,7 @@
 import 'reflect-metadata';
-import {Controller, registerControllers, resetControllerRegistrations} from './ControllerDecorator';
+import {Controller} from './ControllerDecorator';
+import {Registrar} from '../core/Registrar';
+import {registerControllers} from '../';
 import {Get, Route} from '../routes/RouteDecorators';
 import chai = require('chai');
 import sinon = require('sinon');
@@ -47,7 +49,7 @@ class TestRouter {
 describe('Middleware', () => {
 
     afterEach(() => {
-        resetControllerRegistrations();
+        Registrar.resetControllerRegistrations();
     });
 
     it('should call controller middleware', () => {

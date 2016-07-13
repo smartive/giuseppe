@@ -1,10 +1,7 @@
 import 'reflect-metadata';
-import {
-    Controller,
-    registerControllers,
-    resetControllerRegistrations,
-    registerControllersFromFolder
-} from './ControllerDecorator';
+import {Controller} from './ControllerDecorator';
+import {Registrar} from '../core/Registrar';
+import {registerControllers, registerControllersFromFolder} from '../';
 import {Router} from 'express';
 import {Get, Post, Put, Delete, Head, ROUTES_KEY, Route} from '../routes/RouteDecorators';
 import {SinonSpy} from 'sinon';
@@ -17,7 +14,7 @@ chai.should();
 chai.use(sinonChai);
 
 class TestRouter {
-    public routes: {[id: string]: Function} = {};
+    public routes: { [id: string]: Function } = {};
 
     public get(route: string, func: Function): void {
         this.routes[route] = func;
@@ -43,7 +40,7 @@ class TestRouter {
 describe('Controller', () => {
 
     afterEach(() => {
-        resetControllerRegistrations();
+        Registrar.resetControllerRegistrations();
     });
 
     describe('Decorator', () => {
@@ -677,7 +674,7 @@ describe('Controller', () => {
         });
 
         it('should register 2 controller with 2 function correctly', done => {
-            registerControllersFromFolder({folderPath: './build/.test/controllers/good'}, '', router)
+            registerControllersFromFolder({ folderPath: './build/.test/controllers/good' }, '', router)
                 .then(() => {
                     let Ctrl = require('../.test/controllers/good/GoodController1').Ctrl,
                         Ctrl2 = require('../.test/controllers/good/GoodController2').Ctrl2;
@@ -706,7 +703,7 @@ describe('Controller', () => {
         });
 
         it('should reject promise when error happens in process', done => {
-            registerControllersFromFolder({folderPath: './build/.test/controllers/bad'}, '', router)
+            registerControllersFromFolder({ folderPath: './build/.test/controllers/bad' }, '', router)
                 .then(() => {
                     done(new Error('did not throw!'));
                 })

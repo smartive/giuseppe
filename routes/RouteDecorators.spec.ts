@@ -12,7 +12,9 @@ import {
 } from '../routes/RouteDecorators';
 import {ParameterConstructorArgumentsError, WrongReturnTypeError, HeadHasWrongReturnTypeError} from '../errors/Errors';
 import {Query, Res} from '../params/ParamDecorators';
-import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
+import {Controller} from '../controllers/ControllerDecorator';
+import {Registrar} from '../core/Registrar';
+import {registerControllers} from '../';
 import {Response} from 'express';
 import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
@@ -50,7 +52,7 @@ class TestRouter {
 describe('RouteDecorators', () => {
 
     afterEach(() => {
-        resetControllerRegistrations();
+        Registrar.resetControllerRegistrations();
     });
 
     describe('Get', () => {

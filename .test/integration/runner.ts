@@ -1,4 +1,4 @@
-import {registerControllersFromFolder} from '../../controllers/ControllerDecorator';
+import {registerControllersFromFolder} from '../../';
 import express = require('express');
 
 let newman = require('newman');

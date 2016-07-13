@@ -1,7 +1,9 @@
 import 'reflect-metadata';
 import {Query, PARAMS_KEY, Param, ParamType, UrlParam, Body, Req, Res, Header, Cookie} from './ParamDecorators';
 import {Route} from '../routes/RouteDecorators';
-import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
+import {Controller} from '../controllers/ControllerDecorator';
+import {Registrar} from '../core/Registrar';
+import {registerControllers} from '../';
 import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationFailedError} from '../errors/Errors';
 import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {isString, isNumber} from '../validators/Validators';
@@ -36,7 +38,7 @@ class TestRouter {
 describe('ParamDecorators', () => {
 
     afterEach(() => {
-        resetControllerRegistrations();
+        Registrar.resetControllerRegistrations();
     });
 
     describe('Query', () => {

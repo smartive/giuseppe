@@ -38,8 +38,19 @@ export type ControllerLoaderOptions = { folderPath: string, root?: string, recur
  */
 export class Registrar {
 
+    /**
+     * TODO
+     */
     public static registerController(registration: ControllerRegistration): void {
         controllers.push(registration);
+    }
+
+    /**
+     * Resets the registered controllers and the defined routes array (used for testing).
+     */
+    public static resetControllerRegistrations(): void {
+        definedRoutes = [];
+        controllers = [];
     }
 
     constructor(private routeHandler: RouteHandler, private paramHandler: ParamHandler) { }
@@ -219,14 +230,6 @@ export class Registrar {
             .forEach(r => registerRoute(r, router));
 
         return router;
-    }
-
-    /**
-     * Resets the registered controllers and the defined routes array (used for testing).
-     */
-    public resetControllerRegistrations(): void {
-        definedRoutes = [];
-        controllers = [];
     }
 }
 

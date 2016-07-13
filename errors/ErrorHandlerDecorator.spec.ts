@@ -9,7 +9,9 @@ import {
     WrongReturnTypeError
 } from './Errors';
 import {Route, Get} from '../routes/RouteDecorators';
-import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
+import {Controller} from '../controllers/ControllerDecorator';
+import {Registrar} from '../core/Registrar';
+import {registerControllers} from '../';
 
 let should = chai.should();
 chai.use(sinonChai);
@@ -41,7 +43,7 @@ class TestRouter {
 describe('ErrorHandlerDecorators', () => {
 
     afterEach(() => {
-        resetControllerRegistrations();
+        Registrar.resetControllerRegistrations();
     });
 
     it('should throw on wrong handler argument count', () => {
