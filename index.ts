@@ -15,6 +15,7 @@ export * from './validators/Validators';
 const paramHandler = new ParamHandler();
 const routeHandler = new RouteHandler(paramHandler);
 const registrar = new Registrar(routeHandler, paramHandler);
+export const core = null;
 
 /**
  * Function that loads and registers all controllers from a given directory. All found files are "required" and
