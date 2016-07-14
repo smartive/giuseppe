@@ -15,9 +15,35 @@ export type ControllerLoaderOptions = { folderPath: string, root?: string, recur
  * TODO
  */
 export interface Registrar {
+    /**
+     * Function that loads and registers all controllers from a given directory. All found files are "required" and
+     * should not throw any errors, or else the promise is rejected.
+     *
+     * @param {ControllerLoaderOptions} [loaderOptions] - The options for loading controllers from a folder.
+     * @param {string} [baseUrl=''] - Base url for the routing system. Will be prefixed for all controllers.
+     * @param {Router} [router=Router()] - Express router to attach the routes to. If omitted, a new router is instantiated.
+     * @returns {Promise<Router>} - A promise that resolves with the configured router instance. Or rejects when an error happens.
+     */
     registerControllersFromFolder(loaderOptions: ControllerLoaderOptions, baseUrl?: string, router?: Router): Promise<Router>;
+
+    /**
+     * Function that registers all decorated controller with their decorated route functions in an expressJS router.
+     * When no router is provided, this function will instantiate and return a router.
+     *
+     * @param {string} [baseUrl=''] - Base url for the routing system. Will be prefixed for all controllers.
+     * @param {Router} [router=Router()] - Express router to attach the routes to. If omitted, a new router is instantiated.
+     * @returns {Router} - The configured router.
+     */
     registerControllers(baseUrl?: string, router?: Router): Router;
+
+    /**
+     * TODO
+     */
     registerController(registration: ControllerRegistration): void;
+
+    /**
+     * Resets the registered controllers and the defined routes array (only used for testing).
+     */
     resetControllerRegistrations(): void;
 }
 
