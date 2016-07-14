@@ -56,6 +56,23 @@ describe('DefaultRegistrar', () => {
         sinon.stub(router, 'head');
     });
 
+    describe('registerController', () => {
+
+        it('should add a controller to its cache', () => {
+            @Controller()
+            class Ctrl {
+                @Get()
+                public func(): void {
+                }
+            }
+
+            let registrar = IocContainer.get<Registrar>(IoCSymbols.registrar);
+
+            (registrar as any).controllers.should.be.an('array').with.lengthOf(1);
+        });
+
+    });
+
     describe('registerControllers', () => {
 
         it('should register 1 controller with 1 function correctly', () => {
