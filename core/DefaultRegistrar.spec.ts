@@ -6,6 +6,7 @@ import {Router} from 'express';
 import {Get, Post, Put, Delete, Head, ROUTES_KEY} from '../routes/RouteDecorators';
 import {SinonSpy} from '~sinon/lib/sinon';
 import {DuplicateRouteDeclarationError, HttpVerbNotSupportedError} from '../errors/Errors';
+import {Symbols, IocContainer} from './IoC';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -40,7 +41,7 @@ class TestRouter {
 describe('Registrar', () => {
 
     afterEach(() => {
-        Registrar.resetControllerRegistrations();
+        IocContainer.get<Registrar>(Symbols.registrar).resetControllerRegistrations();
     });
 
     let router: Router;

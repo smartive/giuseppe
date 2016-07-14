@@ -8,6 +8,7 @@ import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationF
 import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {isString, isNumber} from '../validators/Validators';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
+import {Symbols, IocContainer} from '../core/IoC';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -38,7 +39,7 @@ class TestRouter {
 describe('ParamDecorators', () => {
 
     afterEach(() => {
-        Registrar.resetControllerRegistrations();
+        IocContainer.get<Registrar>(Symbols.registrar).resetControllerRegistrations();
     });
 
     describe('Query', () => {

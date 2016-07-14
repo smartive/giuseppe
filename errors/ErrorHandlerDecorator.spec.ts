@@ -12,6 +12,7 @@ import {Route, Get} from '../routes/RouteDecorators';
 import {Controller} from '../controllers/ControllerDecorator';
 import {Registrar} from '../core/Registrar';
 import {registerControllers} from '../';
+import {Symbols, IocContainer} from '../core/IoC';
 
 let should = chai.should();
 chai.use(sinonChai);
@@ -43,7 +44,7 @@ class TestRouter {
 describe('ErrorHandlerDecorators', () => {
 
     afterEach(() => {
-        Registrar.resetControllerRegistrations();
+        IocContainer.get<Registrar>(Symbols.registrar).resetControllerRegistrations();
     });
 
     it('should throw on wrong handler argument count', () => {

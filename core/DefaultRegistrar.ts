@@ -1,7 +1,5 @@
 import 'reflect-metadata';
 import {Router, Request, Response} from 'express';
-import {RouteHandler} from './RouteHandler';
-import {ParamHandler} from './ParamHandler';
 import {RouteMethod, ROUTES_KEY, RouteRegistration} from '../routes/RouteDecorators';
 import {
     HttpVerbNotSupportedError,
@@ -21,41 +19,21 @@ import {Validator} from '../validators/Validators';
 import {RequestHandler} from 'express-serve-static-core';
 import {QueryParamOptions, ParameterFactory, FactoryParameterOptions} from '../params/ParamOptions';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
+import {ControllerLoaderOptions, Registrar} from './Registrar';
+import {injectable} from 'inversify';
 import httpStatus = require('http-status');
-
-/**
- * Options for the registerControllersFromFolder function. It is an object with configuration parameters.
- *
- * @param {string} folderPath - The root path to start the search for *.js files.
- * @param {root} [root] - The project root folder (could be different if you start your app with node .)
- * @param {boolean} [recursive] - Should the function search for *.js in a recursive mode.
- * @param {RegExp} [matchRegExp] - An optional regular expression for the found files.
- */
-export type ControllerLoaderOptions = { folderPath: string, root?: string, recursive?: boolean, matchRegExp?: RegExp };
 
 /**
  * TODO
  */
-export class Registrar {
-    private static controllers: ControllerRegistration[] = [];
+@injectable()
+export class DefaultRegistrar implements Registrar {
+    private controllers: ControllerRegistration[] = [];
+    private definedRoutes: RegistrationHelper[] = [];
 
-
-    /**
-     * TODO
-     */
-    public static registerController(registration: ControllerRegistration): void {
-        Registrar.controllers.push(registration);
+    constructor() {
+        console.log('construct');
     }
-
-    /**
-     * Resets the registered controllers and the defined routes array (only used for testing).
-     */
-    public static resetControllerRegistrations(): void {
-        definedRoutes = [];
-        Registrar.controllers = [];
-    }
-
-    constructor(private routeHandler: RouteHandler, private paramHandler: ParamHandler) { }
 
     /**
      * Function that loads and registers all controllers from a given directory. All found files are "required" and
@@ -79,7 +57,7 @@ export class Registrar {
             let controllersPath = path.join(root, folderPath);
             console.info(`Load controllers from path '${controllersPath}' ${recursive ? '' : 'non '}recursive.`);
 
-            filewalker(controllersPath, { recursive, matchRegExp })
+            filewalker(controllersPath, {recursive, matchRegExp})
                 .on('error', err => {
                     console.error(`Error happened during loading controllers from path: ${err}`);
                     reject(err);
@@ -117,7 +95,7 @@ export class Registrar {
             url = '/' + url;
         }
 
-        for (let ctrl of Registrar.controllers) {
+        for (let ctrl of this.controllers) {
             let routes = Reflect.getOwnMetadata(ROUTES_KEY, ctrl.controller) || [],
                 instance = new ctrl.controller();
 
@@ -142,7 +120,7 @@ export class Registrar {
 
                 let routeId = routeUrl + route.method.toString();
 
-                if (definedRoutes.some(route => route.routeId === routeId)) {
+                if (this.definedRoutes.some(route => route.routeId === routeId)) {
                     throw new DuplicateRouteDeclarationError(routeUrl, route.method);
                 }
 
@@ -217,11 +195,11 @@ export class Registrar {
                     }
                 };
 
-                definedRoutes.push(new RegistrationHelper(routeId, routeUrl, route, decoratedMethod, middlewares));
+                this.definedRoutes.push(new RegistrationHelper(routeId, routeUrl, route, decoratedMethod, middlewares));
             }
         }
 
-        definedRoutes
+        this.definedRoutes
             .reduce((segmentSorted, route) => {
                 (segmentSorted[route.segmentCount] || (segmentSorted[route.segmentCount] = [])).push(route);
                 return segmentSorted;
@@ -233,14 +211,28 @@ export class Registrar {
 
         return router;
     }
+
+    /**
+     * TODO
+     */
+    public registerController(registration: ControllerRegistration): void {
+        this.controllers.push(registration);
+    }
+
+    /**
+     * Resets the registered controllers and the defined routes array (only used for testing).
+     */
+    public resetControllerRegistrations(): void {
+        this.definedRoutes = [];
+        this.controllers = [];
+    }
 }
 
 
 // cleanup \/
 
 
-let definedRoutes: RegistrationHelper[] = [],
-    bodyParserInstalled = false,
+let bodyParserInstalled = false,
     CookieHelper = class {
         public name: string;
         public value: string;

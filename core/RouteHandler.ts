@@ -1,5 +1,11 @@
-import {ParamHandler} from './ParamHandler';
-
-export class RouteHandler {
-    constructor(private paramHandler: ParamHandler) { }
+/**
+ * TODO
+ */
+export interface RouteHandler {
 }
+
+/**
+ *
+ * @type {Symbol}
+ */
+export const ROUTEHANDLER_SYMBOL = Symbol('RouteHandler');

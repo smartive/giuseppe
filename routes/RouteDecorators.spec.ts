@@ -18,6 +18,7 @@ import {registerControllers} from '../';
 import {Response} from 'express';
 import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
+import {Symbols, IocContainer} from '../core/IoC';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -52,7 +53,7 @@ class TestRouter {
 describe('RouteDecorators', () => {
 
     afterEach(() => {
-        Registrar.resetControllerRegistrations();
+        IocContainer.get<Registrar>(Symbols.registrar).resetControllerRegistrations();
     });
 
     describe('Get', () => {

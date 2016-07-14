@@ -1,6 +1,5 @@
-import {RouteHandler} from './core/RouteHandler';
-import {ParamHandler} from './core/ParamHandler';
 import {Registrar} from './core/Registrar';
+import {IocContainer, Symbols} from './core/IoC';
 import {Router} from 'express';
 
 export * from './controllers/ControllerDecorator';
@@ -11,11 +10,7 @@ export * from './params/ParamDecorators';
 export * from './routes/RouteDecorators';
 export * from './validators/Validators';
 
-// core
-const paramHandler = new ParamHandler();
-const routeHandler = new RouteHandler(paramHandler);
-const registrar = new Registrar(routeHandler, paramHandler);
-export const core = null;
+let registrar = IocContainer.get<Registrar>(Symbols.registrar);
 
 /**
  * Function that loads and registers all controllers from a given directory. All found files are "required" and
@@ -29,7 +24,7 @@ export const core = null;
  * @param {Router} [router=Router()] - Express router to attach the routes to. If omitted, a new router is instantiated.
  * @returns {Promise<Router>} - A promise that resolves with the configured router instance. Or rejects when an error happens.
  */
-export const registerControllersFromFolder = registrar.registerControllersFromFolder;
+export const registerControllersFromFolder = registrar.registerControllersFromFolder.bind(registrar);
 
 /**
  * Function that registers all decorated controller with their decorated route functions in an expressJS router.
@@ -39,4 +34,4 @@ export const registerControllersFromFolder = registrar.registerControllersFromFo
  * @param {Router} [router=Router()] - Express router to attach the routes to. If omitted, a new router is instantiated.
  * @returns {Router} - The configured router.
  */
-export const registerControllers = registrar.registerControllers;
+export const registerControllers = registrar.registerControllers.bind(registrar);

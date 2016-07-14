@@ -3,6 +3,7 @@ import {Controller} from './ControllerDecorator';
 import {Registrar} from '../core/Registrar';
 import {registerControllers} from '../';
 import {Route} from '../routes/RouteDecorators';
+import {Symbols, IocContainer} from '../core/IoC';
 import chai = require('chai');
 
 chai.should();
@@ -34,7 +35,7 @@ class TestRouter {
 describe('ControllerDecorator', () => {
 
     afterEach(() => {
-        Registrar.resetControllerRegistrations();
+        IocContainer.get<Registrar>(Symbols.registrar).resetControllerRegistrations();
     });
 
     it('should return Controller decorator', () => {
