@@ -1,6 +1,7 @@
 import {Registrar} from './core/Registrar';
-import {IocContainer, Symbols} from './core/IoC';
+import {IocContainer} from './core/IoC';
 import {Router} from 'express';
+import {IoCSymbols} from './core/IoCSymbols';
 
 export * from './controllers/ControllerDecorator';
 export * from './errors/ErrorHandlerDecorator';
@@ -10,7 +11,7 @@ export * from './params/ParamDecorators';
 export * from './routes/RouteDecorators';
 export * from './validators/Validators';
 
-let registrar = IocContainer.get<Registrar>(Symbols.registrar);
+let registrar = IocContainer.get<Registrar>(IoCSymbols.registrar);
 
 /**
  * Function that loads and registers all controllers from a given directory. All found files are "required" and

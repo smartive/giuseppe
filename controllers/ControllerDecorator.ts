@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import {Registrar} from '../core/Registrar';
 import {RequestHandler} from 'express-serve-static-core';
-import {IocContainer, Symbols} from '../core/IoC';
+import {IocContainer} from '../core/IoC';
+import {IoCSymbols} from '../core/IoCSymbols';
 
 /**
  * TODO
@@ -21,6 +22,6 @@ export class ControllerRegistration {
  */
 export function Controller(routePrefix?: string, ...middlewares: RequestHandler[]) {
     return (controller: any) => {
-        IocContainer.get<Registrar>(Symbols.registrar).registerController(new ControllerRegistration(controller, routePrefix, middlewares));
+        IocContainer.get<Registrar>(IoCSymbols.registrar).registerController(new ControllerRegistration(controller, routePrefix, middlewares));
     };
 }

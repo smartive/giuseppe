@@ -20,7 +20,10 @@ import {RequestHandler} from 'express-serve-static-core';
 import {QueryParamOptions, ParameterFactory, FactoryParameterOptions} from '../params/ParamOptions';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import {ControllerLoaderOptions, Registrar} from './Registrar';
-import {injectable} from 'inversify';
+import {injectable, inject} from 'inversify';
+import {RouteHandler} from './RouteHandler';
+import {IoCSymbols} from './IoCSymbols';
+import {ParamHandler} from './ParamHandler';
 import httpStatus = require('http-status');
 
 /**
@@ -31,8 +34,7 @@ export class DefaultRegistrar implements Registrar {
     private controllers: ControllerRegistration[] = [];
     private definedRoutes: RegistrationHelper[] = [];
 
-    constructor() {
-        console.log('construct');
+    constructor(@inject(IoCSymbols.routeHandler) private routeHandler: RouteHandler, @inject(IoCSymbols.paramHandler) private paramHandler: ParamHandler) {
     }
 
     public registerControllersFromFolder({folderPath, root = process.cwd(), recursive = false, matchRegExp = /(.*)[.]js$/}: ControllerLoaderOptions,

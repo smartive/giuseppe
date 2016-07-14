@@ -6,7 +6,8 @@ import {Router} from 'express';
 import {Get, Post, Put, Delete, Head, ROUTES_KEY} from '../routes/RouteDecorators';
 import {SinonSpy} from '~sinon/lib/sinon';
 import {DuplicateRouteDeclarationError, HttpVerbNotSupportedError} from '../errors/Errors';
-import {Symbols, IocContainer} from './IoC';
+import {IocContainer} from './IoC';
+import {IoCSymbols} from './IoCSymbols';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -41,7 +42,7 @@ class TestRouter {
 describe('Registrar', () => {
 
     afterEach(() => {
-        IocContainer.get<Registrar>(Symbols.registrar).resetControllerRegistrations();
+        IocContainer.get<Registrar>(IoCSymbols.registrar).resetControllerRegistrations();
     });
 
     let router: Router;
@@ -629,7 +630,7 @@ describe('Registrar', () => {
     describe('registerControllersFromFolder', () => {
 
         it('should register 2 controller with 2 function correctly', done => {
-            registerControllersFromFolder({ folderPath: './build/.test/controllers/good' }, '', router)
+            registerControllersFromFolder({folderPath: './build/.test/controllers/good'}, '', router)
                 .then(() => {
                     let Ctrl = require('../.test/controllers/good/GoodController1').Ctrl,
                         Ctrl2 = require('../.test/controllers/good/GoodController2').Ctrl2;
@@ -658,7 +659,7 @@ describe('Registrar', () => {
         });
 
         it('should reject promise when error happens in process', done => {
-            registerControllersFromFolder({ folderPath: './build/.test/controllers/bad' }, '', router)
+            registerControllersFromFolder({folderPath: './build/.test/controllers/bad'}, '', router)
                 .then(() => {
                     done(new Error('did not throw!'));
                 })
