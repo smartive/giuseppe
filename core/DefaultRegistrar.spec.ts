@@ -39,7 +39,7 @@ class TestRouter {
     }
 }
 
-describe('Registrar', () => {
+describe('DefaultRegistrar', () => {
 
     afterEach(() => {
         IocContainer.get<Registrar>(IoCSymbols.registrar).resetControllerRegistrations();
