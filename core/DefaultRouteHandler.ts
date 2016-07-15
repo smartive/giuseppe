@@ -85,8 +85,6 @@ export class DefaultRouteHandler implements RouteHandler {
                 }
             });
 
-            params = params.sort((p1, p2) => p1.index - p2.index);
-
             let decoratedMethod = (request: Request, response: Response, next) => {
                 let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
                     paramValues = [];
