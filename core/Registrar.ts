@@ -39,7 +39,7 @@ export interface Registrar {
     /**
      * TODO
      */
-    registerController(registration: ControllerRegistration): void;
+    registerController(controller: ControllerRegistration): void;
 
     /**
      * Resets the registered controllers and the defined routes array (only used for testing).
