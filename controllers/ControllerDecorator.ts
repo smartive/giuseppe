@@ -22,6 +22,6 @@ export class ControllerRegistration {
  */
 export function Controller(routePrefix?: string, ...middlewares: RequestHandler[]) {
     return (controller: any) => {
-        IocContainer.get<Registrar>(IoCSymbols.registrar).registerController(new ControllerRegistration(controller, routePrefix, middlewares));
+        IocContainer.get<Registrar>(IoCSymbols.registrar).addController(new ControllerRegistration(controller, routePrefix, middlewares));
     };
 }

@@ -63,7 +63,7 @@ export class DefaultRegistrar implements Registrar {
         return this.routeHandler.registerRoutes(router);
     }
 
-    public registerController(controller: ControllerRegistration): void {
+    public addController(controller: ControllerRegistration): void {
         this.controllers.push(controller);
     }
 
