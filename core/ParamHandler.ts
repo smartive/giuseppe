@@ -1,6 +1,5 @@
 import {Request, Response} from 'express';
 import {Param} from '../params/ParamDecorators';
-import {RouteRegistration} from '../routes/RouteDecorators';
 
 /**
  * TODO
@@ -25,11 +24,11 @@ export interface ParamHandler {
     /**
      * TODO
      *
-     * @param route
+     * @param params
      * @param request
      * @param response
      */
-    getParamValuesForRequest(route: RouteRegistration, request: Request, response: Response): any[];
+    getParamValuesForRequest(params: Param[], request: Request, response: Response): any[];
 
     /**
      * TODO

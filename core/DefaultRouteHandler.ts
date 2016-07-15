@@ -5,23 +5,19 @@ import {Router, RequestHandler, Request, Response} from 'express';
 import {IoCSymbols} from './IoCSymbols';
 import {ParamHandler} from './ParamHandler';
 import {ControllerRegistration} from '../controllers/ControllerDecorator';
-import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
+import {ParamType} from '../params/ParamDecorators';
 import {
     DuplicateRouteDeclarationError,
     HeadHasWrongReturnTypeError,
-    ParameterConstructorArgumentsError,
     GenericRouteError,
     WrongReturnTypeError,
-    HttpVerbNotSupportedError,
-    RequiredParameterNotProvidedError,
-    ParamValidationFailedError,
-    ParameterParseError
+    HttpVerbNotSupportedError
 } from '../errors/Errors';
-import {FactoryParameterOptions, QueryParamOptions, ParameterFactory} from '../params/ParamOptions';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
-import {Validator} from '../validators/Validators';
 import httpStatus = require('http-status');
+
+const NON_JSON_TYPES = [String, Number, Boolean];
 
 class RegistrationHelper {
     public wildcardCount: number;
@@ -49,10 +45,8 @@ export class DefaultRouteHandler implements RouteHandler {
                 routeTarget = ctrlTarget.prototype,
                 routeUrl = url + [controllerRegistration.prefix, route.path].filter(Boolean).join('/'),
                 returnType = Reflect.getMetadata('design:returntype', routeTarget, route.propertyKey),
-                params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, routeTarget, route.propertyKey) || [],
                 middlewares = [...controllerRegistration.middlewares, ...route.middlewares],
-                method = route.descriptor.value,
-                hasResponseParam = !!params.filter(p => p.paramType === ParamType.Response).length;
+                method = route.descriptor.value;
 
             let index;
             if ((index = routeUrl.lastIndexOf('~')) > -1) {
@@ -73,17 +67,8 @@ export class DefaultRouteHandler implements RouteHandler {
                 throw new HeadHasWrongReturnTypeError();
             }
 
-            // -> param handler
-            if (params.some((p: Param) => p.paramType === ParamType.Body) && !bodyParserInstalled) {
-                console.warn(`The route ${routeUrl} of controller '${instance.constructor.name}' uses a @Body parameter, but there is no 'body-parser' package installed.`);
-            }
-
-            // -> param handler
-            params.forEach(p => {
-                if (p.type.length < 1 && !(p.options && (p.options as FactoryParameterOptions).factory)) {
-                    throw new ParameterConstructorArgumentsError(p.name);
-                }
-            });
+            let params = this.paramHandler.getParamsForRoute(routeTarget, route.propertyKey),
+                hasResponseParam = params.some(p => p.paramType === ParamType.Response);
 
             let decoratedMethod = (request: Request, response: Response, next) => {
                 let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
@@ -101,7 +86,7 @@ export class DefaultRouteHandler implements RouteHandler {
                 };
 
                 try {
-                    paramValues = getParamValues(params, request, response);
+                    paramValues = this.paramHandler.getParamValuesForRequest(params, request, response);
                 } catch (e) {
                     handleError(e);
                     // This return is needed, since the controller
@@ -154,7 +139,7 @@ export class DefaultRouteHandler implements RouteHandler {
             .filter(Boolean)
             .reverse()
             .reduce((routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcardCount - r2.wildcardCount)), [])
-            .forEach(r => registerRoute(r, router));
+            .forEach(r => this.registerRoute(r, router));
 
         return router;
     }
@@ -162,148 +147,26 @@ export class DefaultRouteHandler implements RouteHandler {
     public resetRoutes(): void {
         this.routes = {};
     }
-}
 
-
-// cleanup \/
-
-
-let bodyParserInstalled = false,
-    CookieHelper = class {
-        public name: string;
-        public value: string;
-
-        constructor(value: string) {
-            let split = value.split('=');
-            this.name = split[0];
-            this.value = split[1];
-        }
-    };
-
-const PRIMITIVE_TYPES = [Object, String, Array, Number, Boolean],
-    NON_JSON_TYPES = [String, Number, Boolean];
-
-try {
-    require('body-parser');
-    bodyParserInstalled = true;
-} catch (e) {
-    bodyParserInstalled = false;
-}
-
-function extractParam(request: Request, param: Param): any {
-    switch (param.paramType) {
-        case ParamType.Body:
-            return request.body;
-        case ParamType.Url:
-            return request.params[param.name];
-        case ParamType.Query:
-            let options: QueryParamOptions = param.options;
-            if (!options || !options.alias) {
-                return request.query[param.name];
-            }
-            let aliases = !Array.isArray(options.alias) ? [options.alias] : options.alias as string[];
-            aliases = aliases.map((a: string) => request.query[a]).filter(Boolean);
-            return aliases[0] || request.query[param.name];
-        case ParamType.Header:
-            return request.get(param.name);
-        case ParamType.Cookie:
-            let cookies = request.get('cookie');
-            if (!cookies) {
-                return undefined;
-            }
-            let cookie = cookies
-                .split(';')
-                .map(o => new CookieHelper(o.trim()))
-                .filter(o => o.name === param.name)[0];
-            return cookie ? cookie.value : undefined;
-    }
-}
-
-function parseParam(value: any, param: Param) {
-    let factory: ParameterFactory<any>;
-
-    if (param.options && (param.options as FactoryParameterOptions).factory) {
-        factory = (param.options as FactoryParameterOptions).factory;
-    } else {
-        factory = raw => {
-            let ctor = param.type as any;
-            if (raw.constructor === ctor) {
-                return raw;
-            } else {
-                return PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(raw) : new ctor(raw);
-            }
-        };
-    }
-
-    if ((value === null || value === undefined) && param.options && param.options.required) {
-        throw new RequiredParameterNotProvidedError(param.name);
-    } else if (value === null || value === undefined) {
-        return undefined;
-    }
-
-    let parsed;
-    try {
-        parsed = factory(value);
-    } catch (e) {
-        throw new ParameterParseError(param.name, e);
-    }
-
-    if (param.options && param.options.validator) {
-        let isValid = value => {
-            let predicates = param.options.validator;
-
-            if (Array.isArray(predicates)) {
-                return (predicates as Validator[]).every(p => p(value));
-            }
-
-            return (predicates as Validator)(value);
-        };
-
-        if (isValid(parsed)) {
-            return parsed;
-        }
-        throw new ParamValidationFailedError(param.name);
-    } else {
-        return parsed;
-    }
-}
-
-function getParamValues(params: Param[], request: Request, response: Response) {
-    let paramValues = [];
-    params.forEach((p: Param) => {
-        switch (p.paramType) {
-            case ParamType.Request:
-                paramValues[p.index] = request;
-                return;
-            case ParamType.Response:
-                paramValues[p.index] = response;
-                return;
+    private registerRoute(registration: RegistrationHelper, router: Router) {
+        switch (registration.route.method) {
+            case RouteMethod.Get:
+                router.get(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
+                break;
+            case RouteMethod.Put:
+                router.put(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
+                break;
+            case RouteMethod.Post:
+                router.post(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
+                break;
+            case RouteMethod.Delete:
+                router.delete(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
+                break;
+            case RouteMethod.Head:
+                router.head(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
+                break;
             default:
-                paramValues[p.index] = parseParam(extractParam(request, p), p);
-                return;
+                throw new HttpVerbNotSupportedError(registration.route.method);
         }
-    });
-    return paramValues;
-}
-
-function registerRoute(registration: RegistrationHelper, router: Router) {
-    switch (registration.route.method) {
-        case RouteMethod.Get:
-            router.get(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-            break;
-        case RouteMethod.Put:
-            router.put(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-            break;
-        case RouteMethod.Post:
-            router.post(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-            break;
-        case RouteMethod.Delete:
-            router.delete(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-            break;
-        case RouteMethod.Head:
-            router.head(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-            break;
-        default:
-            throw new HttpVerbNotSupportedError(registration.route.method);
     }
 }
