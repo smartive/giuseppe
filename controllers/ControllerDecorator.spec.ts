@@ -7,7 +7,7 @@ import {
 } from './ControllerDecorator';
 import {Router} from 'express';
 import {Get, Post, Put, Delete, Head, ROUTES_KEY, Route} from '../routes/RouteDecorators';
-import {SinonSpy} from '~sinon/lib/sinon';
+import {SinonSpy} from 'sinon';
 import {DuplicateRouteDeclarationError, HttpVerbNotSupportedError} from '../errors/Errors';
 import chai = require('chai');
 import sinon = require('sinon');
