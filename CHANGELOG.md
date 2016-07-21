@@ -3,7 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-
+### Fixed
+- `*.spec.js` files are no longer loaded (by default) when using `registerControllersFromFolder`.
 
 ## [1.1.0]
 ### Added
