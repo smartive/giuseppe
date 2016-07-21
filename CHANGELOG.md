@@ -3,8 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+
+## [1.1.1]
 ### Fixed
 - `*.spec.js` files are no longer loaded (by default) when using `registerControllersFromFolder`.
+
 
 ## [1.1.0]
 ### Added
@@ -97,7 +101,8 @@ No news :-)
 - First version of giuseppe.
 - Adding base code and travis-CI.
 
-[Unreleased]: https://github.com/smartive/giuseppe/compare/v1.1.0...master
+[Unreleased]: https://github.com/smartive/giuseppe/compare/v1.1.1...master
+[1.1.1]: https://github.com/smartive/giuseppe/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/smartive/giuseppe/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/smartive/giuseppe/compare/v1.0.0-rc.1...v1.0.0
 [1.0.0-rc.1]: https://github.com/smartive/giuseppe/compare/v0.6.1...v1.0.0-rc.1
