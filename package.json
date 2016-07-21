@@ -7,10 +7,10 @@
     "bootstrap": "npm install -q && typings install",
     "clean": "rimraf build",
     "pretest": "npm run clean && tsc",
-    "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd ./build/**/*.spec.js",
+    "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd \"./build/**/*.spec.js\"",
     "precitest": "npm run bootstrap && npm run clean && tsc",
     "citest": "npm run unittest && npm run integrationtest",
-    "unittest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd ./build/**/*.spec.js",
+    "unittest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd \"./build/**/*.spec.js\"",
     "preintegrationtest": "npm install body-parser newman",
     "integrationtest": "node ./build/.test/integration/runner.js",
     "develop": "npm run clean && tsc --sourceMap -w --pretty"
