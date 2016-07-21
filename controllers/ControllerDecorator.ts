@@ -342,12 +342,12 @@ export type ControllerLoaderOptions = {folderPath: string, root?: string, recurs
  * @param {string} folderPath - The root path to start the search for the controllers.
  * @param {string} [root=process.cwd()] - The root of the project. Can be different if you start your app through a script.
  * @param {boolean} [recursive=false] - Defines if the function searches recursively for controllers.
- * @param {RegExp} [matchRegExp=/(.*)[.]js$/] - The regular expression that must be mached before a file is required.
+ * @param {RegExp} [matchRegExp=/^((?!spec).)*[.]js$/] - The regular expression that must be mached before a file is required.
  * @param {string} [baseUrl=''] - Base url for the routing system. Will be prefixed for all controllers.
  * @param {Router} [router=Router()] - Express router to attach the routes to. If omitted, a new router is instantiated.
  * @returns {Promise<Router>} - A promise that resolves with the configured router instance. Or rejects when an error happens.
  */
-export function registerControllersFromFolder({folderPath, root = process.cwd(), recursive = false, matchRegExp = /(.*)[.]js$/} : ControllerLoaderOptions,
+export function registerControllersFromFolder({folderPath, root = process.cwd(), recursive = false, matchRegExp = /^((?!spec).)*[.]js$/} : ControllerLoaderOptions,
     baseUrl: string = '',
     router: Router = Router()): Promise<Router> {
 
