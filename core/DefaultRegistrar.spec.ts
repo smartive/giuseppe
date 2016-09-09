@@ -4,7 +4,7 @@ import {Registrar} from '../core/Registrar';
 import {registerControllers, registerControllersFromFolder} from '../';
 import {Router} from 'express';
 import {Get, Post, Put, Delete, Head, ROUTES_KEY} from '../routes/RouteDecorators';
-import {SinonSpy} from '~sinon/lib/sinon';
+import {SinonSpy} from 'sinon';
 import {DuplicateRouteDeclarationError, HttpVerbNotSupportedError} from '../errors/Errors';
 import {IocContainer} from './IoC';
 import {IoCSymbols} from './IoCSymbols';
