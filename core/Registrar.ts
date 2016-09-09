@@ -12,7 +12,9 @@ import {ControllerRegistration} from '../controllers/ControllerDecorator';
 export type ControllerLoaderOptions = { folderPath: string, root?: string, recursive?: boolean, matchRegExp?: RegExp };
 
 /**
- * TODO
+ * Interface for a registrar. The registrar is responsible for registering controllers into the giuseppe core.
+ *
+ * @interface
  */
 export interface Registrar {
     /**
@@ -37,7 +39,9 @@ export interface Registrar {
     registerControllers(baseUrl?: string, router?: Router): Router;
 
     /**
-     * TODO
+     * Adds a controller to the list of controllers.
+     *
+     * @param {ControllerDecorator} controller - The controller to register.
      */
     addController(controller: ControllerRegistration): void;
 

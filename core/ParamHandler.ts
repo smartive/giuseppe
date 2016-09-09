@@ -1,45 +1,51 @@
-import {Request, Response} from 'express';
 import {Param} from '../params/ParamDecorators';
+import {Request, Response} from 'express';
 
 /**
- * TODO
+ * Parameterhandler that is responsible for extracting and parsing of the parameters.
  */
 export interface ParamHandler {
     /**
-     * TODO
+     * Extracts the desired parameter value from the request.
      *
-     * @param request
-     * @param param
+     * @param {Request} request - An expressJS request object.
+     * @param {Param} param - The parameter which should be extracted. 
+     * @returns {any} - The value of the parameter (part). 
      */
     extractParam(request: Request, param: Param): any;
 
     /**
-     * TODO
+     * Parses the raw value of a param to its type.
+     * If the parameter is not parsable an exception is thrown.
      *
-     * @param rawValue
-     * @param param
+     * @param {any} rawValue - The raw value of the parameter that is delivered from extractParam.
+     * @param {Param} param - The parameter information.
+     * @returns {any} - The parsed parametervalue.
      */
     parseParam(rawValue: any, param: Param): any;
 
     /**
-     * TODO
+     * Returns the values for the requested parameters.
      *
-     * @param params
-     * @param request
-     * @param response
+     * @param {Param[]} params - A list of parameters that should be extracted and returned.
+     * @param {Request} request - An expressJS request object.
+     * @param {Response} response - An expressJS response object.
+     * @returns {any[]} - The parameter values.
      */
     getParamValuesForRequest(params: Param[], request: Request, response: Response): any[];
 
     /**
-     * TODO
+     * Returns all registered parameters for a route. 
      *
-     * @param target
-     * @param routeKey
+     * @param {any} target - The routehandler (actually a function).
+     * @param {string} routeKey - Route identifier.
+     * @returns {Param[]} - A list of parameters for the route.
      */
     getParamsForRoute(target: any, routeKey: string): Param[];
 }
 
 /**
+ * IoC symbol for the parameter handler interface.
  *
  * @type {Symbol}
  */

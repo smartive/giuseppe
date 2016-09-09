@@ -1,29 +1,36 @@
 import {Router} from 'express';
 import {ControllerRegistration} from '../controllers/ControllerDecorator';
+
 /**
- * TODO
+ * The routehandler does handle the registering process for the routes.
+ *
+ * @interface
  */
 export interface RouteHandler {
     /**
-     * TODO
+     * Adds the routes of a controller to the internal route list.
      *
+     * @param {ControllerRegistration} controllerRegistration - The controller to take the routes from.
+     * @param {string} url - The base url to register the routes on. 
      */
     addRoutes(controllerRegistration: ControllerRegistration, url: string): void;
 
     /**
-     * TODO
+     * Registers the routes to the expressJS system.
      *
-     * @param router
+     * @param {Router} router - An expressJS router instance.
+     * @returns {Router} - The configured expressJS router instance.
      */
     registerRoutes(router: Router): Router;
 
     /**
-     * TODO
+     * Resets all internally registered routes.
      */
     resetRoutes(): void;
 }
 
 /**
+ * IoC symbol for the routehandler interface.
  *
  * @type {Symbol}
  */

@@ -7,7 +7,10 @@ import {RouteHandler} from './RouteHandler';
 import {IoCSymbols} from './IoCSymbols';
 
 /**
- * TODO
+ * Default implementation of the registrar class.
+ * Handles the registration of controllers.
+ *
+ * @class
  */
 @injectable()
 export class DefaultRegistrar implements Registrar {
