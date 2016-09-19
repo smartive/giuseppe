@@ -124,6 +124,7 @@ The configuration object is defined as such:
 | root        | The root directory of the app, which is combined with the folderPath. |
 | recursive   | Defines if the function should search recursively.                    |
 | matchRegExp | The regular expression that must match the filename.                  |
+{: class="table"}
 
 ### Custom router and middleware
 
