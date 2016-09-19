@@ -8,6 +8,7 @@ import chaiHttp = require('chai-http');
 import express = require('express');
 
 let app = express();
+app.use(require('body-parser').json());
 
 const should = chai.should();
 
