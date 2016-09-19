@@ -53,7 +53,7 @@
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "istanbul": "^0.4.3",
-    "mocha": "^2.5.3",
+    "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.2.0",
     "rimraf": "^2.5.2",
     "sinon": "^1.17.4",
