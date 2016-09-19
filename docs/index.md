@@ -25,7 +25,10 @@ To install this package, simply run
 
 [![NPM](https://nodei.co/npm/giuseppe.png?downloads=true&stars=true)](https://nodei.co/npm/giuseppe/)
 
-If not all `typings` are installed for giuseppe
+The suggested method would actually be: use the yeoman generator which we created @ [generator-giuseppe](http://giuseppe-generator.smartive.ch/).
+It installs all dependencies and libraries that you need.
+
+When you use the manual way and not all `typings` are installed for giuseppe
 you need to manually install the typings for this package.
 
 The dependend typings are:
