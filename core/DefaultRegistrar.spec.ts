@@ -647,10 +647,10 @@ describe('DefaultRegistrar', () => {
     describe('registerControllersFromFolder', () => {
 
         it('should register 2 controller with 2 function correctly', done => {
-            registerControllersFromFolder({folderPath: './build/.test/controllers/good'}, '', router)
+            registerControllersFromFolder({folderPath: './build/_test/controllers/good'}, '', router)
                 .then(() => {
-                    let Ctrl = require('../.test/controllers/good/GoodController1').Ctrl,
-                        Ctrl2 = require('../.test/controllers/good/GoodController2').Ctrl2;
+                    let Ctrl = require('../_test/controllers/good/GoodController1').Ctrl,
+                        Ctrl2 = require('../_test/controllers/good/GoodController2').Ctrl2;
 
                     let routes1 = Reflect.getOwnMetadata(ROUTES_KEY, Ctrl);
                     routes1.should.be.an('array').with.lengthOf(2);
@@ -676,7 +676,7 @@ describe('DefaultRegistrar', () => {
         });
 
         it('should reject promise when error happens in process', done => {
-            registerControllersFromFolder({folderPath: './build/.test/controllers/bad'}, '', router)
+            registerControllersFromFolder({folderPath: './build/_test/controllers/bad'}, '', router)
                 .then(() => {
                     done(new Error('did not throw!'));
                 })

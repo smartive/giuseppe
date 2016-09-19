@@ -9,10 +9,7 @@
     "pretest": "npm run clean && tsc",
     "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd \"./build/**/*.spec.js\"",
     "precitest": "npm run bootstrap && npm run clean && tsc",
-    "citest": "npm run unittest && npm run integrationtest",
-    "unittest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd \"./build/**/*.spec.js\"",
-    "preintegrationtest": "npm install body-parser newman",
-    "integrationtest": "node ./build/.test/integration/runner.js",
+    "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd \"./build/**/*.spec.js\"",
     "develop": "npm run clean && tsc --sourceMap -w --pretty"
   },
   "repository": {
@@ -53,6 +50,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
     "istanbul": "^0.4.3",
     "mocha": "^2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
