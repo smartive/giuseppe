@@ -138,7 +138,7 @@ Please have a look there for various use cases :smile:.
 If you checked out this repository (yay!) and installed all the dependencies, you
 can run the ninety-ish tests with
 
-```bash
+```typescript
 npm test
 ```
 
