@@ -1,3 +1,7 @@
+---
+layout: default
+title: giuseppe - parameters
+---
 # Parameters
 
 giuseppe does support the injection of several types of parameters. If

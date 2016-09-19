@@ -1,3 +1,7 @@
+---
+layout: default
+title: giuseppe - routes
+---
 # Routes
 
 The route annotations declare your controllers methods as routed methods.

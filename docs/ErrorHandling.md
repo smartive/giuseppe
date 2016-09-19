@@ -1,3 +1,7 @@
+---
+layout: default
+title: giuseppe - error handling
+---
 # Errors and error handling
 
 Nobody is perfect and errors can happen. But you don't want your whole application to crash.

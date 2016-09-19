@@ -1,3 +1,7 @@
+---
+layout: default
+title: giuseppe - controller
+---
 # Controller
 
 In terms of the api controller, there is not much to say. You need to decorate your

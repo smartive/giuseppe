@@ -1,3 +1,7 @@
+---
+layout: default
+title: giuseppe - middleware
+---
 # Middleware
 
 giuseppe does support middleware. Since there are good libraries

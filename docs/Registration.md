@@ -1,3 +1,7 @@
+---
+layout: default
+title: giuseppe - registration
+---
 # Registration of controllers
 
 This part is actually very easy and straight forward. All controller classes that are
