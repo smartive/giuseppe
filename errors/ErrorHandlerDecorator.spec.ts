@@ -1,19 +1,14 @@
+import {registerControllers} from '../';
+import {Controller} from '../controllers/ControllerDecorator';
+import {IocContainer} from '../core/IoC';
+import {IoCSymbols} from '../core/IoCSymbols';
+import {Registrar} from '../core/Registrar';
+import {Get, Route} from '../routes/RouteDecorators';
+import {ErrorHandler, ERRORHANDLER_KEY} from './ErrorHandlerDecorator';
+import {ErrorHandlerWrongArgumentsError, ErrorHandlerWrongArgumentTypesError, ErrorHandlerWrongReturnTypeError, WrongReturnTypeError} from './Errors';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
-import {ErrorHandler, ERRORHANDLER_KEY} from './ErrorHandlerDecorator';
-import {
-    ErrorHandlerWrongArgumentsError,
-    ErrorHandlerWrongArgumentTypesError,
-    ErrorHandlerWrongReturnTypeError,
-    WrongReturnTypeError
-} from './Errors';
-import {Route, Get} from '../routes/RouteDecorators';
-import {Controller} from '../controllers/ControllerDecorator';
-import {Registrar} from '../core/Registrar';
-import {registerControllers} from '../';
-import {IocContainer} from '../core/IoC';
-import {IoCSymbols} from '../core/IoCSymbols';
 
 let should = chai.should();
 chai.use(sinonChai);
