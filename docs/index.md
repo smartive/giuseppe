@@ -19,19 +19,6 @@ giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](ht
 - [Changelog](#changelog)
 - [Licence](#licence)
 
-## Docs
-
-This readme will give a short overview over the usable features. For more detailed information,
-please find a more detailed documentation in the `docs/` folder.
-
-- [Registration of controllers](docs/Registration.md)
-- [Controllers](docs/Controllers.md)
-- [Routes](docs/Routes.md)
-- [Middleware](docs/Middleware.md)
-- [Parameters](docs/Parameters.md)
-- [Validators](docs/Validators.md)
-- [Error handling](docs/ErrorHandling.md)
-
 ## Installation
 
 To install this package, simply run
