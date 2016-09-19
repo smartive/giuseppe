@@ -21,9 +21,37 @@ nav ul {
 
 .nav-link {
     margin-bottom: 1rem;
+    float: left;
+    display: block;
+    width: 100%;
 
     a {
         color: #232426;
+        text-decoration: none;
+        float: left;
+
+        &::after {
+            display: block;
+            content: '';
+            width: 0;
+            height: 1px;
+            background: #59a1d7;
+            transition: width 150ms ease-in-out;
+        }
+
+        &:hover::after {
+            width: 100%;
+        }
+    }
+}
+
+.nav-link.active {
+    a {
+        color: #59a1d7;
+
+        &::after {
+            width: 100%;
+        }
     }
 }
 
