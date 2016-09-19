@@ -1,15 +1,10 @@
-import {ParamHandler} from './ParamHandler';
-import {injectable} from 'inversify';
-import {Request, Response} from 'express';
+import {ParameterConstructorArgumentsError, ParameterParseError, ParamValidationFailedError, RequiredParameterNotProvidedError} from '../errors/Errors';
 import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
-import {
-    ParameterConstructorArgumentsError,
-    RequiredParameterNotProvidedError,
-    ParameterParseError,
-    ParamValidationFailedError
-} from '../errors/Errors';
 import {FactoryParameterOptions, ParameterFactory, QueryParamOptions} from '../params/ParamOptions';
 import {Validator} from '../validators/Validators';
+import {ParamHandler} from './ParamHandler';
+import {Request, Response} from 'express';
+import {injectable} from 'inversify';
 
 const PRIMITIVE_TYPES = [Object, String, Array, Number, Boolean];
 

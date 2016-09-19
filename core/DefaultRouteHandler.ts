@@ -1,21 +1,15 @@
-import {injectable, inject} from 'inversify';
-import {RouteHandler} from './RouteHandler';
-import {RouteRegistration, ROUTES_KEY, RouteMethod} from '../routes/RouteDecorators';
-import {Router, RequestHandler, Request, Response} from 'express';
-import {IoCSymbols} from './IoCSymbols';
-import {ParamHandler} from './ParamHandler';
-import {ControllerRegistration} from '../controllers/ControllerDecorator';
-import {ParamType} from '../params/ParamDecorators';
-import {
-    DuplicateRouteDeclarationError,
-    HeadHasWrongReturnTypeError,
-    GenericRouteError,
-    WrongReturnTypeError,
-    HttpVerbNotSupportedError
-} from '../errors/Errors';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
 import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {DuplicateRouteDeclarationError, GenericRouteError, HeadHasWrongReturnTypeError, HttpVerbNotSupportedError, WrongReturnTypeError} from '../errors/Errors';
+import {ControllerRegistration} from '../models/ControllerRegistration';
+import {ParamType} from '../params/ParamDecorators';
+import {RouteMethod, RouteRegistration, ROUTES_KEY} from '../routes/RouteDecorators';
+import {IoCSymbols} from './IoCSymbols';
+import {ParamHandler} from './ParamHandler';
+import {RouteHandler} from './RouteHandler';
+import {Request, RequestHandler, Response, Router} from 'express';
 import httpStatus = require('http-status');
+import {inject, injectable} from 'inversify';
 
 const NON_JSON_TYPES = [String, Number, Boolean];
 

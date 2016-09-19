@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import {Router} from 'express';
-import {ControllerRegistration} from '../controllers/ControllerDecorator';
-import {ControllerLoaderOptions, Registrar} from './Registrar';
-import {injectable, inject} from 'inversify';
-import {RouteHandler} from './RouteHandler';
+import {ControllerRegistration} from '../models/ControllerRegistration';
 import {IoCSymbols} from './IoCSymbols';
+import {ControllerLoaderOptions, Registrar} from './Registrar';
+import {RouteHandler} from './RouteHandler';
+import {Router} from 'express';
+import {inject, injectable} from 'inversify';
 
 /**
  * Default implementation of the registrar class.

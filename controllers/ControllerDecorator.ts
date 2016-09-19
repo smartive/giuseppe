@@ -1,19 +1,9 @@
 import 'reflect-metadata';
-import {Registrar} from '../core/Registrar';
-import {RequestHandler} from 'express-serve-static-core';
 import {IocContainer} from '../core/IoC';
 import {IoCSymbols} from '../core/IoCSymbols';
-
-
-/**
- * Class for the registered controllers. Contains the information about the controller that holds the routes.
- * 
- * @class ControllerRegistration
- */
-export class ControllerRegistration {
-    constructor(public controller: any, public prefix?: string, public middlewares: RequestHandler[] = []) {
-    }
-}
+import {Registrar} from '../core/Registrar';
+import {ControllerRegistration} from '../models/ControllerRegistration';
+import {RequestHandler} from 'express-serve-static-core';
 
 /**
  * Controller decorator; decorates a class to be a rest api controller. A controller registers itself to an

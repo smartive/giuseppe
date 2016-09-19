@@ -1,5 +1,5 @@
+import {ControllerRegistration} from '../models/ControllerRegistration';
 import {Router} from 'express';
-import {ControllerRegistration} from '../controllers/ControllerDecorator';
 
 /**
  * Options for the registerControllersFromFolder function. It is an object with configuration parameters.

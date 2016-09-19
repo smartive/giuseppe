@@ -1,5 +1,5 @@
+import {ControllerRegistration} from '../models/ControllerRegistration';
 import {Router} from 'express';
-import {ControllerRegistration} from '../controllers/ControllerDecorator';
 
 /**
  * The routehandler does handle the registering process for the routes.
