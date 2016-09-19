@@ -1,3 +1,7 @@
+---
+layout: default
+title: giuseppe - error handling
+---
 # Errors and error handling
 
 Nobody is perfect and errors can happen. But you don't want your whole application to crash.
@@ -14,7 +18,7 @@ When you load a decorated class (i.e. `import {...} from ...;`), this decoration
 executed. giuseppe prevents some horrible random situations by throwing error objects 
 during the design time (e.g. on duplicate routes, express just uses the first one).
 
-All errors are documented with JSDoc in the [Errors.ts](../errors/Errors.ts) file. A brief overview is given:
+All errors are documented with JSDoc in the [Errors.ts](https://github.com/smartive/giuseppe/blob/master/errors/Errors.ts) file. A brief overview is given:
 
 - `HttpVerbNotSupportedError`: However you did it, you managed to get 
    a value inside the `RouteRegistration` that is not part of the enum `RouteMethod`.

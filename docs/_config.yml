@@ -1,0 +1,10 @@
+name: giuseppe - by smartive AG
+
+markdown: kramdown
+highlighter: rouge
+
+sass:
+    style: compressed
+
+gems:
+  - jekyll-sitemap
