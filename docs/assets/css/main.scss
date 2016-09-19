@@ -1,3 +1,6 @@
+---
+---
+
 body {
     font-family: 'Roboto', sans-serif;
     font-size: 1.8rem;
@@ -12,12 +15,24 @@ header {
     padding-bottom: 3rem;
 }
 
-.logo {
-    text-align: center;
+nav ul {
+    list-style: none;
 }
 
-.logo img {
-    display: inline-block;
+.nav-link {
+    margin-bottom: 1rem;
+
+    a {
+        color: #232426;
+    }
+}
+
+.logo {
+    text-align: center;
+
+    img {
+        display: inline-block;
+    }
 }
 
 .img-responsive.small {
@@ -46,8 +61,8 @@ footer {
     margin-top: 3rem;
     padding-top: 3rem;
     padding-bottom: 3rem;
-}
 
-footer a {
-    color: white;
+    a {
+        color: white;
+    }
 }
