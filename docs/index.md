@@ -13,7 +13,6 @@ it composes things, but not a great piece of musical history! We compose routes 
 
 ## Table of contents
 
-- [Docs](#docs)
 - [Installation](#installation)
 - [Basic usage](#basic-usage)
 - [Testing](#testing)
