@@ -3,22 +3,47 @@
 
 <head>
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400">
     <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/main.css">
 </head>
 
 <body>
-    {% include nav.html %}
 
-    <div class="container">
+    <header>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 logo">
+                    <img src="{{ site.baseurl }}/assets/img/logo.svg" alt="smartive AG" class="img-responsive small">
+                </div>
+                <div class="col-xs-12 logo">
+                    <img src="https://cloud.githubusercontent.com/assets/292951/14691860/f363e562-0753-11e6-89df-aab95645084f.png" alt="giuseppe"
+                        class="img-responsive">
+                </div>
+            </div>
+        </div>
+    </header>
 
-        {{ content }}
-
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 col-md-3">
+                {% include nav.html %}
+            </div>
+            <div class="col-xs-12 col-md-9 col-lg-6">
+                {{ content }}
+            </div>
+        </div>
     </div>
 
     <footer>
-        hosted with ❤ on github.
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    hosted with ❤ on <a href="https://github.com/smartive">github</a>.
+                </div>
+            </div>
+        </div>
     </footer>
 </body>
 
