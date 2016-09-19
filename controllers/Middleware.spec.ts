@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import {Controller} from './ControllerDecorator';
-import {Registrar} from '../core/Registrar';
 import {registerControllers} from '../';
-import {Get, Route} from '../routes/RouteDecorators';
 import {IocContainer} from '../core/IoC';
 import {IoCSymbols} from '../core/IoCSymbols';
+import {Registrar} from '../core/Registrar';
+import {Get, Route} from '../routes/RouteDecorators';
+import {Controller} from './ControllerDecorator';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');

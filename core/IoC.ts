@@ -1,8 +1,8 @@
-import {Kernel} from 'inversify';
-import {DefaultRegistrar} from './DefaultRegistrar';
 import {DefaultParamHandler} from './DefaultParamHandler';
+import {DefaultRegistrar} from './DefaultRegistrar';
 import {DefaultRouteHandler} from './DefaultRouteHandler';
 import {IoCSymbols} from './IoCSymbols';
+import {Kernel} from 'inversify';
 
 const kernel = new Kernel();
 

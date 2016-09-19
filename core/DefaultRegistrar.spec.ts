@@ -1,14 +1,14 @@
 import 'reflect-metadata';
+import {registerControllers, registerControllersFromFolder} from '../';
 import {Controller} from '../controllers/ControllerDecorator';
 import {Registrar} from '../core/Registrar';
-import {registerControllers, registerControllersFromFolder} from '../';
-import {Router} from 'express';
-import {Get, Post, Put, Delete, Head, ROUTES_KEY} from '../routes/RouteDecorators';
-import {SinonSpy} from 'sinon';
 import {DuplicateRouteDeclarationError, HttpVerbNotSupportedError} from '../errors/Errors';
+import {Delete, Get, Head, Post, Put, ROUTES_KEY} from '../routes/RouteDecorators';
 import {IocContainer} from './IoC';
 import {IoCSymbols} from './IoCSymbols';
 import chai = require('chai');
+import {Router} from 'express';
+import {SinonSpy} from 'sinon';
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
 
