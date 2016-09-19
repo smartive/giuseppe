@@ -47,6 +47,37 @@ This package installs the transpiled `*.js` files instead of `*.ts` files, since
 to compile them everytime. The declaration files with the JSDocs are provided aswell so your 
 autocomplete does work as it should.
 
+### tsconfig.json
+
+If you don't use the yeoman generator to scaffold your application, you need
+to provide the typescript compiler with the correct parameters to ensure, your application
+is compiled in the correct way.
+
+```json
+{
+  "compilerOptions": {
+    "target": "<<ES VERSION>>",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "outDir": "./build",
+    "sourceMap": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
+}
+```
+
+The code above is an example, but you can copy and paste it to your project. The
+only thing you need to adjust is the `ES VERSION` part.
+
+Despite the fact, that this configs are listed here, we strongly suggest
+that you use the [generator-giuseppe](http://giuseppe-generator.smartive.ch/) for yeoman.
+
 ## Basic usage
 
 To start with a very simple "ping-pong" example, just use the following lines of code (app.ts):
