@@ -2,7 +2,9 @@
 layout: default
 title: giuseppe - by smartive AG
 ---
-giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](http://expressjs.com/) using [TypeScript](https://www.typescriptlang.org/) decorators and annotations named after the great Italian componist Giuseppe Verdi. Like Verdi, it composes things, but not a great piece of musical history! We compose routes for you. giuseppe is dedicated to
+giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](http://expressjs.com/) using [TypeScript](https://www.typescriptlang.org/) 
+decorators and annotations named after the great Italian componist Giuseppe Verdi. Like Verdi, 
+it composes things, but not a great piece of musical history! We compose routes for you. giuseppe is dedicated to
 [Express](http://expressjs.com/) and depends on it. We were tired of writing all the route registrations by ourselves.
 
 ##### A bunch of badges
@@ -130,8 +132,8 @@ of the documentation in the [links at the start](#docs) and/or the `docs/` folde
 
 #### Examples
 
-There are many examples located in the [examples](examples) folder!
-Please have a look there for various use cases :smile:.
+There are many examples located in the [examples](https://github.com/smartive/giuseppe/tree/master/examples) folder!
+Please have a look there for various use cases.
 
 ## Testing
 
@@ -149,7 +151,7 @@ command that will install them for you.
 
 We're happy if you have any contributions! Every participation counts. Feel free to
 open pull requests, issues or use any other form of contribution. Maybe we'll
-set up a `CONTRIBUTING.md` file in the future. soon(tm) :smile:.
+set up a `CONTRIBUTING.md` file in the future. soon(tm).
 
 [Full list of contributors](https://github.com/smartive/giuseppe/graphs/contributors)
 
@@ -157,7 +159,7 @@ set up a `CONTRIBUTING.md` file in the future. soon(tm) :smile:.
 
 The changelog is based on [keep a changelog](http://keepachangelog.com) and is located here:
 
-[Changelog](CHANGELOG.md)
+[Changelog](https://github.com/smartive/giuseppe/blob/master/CHANGELOG.md)
 
 ## Licence
 

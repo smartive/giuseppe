@@ -20,7 +20,7 @@ http methods (`@Get`, `@Put`, `@Post`, `@Delete` and `@Head`) so simplify the us
 
 If no route string is provided, the base path of the controller and the
 base url of the registration function are used. The whole decoration
-and registration magic happens at [registerControllers](Registration.md).
+and registration magic happens at [registerControllers](registration).
 
 ## To return or not return
 
@@ -33,7 +33,7 @@ description of the condition and a usecase.
 | Condition | Result | Description | Usage |
 | --------- | ------ | ----------- | ----- |
 | Method has no return type and has a decorated `@Res` parameter | giuseppe will return and do nothing else. | If the return type of the method is `void 0` and the method is injected with the response object. You can set your own results and return values. | Very simple: `res.sendFile(..)` or `res.status(418).end()` |
-| Method has no return type and has *NO* decorated `@Res` parameter | giuseppe will return `res.status(httpStatus.NO_CONTENT)` | If the method has return type `void 0` and no injected response object it returns a NO_CONTENT on a successful route call. | Create an object with a `put` but do not return anything. (e.g. [DemoController](Controllers.md) |
+| Method has no return type and has *NO* decorated `@Res` parameter | giuseppe will return `res.status(httpStatus.NO_CONTENT)` | If the method has return type `void 0` and no injected response object it returns a NO_CONTENT on a successful route call. | Create an object with a `put` but do not return anything. (e.g. [DemoController](controllers) |
 | Method has a return type and returns the wrong type | You get an error to the knee. | The desired return type and the actually returned type do not match. | Ease up your live :wink: |
 | Method returns a primitive type (string, number, boolean) | giuseppe calls `res.send(returnValue)` | The method returns a simple type like a string (`hello world`) so giuseppe returns it to the client. | Is alive route or very basic routes. |
 | Method returns a non primitive type (string, number, boolean) | giuseppe calls `res.json(returnValue)` | The method returns a complex type or an object, so giuseppe returns it as a json to the client. | Basic rest usage of your controller. |

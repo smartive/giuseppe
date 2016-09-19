@@ -66,7 +66,7 @@ For the cookie parameter decorator, there exists special options, which are spec
 
 All parameters are type checked at runtime. During the parse method, the constructor
 of the decorated parameter type is used to check for the type. If the parsing
-process throws an error, you get notified via an [`@ErrorHandler`](ErrorHandling.md) 
+process throws an error, you get notified via an [`@ErrorHandler`](errorhandling) 
 or the default error handler.
 
 It is possible to use your own types for parsing (example below), but keep
