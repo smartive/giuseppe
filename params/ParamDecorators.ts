@@ -1,5 +1,6 @@
 import 'reflect-metadata';
-import {ParamOptions, QueryParamOptions, BodyParamOptions, CookieParamOptions} from './ParamOptions';
+import {ParamRegistration} from '../models/ParamRegistration';
+import {BodyParamOptions, CookieParamOptions, ParamOptions, QueryParamOptions} from './ParamOptions';
 
 /**
  * Reflect metadata key for parameter list.
@@ -20,22 +21,12 @@ export enum ParamType {
     Cookie
 }
 
-/**
- * Parameter class. Contains all crucial information for the instantiation of the parameters for the runtime.
- *
- * @class
- */
-export class Param {
-    constructor(public paramType: ParamType, public name: string, public type: Function, public index: number, public options?: ParamOptions) {
-    }
-}
-
 function param(type: ParamType, name: string, options?: ParamOptions) {
     return (target: Object, propertyKey: string, parameterIndex: number) => {
         let paramtypes = Reflect.getMetadata('design:paramtypes', target, propertyKey);
-        let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, target, propertyKey) || [];
+        let params: ParamRegistration[] = Reflect.getOwnMetadata(PARAMS_KEY, target, propertyKey) || [];
 
-        params.push(new Param(type, name, paramtypes[parameterIndex], parameterIndex, options));
+        params.push(new ParamRegistration(type, name, paramtypes[parameterIndex], parameterIndex, options));
 
         Reflect.defineMetadata(PARAMS_KEY, params, target, propertyKey);
     };

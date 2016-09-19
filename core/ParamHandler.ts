@@ -1,4 +1,4 @@
-import {Param} from '../params/ParamDecorators';
+import {ParamRegistration} from '../models/ParamRegistration';
 import {Request, Response} from 'express';
 
 /**
@@ -12,7 +12,7 @@ export interface ParamHandler {
      * @param {Param} param - The parameter which should be extracted. 
      * @returns {any} - The value of the parameter (part). 
      */
-    extractParam(request: Request, param: Param): any;
+    extractParam(request: Request, param: ParamRegistration): any;
 
     /**
      * Parses the raw value of a param to its type.
@@ -22,7 +22,7 @@ export interface ParamHandler {
      * @param {Param} param - The parameter information.
      * @returns {any} - The parsed parametervalue.
      */
-    parseParam(rawValue: any, param: Param): any;
+    parseParam(rawValue: any, param: ParamRegistration): any;
 
     /**
      * Returns the values for the requested parameters.
@@ -32,7 +32,7 @@ export interface ParamHandler {
      * @param {Response} response - An expressJS response object.
      * @returns {any[]} - The parameter values.
      */
-    getParamValuesForRequest(params: Param[], request: Request, response: Response): any[];
+    getParamValuesForRequest(params: ParamRegistration[], request: Request, response: Response): any[];
 
     /**
      * Returns all registered parameters for a route. 
@@ -41,7 +41,7 @@ export interface ParamHandler {
      * @param {string} routeKey - Route identifier.
      * @returns {Param[]} - A list of parameters for the route.
      */
-    getParamsForRoute(target: any, routeKey: string): Param[];
+    getParamsForRoute(target: any, routeKey: string): ParamRegistration[];
 }
 
 /**

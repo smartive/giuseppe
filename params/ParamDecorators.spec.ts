@@ -1,15 +1,16 @@
 import 'reflect-metadata';
-import {Query, PARAMS_KEY, Param, ParamType, UrlParam, Body, Req, Res, Header, Cookie} from './ParamDecorators';
-import {Route} from '../routes/RouteDecorators';
-import {Controller} from '../controllers/ControllerDecorator';
-import {Registrar} from '../core/Registrar';
 import {registerControllers} from '../';
-import {RequiredParameterNotProvidedError, ParameterParseError, ParamValidationFailedError} from '../errors/Errors';
-import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
-import {isString, isNumber} from '../validators/Validators';
-import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
+import {Controller} from '../controllers/ControllerDecorator';
 import {IocContainer} from '../core/IoC';
 import {IoCSymbols} from '../core/IoCSymbols';
+import {Registrar} from '../core/Registrar';
+import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
+import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {ParameterParseError, ParamValidationFailedError, RequiredParameterNotProvidedError} from '../errors/Errors';
+import {ParamRegistration} from '../models/ParamRegistration';
+import {Route} from '../routes/RouteDecorators';
+import {isNumber, isString} from '../validators/Validators';
+import {Body, Cookie, Header, PARAMS_KEY, ParamType, Query, Req, Res, UrlParam} from './ParamDecorators';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -58,11 +59,11 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
+            let params: ParamRegistration[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
-            let param: Param = params[0];
+            let param: ParamRegistration = params[0];
 
             param.paramType.should.equal(ParamType.Query);
             param.index.should.equal(0);
@@ -461,11 +462,11 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
+            let params: ParamRegistration[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
-            let param: Param = params[0];
+            let param: ParamRegistration = params[0];
 
             param.paramType.should.equal(ParamType.Url);
             param.index.should.equal(0);
@@ -558,11 +559,11 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
+            let params: ParamRegistration[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
-            let param: Param = params[0];
+            let param: ParamRegistration = params[0];
 
             param.paramType.should.equal(ParamType.Body);
             param.index.should.equal(0);
@@ -881,11 +882,11 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
+            let params: ParamRegistration[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
-            let param: Param = params[0];
+            let param: ParamRegistration = params[0];
 
             param.paramType.should.equal(ParamType.Request);
             param.index.should.equal(0);
@@ -931,11 +932,11 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
+            let params: ParamRegistration[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
-            let param: Param = params[0];
+            let param: ParamRegistration = params[0];
 
             param.paramType.should.equal(ParamType.Response);
             param.index.should.equal(0);
@@ -982,11 +983,11 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
+            let params: ParamRegistration[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
-            let param: Param = params[0];
+            let param: ParamRegistration = params[0];
 
             param.paramType.should.equal(ParamType.Header);
             param.index.should.equal(0);
@@ -1248,11 +1249,11 @@ describe('ParamDecorators', () => {
                 }
             }
 
-            let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
+            let params: ParamRegistration[] = Reflect.getOwnMetadata(PARAMS_KEY, Ctrl.prototype, 'func');
 
             params.should.be.an('array').with.lengthOf(1);
 
-            let param: Param = params[0];
+            let param: ParamRegistration = params[0];
 
             param.paramType.should.equal(ParamType.Cookie);
             param.index.should.equal(0);

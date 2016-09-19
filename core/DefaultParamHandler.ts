@@ -1,5 +1,6 @@
 import {ParameterConstructorArgumentsError, ParameterParseError, ParamValidationFailedError, RequiredParameterNotProvidedError} from '../errors/Errors';
-import {Param, PARAMS_KEY, ParamType} from '../params/ParamDecorators';
+import {ParamRegistration} from '../models/ParamRegistration';
+import {PARAMS_KEY, ParamType} from '../params/ParamDecorators';
 import {FactoryParameterOptions, ParameterFactory, QueryParamOptions} from '../params/ParamOptions';
 import {Validator} from '../validators/Validators';
 import {ParamHandler} from './ParamHandler';
@@ -30,7 +31,7 @@ class CookieHelper {
 
 @injectable()
 export class DefaultParamHandler implements ParamHandler {
-    public extractParam(request: Request, param: Param): any {
+    public extractParam(request: Request, param: ParamRegistration): any {
         switch (param.paramType) {
             case ParamType.Body:
                 return request.body;
@@ -59,7 +60,7 @@ export class DefaultParamHandler implements ParamHandler {
         }
     }
 
-    public parseParam(rawValue: any, param: Param): any {
+    public parseParam(rawValue: any, param: ParamRegistration): any {
         let factory: ParameterFactory<any>;
 
         if (param.options && (param.options as FactoryParameterOptions).factory) {
@@ -108,9 +109,9 @@ export class DefaultParamHandler implements ParamHandler {
         }
     }
 
-    public getParamValuesForRequest(params: Param[], request: Request, response: Response): any[] {
+    public getParamValuesForRequest(params: ParamRegistration[], request: Request, response: Response): any[] {
         let paramValues = [];
-        params.forEach((p: Param) => {
+        params.forEach((p: ParamRegistration) => {
             switch (p.paramType) {
                 case ParamType.Request:
                     paramValues[p.index] = request;
@@ -127,10 +128,10 @@ export class DefaultParamHandler implements ParamHandler {
     }
 
 
-    public getParamsForRoute(target: any, routeKey: string): Param[] {
-        let params: Param[] = Reflect.getOwnMetadata(PARAMS_KEY, target, routeKey) || [];
+    public getParamsForRoute(target: any, routeKey: string): ParamRegistration[] {
+        let params: ParamRegistration[] = Reflect.getOwnMetadata(PARAMS_KEY, target, routeKey) || [];
 
-        if (params.some((p: Param) => p.paramType === ParamType.Body) && !bodyParserInstalled) {
+        if (params.some((p: ParamRegistration) => p.paramType === ParamType.Body) && !bodyParserInstalled) {
             console.warn(`A route uses a @Body parameter, but there is no 'body-parser' package installed.`);
         }
 
