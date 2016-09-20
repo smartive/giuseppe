@@ -1,22 +1,17 @@
 import 'reflect-metadata';
-import {
-    Get,
-    Put,
-    Post,
-    Delete,
-    Route,
-    Head,
-    ROUTES_KEY,
-    RouteRegistration,
-    RouteMethod
-} from '../routes/RouteDecorators';
-import {ParameterConstructorArgumentsError, WrongReturnTypeError, HeadHasWrongReturnTypeError} from '../errors/Errors';
-import {Query, Res} from '../params/ParamDecorators';
-import {Controller, registerControllers, resetControllerRegistrations} from '../controllers/ControllerDecorator';
-import {Response} from 'express';
-import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {registerControllers} from '../';
+import {Controller} from '../controllers/ControllerDecorator';
+import {IocContainer} from '../core/IoC';
+import {IoCSymbols} from '../core/IoCSymbols';
+import {Registrar} from '../core/Registrar';
 import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
+import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
+import {HeadHasWrongReturnTypeError, ParameterConstructorArgumentsError, WrongReturnTypeError} from '../errors/Errors';
+import {RouteRegistration} from '../models/RouteRegistration';
+import {Query, Res} from '../params/ParamDecorators';
+import {Delete, Get, Head, Post, Put, Route, RouteMethod, ROUTES_KEY} from '../routes/RouteDecorators';
 import chai = require('chai');
+import {Response} from 'express';
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
 
@@ -50,7 +45,7 @@ class TestRouter {
 describe('RouteDecorators', () => {
 
     afterEach(() => {
-        resetControllerRegistrations();
+        IocContainer.get<Registrar>(IoCSymbols.registrar).resetControllerRegistrations();
     });
 
     describe('Get', () => {

@@ -1,6 +1,10 @@
 import 'reflect-metadata';
-import {Controller, registerControllers, resetControllerRegistrations} from './ControllerDecorator';
+import {registerControllers} from '../';
+import {IocContainer} from '../core/IoC';
+import {IoCSymbols} from '../core/IoCSymbols';
+import {Registrar} from '../core/Registrar';
 import {Get, Route} from '../routes/RouteDecorators';
+import {Controller} from './ControllerDecorator';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -47,7 +51,7 @@ class TestRouter {
 describe('Middleware', () => {
 
     afterEach(() => {
-        resetControllerRegistrations();
+        IocContainer.get<Registrar>(IoCSymbols.registrar).resetControllerRegistrations();
     });
 
     it('should call controller middleware', () => {

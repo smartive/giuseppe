@@ -1,8 +1,8 @@
+import {ControllerErrorHandler} from './ControllerErrorHandler';
+import {ErrorHandlerWrongArgumentsError, RouteError} from './Errors';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
-import {ErrorHandlerWrongArgumentsError, RouteError} from './Errors';
-import {ControllerErrorHandler} from './ControllerErrorHandler';
 
 let should = chai.should();
 chai.use(sinonChai);

@@ -6,11 +6,13 @@
     "express": "registry:dt/express#4.0.0+20160317120654",
     "express-serve-static-core": "registry:dt/express-serve-static-core#0.0.0+20160322035842",
     "http-status": "registry:dt/http-status#0.2.1+20160412142223",
+    "inversify": "registry:dt/inversify#2.0.0-beta.9+20160623004628",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
     "node": "registry:dt/node#4.0.0+20160412142033",
     "serve-static": "registry:dt/serve-static#0.0.0+20160317120654"
   },
   "globalDevDependencies": {
+    "chai-http": "registry:dt/chai-http#0.0.0+20160317120654",
     "mocha": "registry:dt/mocha#2.2.5+20160317120654"
   },
   "devDependencies": {

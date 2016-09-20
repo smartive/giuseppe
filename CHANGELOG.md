@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Moved documentation to gh-pages.
+- Use `chai-http` instead of `newman` for integration tests.
+- Core rewrite (some IoC things, moved classes, etc).
 
 ## [1.1.1]
 ### Fixed

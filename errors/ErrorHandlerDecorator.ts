@@ -1,10 +1,6 @@
 import 'reflect-metadata';
-import {
-    ErrorHandlerWrongArgumentsError,
-    ErrorHandlerWrongReturnTypeError,
-    ErrorHandlerWrongArgumentTypesError
-} from './Errors';
 import {ControllerErrorHandler} from './ControllerErrorHandler';
+import {ErrorHandlerWrongArgumentsError, ErrorHandlerWrongArgumentTypesError, ErrorHandlerWrongReturnTypeError} from './Errors';
 
 const ARGUMENT_COUNT = 3;
 
