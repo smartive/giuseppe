@@ -140,7 +140,7 @@ export class DefaultRouteHandler implements RouteHandler {
         this.routes = {};
     }
 
-    private registerRoute(registration: RegistrationHelper, router: Router) {
+    private registerRoute(registration: RegistrationHelper, router: Router): void {
         switch (registration.route.method) {
             case RouteMethod.Get:
                 router.get(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
