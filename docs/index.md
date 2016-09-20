@@ -48,7 +48,7 @@ autocomplete does work as it should.
 
 ### tsconfig.json
 
-If you don't use the yeoman generator to scaffold your application, you need
+If you don't use the [yeoman generator](http://giuseppe-generator.smartive.ch/) to scaffold your application, you need
 to provide the typescript compiler with the correct parameters to ensure, your application
 is compiled in the correct way.
 
