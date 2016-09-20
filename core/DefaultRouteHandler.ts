@@ -26,9 +26,9 @@ class RegistrationHelper {
 
 @injectable()
 export class DefaultRouteHandler implements RouteHandler {
-    private routes: {[id: string]: RegistrationHelper} = {};
+    private routes: { [id: string]: RegistrationHelper } = {};
 
-    constructor(@inject(IoCSymbols.paramHandler) private paramHandler: ParamHandler) {
+    constructor( @inject(IoCSymbols.paramHandler) private paramHandler: ParamHandler) {
     }
 
     public addRoutes(controllerRegistration: ControllerRegistration, url: string): void {
@@ -82,14 +82,6 @@ export class DefaultRouteHandler implements RouteHandler {
 
                 try {
                     paramValues = this.paramHandler.getParamValuesForRequest(params, request, response);
-                } catch (e) {
-                    handleError(e);
-                    // This return is needed, since the controller
-                    // would try to call the route method (even on error).
-                    return;
-                }
-
-                try {
                     let result = method.apply(instance, paramValues),
                         responseFunction = result => {
                             if (NON_JSON_TYPES.indexOf(result.constructor) !== -1) {
@@ -98,18 +90,23 @@ export class DefaultRouteHandler implements RouteHandler {
                                 response.json(result);
                             }
                         };
+
                     if (!returnType && hasResponseParam) {
                         return;
                     }
+
                     if (!returnType && !hasResponseParam) {
                         return response.status(httpStatus.NO_CONTENT).end();
                     }
+
                     if (!(result instanceof returnType) && !(result.constructor === returnType)) {
                         handleError(new WrongReturnTypeError(route.propertyKey, returnType, result.constructor));
                     }
+
                     if (route.method === RouteMethod.Head && returnType === Boolean) {
                         return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
                     }
+
                     if (returnType === Promise) {
                         (result as Promise<any>).then(responseFunction, handleError);
                     } else {
