@@ -15,15 +15,21 @@
     <header>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-xs-12 logo">
+                <div class="visible-md visible-lg col-xs-12 smartive">
                     <img src="{{ site.baseurl }}/assets/img/logo.svg" alt="smartive AG" class="img-responsive small">
                 </div>
-                <div class="col-xs-12 logo">
-                    <img src="https://cloud.githubusercontent.com/assets/292951/14691860/f363e562-0753-11e6-89df-aab95645084f.png" alt="giuseppe"
-                        class="img-responsive">
+                <div class="visible-xs visible-sm col-xs-12 smartive logo-center">
+                    <img src="{{ site.baseurl }}/assets/img/logo.svg" alt="smartive AG" class="img-responsive small">
+                </div>
+                <div class="col-xs-12 logo-center">
+                    <img src="{{ site.baseurl }}/assets/img/giuseppe.png" alt="giuseppe"
+                        class="img-responsive large">
                 </div>
             </div>
         </div>
+        <a href="https://github.com/smartive/giuseppe" class="github-ribbon">
+            <img src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png">
+        </a>
     </header>
 
     <div class="container-fluid">
@@ -41,11 +47,20 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xs-12">
-                    hosted with ❤ on <a href="https://github.com/smartive">github</a>.
+                    <span>hosted with ❤ on <a href="https://github.com/smartive">github</a>.</span>
                 </div>
             </div>
         </div>
     </footer>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-84560236-1', 'auto');
+        ga('send', 'pageview');
+    </script>
 </body>
 
 </html>
