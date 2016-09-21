@@ -1,6 +1,9 @@
 ---
 ---
 
+$smartiveBlue: #009fe3;
+$smartiveDarkBlue: #1e324b;
+
 body {
     font-family: 'Roboto', sans-serif;
     font-size: 1.8rem;
@@ -8,15 +11,22 @@ body {
 }
 
 header {
-    background-color: #59A1D7;
-    color: white;
+    background-color: $smartiveDarkBlue;
+    color: #fff;
     margin-bottom: 3rem;
-    padding-top: 3rem;
     padding-bottom: 3rem;
+}
+
+.smartive {
+    background-color: $smartiveDarkBlue;
+     img {
+         padding: 3rem;
+     }
 }
 
 nav ul {
     list-style: none;
+    padding: 0 0 0 3rem;
 }
 
 .nav-link {
@@ -35,7 +45,7 @@ nav ul {
             content: '';
             width: 0;
             height: 1px;
-            background: #59a1d7;
+            background: $smartiveBlue;
             transition: width 150ms ease-in-out;
         }
 
@@ -47,7 +57,7 @@ nav ul {
 
 .nav-link.active {
     a {
-        color: #59a1d7;
+        color: $smartiveBlue;
 
         &::after {
             width: 100%;
@@ -55,7 +65,7 @@ nav ul {
     }
 }
 
-.logo {
+.logo-center {
     text-align: center;
 
     img {
@@ -63,8 +73,32 @@ nav ul {
     }
 }
 
-.img-responsive.small {
-    width: 20rem;
+.github-ribbon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+}
+
+.img-responsive {
+    &.small {
+        width: 18rem;
+    }
+
+    &.large {
+        width: 40rem;
+    }
+}
+
+a {
+    color: $smartiveBlue;
+    transition: color 150ms ease-in-out;
+
+
+    &:hover {
+        color: $smartiveDarkBlue;
+        text-decoration: none;
+    }
 }
 
 h2 {
@@ -83,19 +117,27 @@ h4 {
 }
 
 footer {
-    background-color: #59A1D7;
-    color: white;
+    background-color: $smartiveDarkBlue;
+    color: #fff;
     font-size: 1.2rem;
     margin-top: 3rem;
     padding-top: 3rem;
     padding-bottom: 3rem;
 
     a {
-        color: white;
+        color: #fff;
+
+        &:hover {
+            color: $smartiveBlue;
+        }
+    }
+
+    span {
+        padding-left: 3rem;
     }
 }
 
-.highlighter-rouge { 
+.highlighter-rouge {
     background-color: rgba($color: #000, $alpha: 0.06);
     color: #555;
 }
