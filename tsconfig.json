@@ -8,7 +8,10 @@
     "declaration": true,
     "sourceMap": false,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "lib": [
+      "es2015"
+    ]
   },
   "exclude": [
     "node_modules",

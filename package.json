@@ -42,7 +42,6 @@
   },
   "homepage": "https://github.com/smartive/giuseppe#readme",
   "dependencies": {
-    "@types/es6-shim": "^0.31.32",
     "@types/express": "^4.0.33",
     "@types/http-status": "^0.2.29",
     "@types/inversify": "^2.0.31",
