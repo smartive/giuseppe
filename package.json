@@ -3,6 +3,7 @@
   "version": "1.1.1",
   "description": "An attributed controller routing system for expressJS with typescript decorators and annotations",
   "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "bootstrap": "npm install -q",
     "clean": "rimraf build",
