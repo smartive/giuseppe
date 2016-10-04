@@ -3,7 +3,7 @@ import { IocContainer } from '../core/IoC';
 import { IoCSymbols } from '../core/IoCSymbols';
 import { Registrar } from '../core/Registrar';
 import { VersionInformationInvalid, VersionInformationMissing } from '../errors/Errors';
-import { Version } from './VersionDecorator';
+import { Version, VERSION_KEY } from './VersionDecorator';
 import chai = require('chai');
 
 chai.should();
@@ -14,7 +14,14 @@ describe('VersionDecorator', () => {
         IocContainer.get<Registrar>(IoCSymbols.registrar).resetControllerRegistrations();
     });
 
-    it('should add a version information to a controller');
+    it.skip('should add a version information to a controller', () => {
+        @Version({ from: 1 })
+        class Ctrl {
+        }
+
+        let versionInfo = Reflect.getOwnMetadata(VERSION_KEY, Ctrl);
+        console.log(versionInfo);
+    });
 
     it('should add a version information to a route');
 
@@ -87,5 +94,7 @@ describe('VersionDecorator', () => {
             }
         }).should.throw(VersionInformationInvalid);
     });
+
+    it('should throw if there are multiple version decorators');
 
 });
