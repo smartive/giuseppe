@@ -1,14 +1,14 @@
 import 'reflect-metadata';
-import {registerControllers, registerControllersFromFolder} from '../';
-import {Controller} from '../controllers/ControllerDecorator';
-import {Registrar} from '../core/Registrar';
-import {DuplicateRouteDeclarationError, HttpVerbNotSupportedError} from '../errors/Errors';
-import {Delete, Get, Head, Post, Put, ROUTES_KEY} from '../routes/RouteDecorators';
-import {IocContainer} from './IoC';
-import {IoCSymbols} from './IoCSymbols';
+import { registerControllers, registerControllersFromFolder } from '../';
+import { Controller } from '../controllers/ControllerDecorator';
+import { Registrar } from '../core/Registrar';
+import { DuplicateRouteDeclarationError, HttpVerbNotSupportedError } from '../errors/Errors';
+import { Delete, Get, Head, Post, Put, ROUTES_KEY } from '../routes/RouteDecorators';
+import { IocContainer } from './IoC';
+import { IoCSymbols } from './IoCSymbols';
 import chai = require('chai');
-import {Router} from 'express';
-import {SinonSpy} from 'sinon';
+import { Router } from 'express';
+import { SinonSpy } from 'sinon';
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
 
@@ -39,7 +39,7 @@ class TestRouter {
     }
 }
 
-describe('DefaultRegistrar', () => {
+describe('DefaultRouteHandler', () => {
 
     afterEach(() => {
         IocContainer.get<Registrar>(IoCSymbols.registrar).resetControllerRegistrations();
@@ -56,7 +56,7 @@ describe('DefaultRegistrar', () => {
         sinon.stub(router, 'head');
     });
 
-    describe('registerControllers', () => {
+    describe('registering process', () => {
 
         it('should register 1 controller with 1 function correctly', () => {
             @Controller()
@@ -311,6 +311,10 @@ describe('DefaultRegistrar', () => {
             routes[4].propertyKey.should.equal('funcHead');
         });
 
+    });
+
+    describe('base, prefix and root url', () => {
+
         it('should use baseUrl correctly', () => {
             @Controller()
             class Ctrl {
@@ -406,6 +410,107 @@ describe('DefaultRegistrar', () => {
 
             fn.should.throw(HttpVerbNotSupportedError);
         });
+
+        it('should register a route from root with ~', () => {
+            @Controller()
+            class StaticFiles {
+                @Get('~/*')
+                public funcGet(): void {
+                }
+            }
+
+            @Controller('stores')
+            class Api {
+                @Get()
+                public funcGet(): void {
+                }
+            }
+
+            registerControllers('api', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(2);
+
+            spy.getCall(0).should.be.calledWith('/api/stores');
+            spy.getCall(1).should.be.calledWith('/*');
+        });
+
+        it('should register a controller from root with ~', () => {
+            @Controller('~/')
+            class StaticFiles {
+                @Get('foo')
+                public funcGet(): void {
+                }
+            }
+
+            @Controller('stores')
+            class Api {
+                @Get()
+                public funcGet(): void {
+                }
+            }
+
+            registerControllers('api', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(2);
+
+            spy.getCall(0).should.be.calledWith('/api/stores');
+            spy.getCall(1).should.be.calledWith('/foo');
+        });
+
+        it('should register a controller and a route from root with ~', () => {
+            @Controller('~/another')
+            class StaticFiles {
+                @Get('~/third')
+                public funcGet(): void {
+                }
+            }
+
+            @Controller('stores')
+            class Api {
+                @Get()
+                public funcGet(): void {
+                }
+            }
+
+            registerControllers('api', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(2);
+
+            spy.getCall(0).should.be.calledWith('/api/stores');
+            spy.getCall(1).should.be.calledWith('/third');
+        });
+
+        it('should throw on duplicate routes from root', () => {
+            @Controller()
+            class Ctrl {
+                @Get('~/root')
+                public get1(): void {
+                }
+            }
+
+            @Controller('foobar')
+            class Ctrl2 {
+                @Get('~/root')
+                public get1(): void {
+                }
+            }
+
+            let fn = () => {
+                registerControllers('baseUrl', router);
+            };
+
+            fn.should.throw(DuplicateRouteDeclarationError);
+        });
+
+    });
+
+    describe('segmented, wildcard or wrong routes', () => {
 
         it('should order more segmented urls before less segmented ones', () => {
             @Controller('1')
@@ -528,102 +633,45 @@ describe('DefaultRegistrar', () => {
             spy.getCall(0).should.be.calledWith('/stores');
         });
 
-        it('should register a route from root with ~', () => {
-            @Controller()
-            class StaticFiles {
-                @Get('~/*')
-                public funcGet(): void {
-                }
-            }
+    });
 
-            @Controller('stores')
-            class Api {
-                @Get()
-                public funcGet(): void {
-                }
-            }
+    describe('route versioning', () => {
 
-            registerControllers('api', router);
+        it('should route a version number to a controller');
 
-            let spy = router.get as SinonSpy;
+        it('should route a version number to a route');
 
-            spy.callCount.should.equal(2);
+        it('should route a version to the correct controller');
 
-            spy.getCall(0).should.be.calledWith('/api/stores');
-            spy.getCall(1).should.be.calledWith('/*');
-        });
+        it('should route a version to the correct route');
 
-        it('should register a controller from root with ~', () => {
-            @Controller('~/')
-            class StaticFiles {
-                @Get('foo')
-                public funcGet(): void {
-                }
-            }
+        it('should add a version info (from: 1) to a non versioned element');
 
-            @Controller('stores')
-            class Api {
-                @Get()
-                public funcGet(): void {
-                }
-            }
+        it('should use the correct non versioned route');
 
-            registerControllers('api', router);
+        it('should use the correct non versioned controller');
 
-            let spy = router.get as SinonSpy;
+        it('should correctly map header to v1 if header is not provided');
 
-            spy.callCount.should.equal(2);
+        it('should use the correct controller (from)');
 
-            spy.getCall(0).should.be.calledWith('/api/stores');
-            spy.getCall(1).should.be.calledWith('/foo');
-        });
+        it('should use the correct controller (until)');
 
-        it('should register a controller and a route from root with ~', () => {
-            @Controller('~/another')
-            class StaticFiles {
-                @Get('~/third')
-                public funcGet(): void {
-                }
-            }
+        it('should use the correct controller (from / until)');
 
-            @Controller('stores')
-            class Api {
-                @Get()
-                public funcGet(): void {
-                }
-            }
+        it('should use the correct route (from)');
 
-            registerControllers('api', router);
+        it('should use the correct route (until)');
 
-            let spy = router.get as SinonSpy;
+        it('should use the correct route (from / until)');
 
-            spy.callCount.should.equal(2);
+        it('should return a 404 if a route is not available in a certain version');
 
-            spy.getCall(0).should.be.calledWith('/api/stores');
-            spy.getCall(1).should.be.calledWith('/third');
-        });
+        it('should prefer route version over controller version (from)');
 
-        it('should throw on duplicate routes from root', () => {
-            @Controller()
-            class Ctrl {
-                @Get('~/root')
-                public get1(): void {
-                }
-            }
+        it('should prefer route version over controller version (until)');
 
-            @Controller('foobar')
-            class Ctrl2 {
-                @Get('~/root')
-                public get1(): void {
-                }
-            }
-
-            let fn = () => {
-                registerControllers('baseUrl', router);
-            };
-
-            fn.should.throw(DuplicateRouteDeclarationError);
-        });
+        it('should prefer route version over controller version (from / until)');
 
     });
 
