@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Use `chai-http` instead of `newman` for integration tests.
 - Core rewrite (some IoC things, moved classes, etc).
 - Upgraded to TypeScript 2.0
+- Remap lcov coverage back to typescript
 
 ## [1.1.1]
 ### Fixed
