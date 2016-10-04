@@ -19,6 +19,8 @@ describe('VersionDecorator', () => {
 
     it('should throw if until is not a normal number');
 
-    it('should throw if neither fron nor until is declared');
+    it('should throw if neither from nor until is declared');
+
+    it('should throw if from is greater then until');
 
 });
