@@ -27,6 +27,10 @@ export function Version(versionInformation: { from?: number, until?: number }) {
             throw new VersionInformationInvalid(controllerOrRoute.name, `The until value (${versionInformation.until}) is either not a number, a floating point number or less than 1`);
         }
 
+        if (isDefined(versionInformation.from) && isDefined(versionInformation.until) && versionInformation.from > versionInformation.until) {
+            throw new VersionInformationInvalid(controllerOrRoute.name, `The from value (${versionInformation.from}) is greater than the until (${versionInformation.until})`);
+        }
+
         console.log(controllerOrRoute);
     };
 }

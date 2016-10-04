@@ -79,6 +79,13 @@ describe('VersionDecorator', () => {
         }).should.throw(VersionInformationMissing);
     });
 
-    it('should throw if from is greater then until');
+    it('should throw if from is greater then until', () => {
+        (() => {
+            @Version({ from: 3, until: 2 })
+            class Ctrl {
+
+            }
+        }).should.throw(VersionInformationInvalid);
+    });
 
 });
