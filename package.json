@@ -6,11 +6,13 @@
   "typings": "index.d.ts",
   "scripts": {
     "bootstrap": "npm install -q",
-    "clean": "rimraf build",
-    "pretest": "npm run clean && tsc",
+    "clean": "rimraf build coverage",
+    "pretest": "npm run clean && tsc --sourceMap",
     "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd \"./build/**/*.spec.js\"",
-    "precitest": "npm run bootstrap && npm run clean && tsc",
+    "posttest": "remap-istanbul -i coverage/coverage.json -o coverage/html-report -t html -e _test",
+    "precitest": "npm run bootstrap && npm run clean && tsc --sourceMap",
     "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd \"./build/**/*.spec.js\"",
+    "postcitest": "remap-istanbul -i coverage/coverage.json -o coverage/lcov-mapped.info -t lcovonly -e _test",
     "develop": "npm run clean && tsc --sourceMap -w --pretty"
   },
   "repository": {
@@ -65,6 +67,7 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.1.0",
     "mocha-lcov-reporter": "^1.2.0",
+    "remap-istanbul": "^0.6.4",
     "rimraf": "^2.5.4",
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",
