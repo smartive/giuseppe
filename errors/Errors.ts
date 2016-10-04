@@ -158,13 +158,43 @@ export class ParameterParseError extends ParameterError {
 /**
  * Error that is thrown when the route method returns the wrong type (i.e. a string instead of a number).
  * (Runtime error)
- *
- * @class
+
+ * @class WrongReturnTypeError
+ * @extends {RouteError}
  */
 export class WrongReturnTypeError extends RouteError {
     constructor(name: string, expected: Function, received: Function) {
         super();
         this.message = `The method "${name}" returned the wrong result type.\nExpected: ${expected}\nReceived: ${received}`;
+    }
+}
+
+/**
+ * Error that is thrown when a version information on a route or a controller is missing both information,
+ * i.e. there is no version in "from" and no version in "until"
+ * (Error will happen at startup)
+ * 
+ * @class VersionInformationMissing
+ * @extends {RouteError}
+ */
+export class VersionInformationMissing extends RouteError {
+    constructor(ctrlOrRouteName: string) {
+        super();
+        this.message = `The controller or method "${ctrlOrRouteName}" has neither from nor until version information.`;
+    }
+}
+
+/**
+ * Error that is thrown when a version information contains errors.
+ * (Error will happen at startup) 
+ *
+ * @class VersionInformationInvalid
+ * @extends {RouteError}
+ */
+export class VersionInformationInvalid extends RouteError {
+    constructor(ctrlOrRouteName: string, reason: string) {
+        super();
+        this.message = `The controller or method "${ctrlOrRouteName}" has invalid version information.\nReason: ${reason}`;
     }
 }
 
