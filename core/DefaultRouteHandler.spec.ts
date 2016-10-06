@@ -1,9 +1,10 @@
 import 'reflect-metadata';
-import { registerControllers, registerControllersFromFolder } from '../';
+import { registerControllers } from '../';
 import { Controller } from '../controllers/ControllerDecorator';
 import { Registrar } from '../core/Registrar';
 import { DuplicateRouteDeclarationError, HttpVerbNotSupportedError } from '../errors/Errors';
 import { Delete, Get, Head, Post, Put, ROUTES_KEY } from '../routes/RouteDecorators';
+import { Version } from '../versioning/VersionDecorator';
 import { IocContainer } from './IoC';
 import { IoCSymbols } from './IoCSymbols';
 import chai = require('chai');
@@ -637,7 +638,20 @@ describe('DefaultRouteHandler', () => {
 
     describe('route versioning', () => {
 
-        it('should route a version number to a controller');
+        it.skip('should route a version number to a controller', () => {
+            @Controller()
+            @Version({ from: 1 })
+            class Ctrl {
+                @Get()
+                public func(): string {
+                    return 'hello version 1';
+                }
+            }
+
+            registerControllers('', router);
+
+
+        });
 
         it('should route a version number to a route');
 
@@ -665,7 +679,11 @@ describe('DefaultRouteHandler', () => {
 
         it('should use the correct route (from / until)');
 
-        it('should return a 404 if a route is not available in a certain version');
+        it('should not throw when registering the same route with different versions');
+
+        it('should throw when 2 routes overlap with versions (no until info)');
+
+        it('should throw if a route is not available in a certain version');
 
         it('should prefer route version over controller version (from)');
 
