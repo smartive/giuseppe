@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Configuration } from './Configuration';
 import { injectable } from 'inversify';
 
