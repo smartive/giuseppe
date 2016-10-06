@@ -27,7 +27,7 @@ const NON_JSON_TYPES = [String, Number, Boolean],
     defaultVersionInfo = VersionInformation.create('default', { from: 1 });
 
 class RouteVersion {
-    constructor(public version: VersionInformation, public ctrlInstance: any, public params: ParamRegistration[], public middlewares: RequestHandler[]) { }
+    constructor(public version: VersionInformation, public ctrlInstance: any, public ctrlTarget: any, public routeRegistration: RouteRegistration, public middlewares: RequestHandler[]) { }
 }
 
 class RouteInformation {
@@ -36,10 +36,10 @@ class RouteInformation {
     public readonly versions: RouteVersion[] = [];
 
     public get routeId(): string {
-        return this.routeUrl + this.method.toString();
+        return `${this.routeUrl}_${RouteMethod[this.method]}`;
     }
 
-    constructor(public routeUrl: string, public method: RouteMethod) {
+    constructor(private paramHandler: ParamHandler, public routeUrl: string, public method: RouteMethod) {
         this.wildcardCount = this.routeUrl.split('*').length - 1;
         this.segmentCount = this.routeUrl.split('/').length;
     }
@@ -49,7 +49,94 @@ class RouteInformation {
             throw new DuplicateRouteDeclarationError(this.routeUrl, this.method);
         }
 
-        
+        if (this.versions.length === 1) {
+            let version = this.versions[0];
+            this.registerMethod(router, this.method, this.routeUrl, version.middlewares, this.buildRouteMethod(version));
+            return;
+        }
+
+
+    }
+
+    private buildRouteMethod(version: RouteVersion): any {
+        let params = this.paramHandler.getParamsForRoute(version.ctrlTarget.prototype, version.routeRegistration.propertyKey),
+            hasResponseParam = params.some(p => p.paramType === ParamType.Response),
+            returnType = Reflect.getMetadata('design:returntype', version.ctrlTarget.prototype, version.routeRegistration.propertyKey),
+            ctrlMethod = version.routeRegistration.descriptor.value;
+
+        return (request: Request, response: Response, next) => {
+            let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, version.ctrlTarget),
+                paramValues = [];
+
+            if (!errorHandler) {
+                errorHandler = new ControllerErrorHandler();
+            }
+
+            let handleError = (error: any) => {
+                if (!(error instanceof Error)) {
+                    error = new GenericRouteError(this.routeId, error);
+                }
+                errorHandler.handleError(version.ctrlInstance, request, response, error);
+            };
+
+            try {
+                paramValues = this.paramHandler.getParamValuesForRequest(params, request, response);
+                let result = ctrlMethod.apply(version.ctrlInstance, paramValues),
+                    responseFunction = result => {
+                        if (NON_JSON_TYPES.indexOf(result.constructor) !== -1) {
+                            response.send(result);
+                        } else {
+                            response.json(result);
+                        }
+                    };
+
+                if (!returnType && hasResponseParam) {
+                    return;
+                }
+
+                if (!returnType && !hasResponseParam) {
+                    return response.status(httpStatus.NO_CONTENT).end();
+                }
+
+                if (!(result instanceof returnType) && !(result.constructor === returnType)) {
+                    handleError(new WrongReturnTypeError(version.routeRegistration.propertyKey, returnType, result.constructor));
+                }
+
+                if (version.routeRegistration.method === RouteMethod.Head && returnType === Boolean) {
+                    return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
+                }
+
+                if (returnType === Promise) {
+                    (result as Promise<any>).then(responseFunction, handleError);
+                } else {
+                    responseFunction(result);
+                }
+            } catch (e) {
+                handleError(e);
+            }
+        };
+    }
+
+    private registerMethod(router: Router, httpMethod: RouteMethod, url: string, middlewares: RequestHandler[], route: any): void {
+        switch (httpMethod) {
+            case RouteMethod.Get:
+                router.get(url, ...middlewares, route);
+                break;
+            case RouteMethod.Put:
+                router.put(url, ...middlewares, route);
+                break;
+            case RouteMethod.Post:
+                router.post(url, ...middlewares, route);
+                break;
+            case RouteMethod.Delete:
+                router.delete(url, ...middlewares, route);
+                break;
+            case RouteMethod.Head:
+                router.head(url, ...middlewares, route);
+                break;
+            default:
+                throw new HttpVerbNotSupportedError(httpMethod);
+        }
     }
 
     private isUnique(): boolean {
@@ -99,71 +186,18 @@ export class DefaultRouteHandler implements RouteHandler {
                 routeUrl = '/' + routeUrl.split('/').filter(Boolean).join('/');
             }
 
-            let routeInfo = new RouteInformation(routeUrl, route.method);
+            let routeInfo = new RouteInformation(this.paramHandler, routeUrl, route.method);
             routeInfo = this.routes[routeInfo.routeId] || routeInfo;
 
             routeInfo.versions.push(new RouteVersion(
                 versionInfo,
                 instance,
-                this.paramHandler.getParamsForRoute(controllerRegistration.controller.prototype, route.propertyKey),
+                controllerRegistration.controller,
+                route,
                 [...controllerRegistration.middlewares, ...route.middlewares]
             ));
 
             this.routes[routeInfo.routeId] = routeInfo;
-
-            //params.some(p => p.paramType === ParamType.Response);
-
-            // let decoratedMethod = (request: Request, response: Response, next) => {
-            //     let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
-            //         paramValues = [];
-
-            //     if (!errorHandler) {
-            //         errorHandler = new ControllerErrorHandler();
-            //     }
-
-            //     let handleError = (error: any) => {
-            //         if (!(error instanceof Error)) {
-            //             error = new GenericRouteError(route.propertyKey, error);
-            //         }
-            //         errorHandler.handleError(instance, request, response, error);
-            //     };
-
-            //     try {
-            //         paramValues = this.paramHandler.getParamValuesForRequest(params, request, response);
-            //         let result = method.apply(instance, paramValues), //effektivi methode.
-            //             responseFunction = result => {
-            //                 if (NON_JSON_TYPES.indexOf(result.constructor) !== -1) {
-            //                     response.send(result);
-            //                 } else {
-            //                     response.json(result);
-            //                 }
-            //             };
-
-            //         if (!returnType && hasResponseParam) {
-            //             return;
-            //         }
-
-            //         if (!returnType && !hasResponseParam) {
-            //             return response.status(httpStatus.NO_CONTENT).end();
-            //         }
-
-            //         if (!(result instanceof returnType) && !(result.constructor === returnType)) {
-            //             handleError(new WrongReturnTypeError(route.propertyKey, returnType, result.constructor));
-            //         }
-
-            //         if (route.method === RouteMethod.Head && returnType === Boolean) {
-            //             return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
-            //         }
-
-            //         if (returnType === Promise) {
-            //             (result as Promise<any>).then(responseFunction, handleError);
-            //         } else {
-            //             responseFunction(result);
-            //         }
-            //     } catch (e) {
-            //         handleError(e);
-            //     }
-            // };
         }
     }
 
@@ -184,27 +218,5 @@ export class DefaultRouteHandler implements RouteHandler {
 
     public resetRoutes(): void {
         this.routes = {};
-    }
-
-    private registerRoute(registration: RegistrationHelper, router: Router): void {
-        switch (registration.route.method) {
-            case RouteMethod.Get:
-                router.get(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            case RouteMethod.Put:
-                router.put(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            case RouteMethod.Post:
-                router.post(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            case RouteMethod.Delete:
-                router.delete(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            case RouteMethod.Head:
-                router.head(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            default:
-                throw new HttpVerbNotSupportedError(registration.route.method);
-        }
     }
 }
