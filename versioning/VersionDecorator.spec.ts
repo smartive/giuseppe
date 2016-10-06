@@ -22,7 +22,7 @@ describe('VersionDecorator', () => {
 
         let versionInfo: VersionInformation = Reflect.getOwnMetadata(VERSION_KEY, Ctrl);
         versionInfo.from.should.equal(1);
-        should.not.exist(versionInfo.until);
+        versionInfo.until.should.equal(Infinity);
     });
 
     it('should add a version information to a route', () => {
@@ -33,7 +33,7 @@ describe('VersionDecorator', () => {
 
         let versionInfo: VersionInformation = Reflect.getOwnMetadata(VERSION_KEY, Ctrl, 'foo');
         versionInfo.from.should.equal(1);
-        should.not.exist(versionInfo.until);
+        versionInfo.until.should.equals(Infinity);
     });
 
     it('should add a correct from version', () => {
@@ -43,7 +43,7 @@ describe('VersionDecorator', () => {
 
         let versionInfo: VersionInformation = Reflect.getOwnMetadata(VERSION_KEY, Ctrl);
         versionInfo.from.should.equal(1);
-        should.not.exist(versionInfo.until);
+        versionInfo.until.should.equal(Infinity);
     });
 
     it('should add a correct until version', () => {
@@ -53,7 +53,7 @@ describe('VersionDecorator', () => {
 
         let versionInfo: VersionInformation = Reflect.getOwnMetadata(VERSION_KEY, Ctrl);
         versionInfo.until.should.equal(1);
-        should.not.exist(versionInfo.from);
+        versionInfo.from.should.equal(-Infinity);
     });
 
     it('should add a correct from / until version', () => {
