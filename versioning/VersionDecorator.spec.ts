@@ -1,3 +1,4 @@
+import { VersionInformation } from '../models/VersionInformation';
 import 'reflect-metadata';
 import { IocContainer } from '../core/IoC';
 import { IoCSymbols } from '../core/IoCSymbols';
@@ -6,7 +7,7 @@ import { DuplicateVersionInformation, VersionInformationInvalid, VersionInformat
 import { Version, VERSION_KEY } from './VersionDecorator';
 import chai = require('chai');
 
-chai.should();
+const should = chai.should();
 
 describe('VersionDecorator', () => {
 
@@ -14,22 +15,56 @@ describe('VersionDecorator', () => {
         IocContainer.get<Registrar>(IoCSymbols.registrar).resetControllerRegistrations();
     });
 
-    it.skip('should add a version information to a controller', () => {
+    it('should add a version information to a controller', () => {
         @Version({ from: 1 })
         class Ctrl {
         }
 
-        let versionInfo = Reflect.getOwnMetadata(VERSION_KEY, Ctrl);
-        console.log(versionInfo);
+        let versionInfo: VersionInformation = Reflect.getOwnMetadata(VERSION_KEY, Ctrl);
+        versionInfo.from.should.equal(1);
+        should.not.exist(versionInfo.until);
     });
 
-    it('should add a version information to a route');
+    it('should add a version information to a route', () => {
+        class Ctrl {
+            @Version({ from: 1 })
+            public foo(): void { }
+        }
 
-    it('should add a correct from version');
+        let versionInfo: VersionInformation = Reflect.getOwnMetadata(VERSION_KEY, Ctrl, 'foo');
+        versionInfo.from.should.equal(1);
+        should.not.exist(versionInfo.until);
+    });
 
-    it('should add a correct until version');
+    it('should add a correct from version', () => {
+        @Version({ from: 1 })
+        class Ctrl {
+        }
 
-    it('should add a correct from / until version');
+        let versionInfo: VersionInformation = Reflect.getOwnMetadata(VERSION_KEY, Ctrl);
+        versionInfo.from.should.equal(1);
+        should.not.exist(versionInfo.until);
+    });
+
+    it('should add a correct until version', () => {
+        @Version({ until: 1 })
+        class Ctrl {
+        }
+
+        let versionInfo: VersionInformation = Reflect.getOwnMetadata(VERSION_KEY, Ctrl);
+        versionInfo.until.should.equal(1);
+        should.not.exist(versionInfo.from);
+    });
+
+    it('should add a correct from / until version', () => {
+        @Version({ from: 1, until: 2 })
+        class Ctrl {
+        }
+
+        let versionInfo: VersionInformation = Reflect.getOwnMetadata(VERSION_KEY, Ctrl);
+        versionInfo.from.should.equal(1);
+        versionInfo.until.should.equal(2);
+    });
 
     it('should throw if from is not a normal number', () => {
         (() => {
@@ -95,12 +130,22 @@ describe('VersionDecorator', () => {
         }).should.throw(VersionInformationInvalid);
     });
 
-    it('should throw if there are multiple version decorators', () => {
+    it('should throw if there are multiple version decorators on a controller', () => {
         (() => {
             @Version({ from: 2, until: 4 })
             @Version({ from: 2, until: 3 })
             class Ctrl {
 
+            }
+        }).should.throw(DuplicateVersionInformation);
+    });
+
+    it('should throw if there are multiple version decorators on a route', () => {
+        (() => {
+            class Ctrl {
+                @Version({ from: 2, until: 4 })
+                @Version({ from: 2, until: 3 })
+                public foo(): void { }
             }
         }).should.throw(DuplicateVersionInformation);
     });

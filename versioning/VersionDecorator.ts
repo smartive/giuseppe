@@ -20,15 +20,18 @@ export function Version(versionInformation: { from?: number, until?: number }) {
     return (controllerOrRoute: Function | any, propertyKey?: string, descriptor?: PropertyDescriptor) => {
         let information = VersionInformation.create(controllerOrRoute.name, versionInformation);
 
-        if (Reflect.getMetadata(VERSION_KEY, controllerOrRoute)) {
-            throw new DuplicateVersionInformation(controllerOrRoute.name);
-        }
-
         if (!propertyKey || !descriptor) {
             // Decorator is called on a class
+            if (Reflect.hasMetadata(VERSION_KEY, controllerOrRoute)) {
+                throw new DuplicateVersionInformation(controllerOrRoute.name);
+            }
             Reflect.defineMetadata(VERSION_KEY, information, controllerOrRoute);
         } else {
             // Decorator is called on a method
+            if (Reflect.hasMetadata(VERSION_KEY, controllerOrRoute.constructor, propertyKey)) {
+                throw new DuplicateVersionInformation(controllerOrRoute.name);
+            }
+            Reflect.defineMetadata(VERSION_KEY, information, controllerOrRoute.constructor, propertyKey);
         }
     };
 }
