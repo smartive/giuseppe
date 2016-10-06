@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { IocContainer } from '../core/IoC';
 import { IoCSymbols } from '../core/IoCSymbols';
 import { Registrar } from '../core/Registrar';
-import { VersionInformationInvalid, VersionInformationMissing } from '../errors/Errors';
+import { DuplicateVersionInformation, VersionInformationInvalid, VersionInformationMissing } from '../errors/Errors';
 import { Version, VERSION_KEY } from './VersionDecorator';
 import chai = require('chai');
 
@@ -95,6 +95,14 @@ describe('VersionDecorator', () => {
         }).should.throw(VersionInformationInvalid);
     });
 
-    it('should throw if there are multiple version decorators');
+    it('should throw if there are multiple version decorators', () => {
+        (() => {
+            @Version({ from: 2, until: 4 })
+            @Version({ from: 2, until: 3 })
+            class Ctrl {
+
+            }
+        }).should.throw(DuplicateVersionInformation);
+    });
 
 });

@@ -238,3 +238,18 @@ export class VersionInformationInvalid extends DesigntimeError {
         this.message = `The controller or method "${ctrlOrRouteName}" has invalid version information.\nReason: ${reason}`;
     }
 }
+
+/**
+ * Error that is thrown when a route or a controller contains multiple
+ * version information.
+ * (Error will happen at startup)
+ * 
+ * @class DuplicateVersionInformation
+ * @extends {DesigntimeError}
+ */
+export class DuplicateVersionInformation extends DesigntimeError {
+    constructor(ctrlOrRouteName: string) {
+        super();
+        this.message = `The controller or method "${ctrlOrRouteName}" has duplicated version decorators.`;
+    }
+}

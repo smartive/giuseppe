@@ -1,3 +1,4 @@
+import { DuplicateVersionInformation } from '../errors/Errors';
 import { VersionInformation } from '../models/VersionInformation';
 /**
  * Reflect metadata key for the version information.
@@ -18,6 +19,10 @@ export const VERSION_KEY = 'version';
 export function Version(versionInformation: { from?: number, until?: number }) {
     return (controllerOrRoute: Function | any, propertyKey?: string, descriptor?: PropertyDescriptor) => {
         let information = VersionInformation.create(controllerOrRoute.name, versionInformation);
+
+        if (Reflect.getMetadata(VERSION_KEY, controllerOrRoute)) {
+            throw new DuplicateVersionInformation(controllerOrRoute.name);
+        }
 
         if (!propertyKey || !descriptor) {
             // Decorator is called on a class
