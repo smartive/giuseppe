@@ -638,7 +638,7 @@ describe('DefaultRouteHandler', () => {
 
     describe('route versioning', () => {
 
-        it('should route a version number to a controller', () => {
+        it.skip('should route a version number to a controller', () => {
             @Controller()
             @Version({ from: 1 })
             class Ctrl {

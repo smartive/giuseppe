@@ -58,7 +58,7 @@ class RouteInformation {
 
     }
 
-    private buildRouteMethod(version: RouteVersion): any {
+    private buildRouteMethod(version: RouteVersion): RequestHandler {
         let params = this.paramHandler.getParamsForRoute(version.ctrlTarget.prototype, version.routeRegistration.propertyKey),
             hasResponseParam = params.some(p => p.paramType === ParamType.Response),
             returnType = Reflect.getMetadata('design:returntype', version.ctrlTarget.prototype, version.routeRegistration.propertyKey),
@@ -117,7 +117,7 @@ class RouteInformation {
         };
     }
 
-    private registerMethod(router: Router, httpMethod: RouteMethod, url: string, middlewares: RequestHandler[], route: any): void {
+    private registerMethod(router: Router, httpMethod: RouteMethod, url: string, middlewares: RequestHandler[], route: RequestHandler): void {
         switch (httpMethod) {
             case RouteMethod.Get:
                 router.get(url, ...middlewares, route);
