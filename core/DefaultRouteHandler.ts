@@ -1,14 +1,21 @@
-import { doRouteVersionsOverlap } from '../utilities/RouteHelpers';
-import { Configuration } from './Configuration';
-import { VersionInformation } from '../models/VersionInformation';
-import { VERSION_KEY } from '../versioning/VersionDecorator';
 import { ControllerErrorHandler } from '../errors/ControllerErrorHandler';
 import { ERRORHANDLER_KEY } from '../errors/ErrorHandlerDecorator';
-import { DuplicateRouteDeclarationError, GenericRouteError, HeadHasWrongReturnTypeError, HttpVerbNotSupportedError, WrongReturnTypeError } from '../errors/Errors';
+import {
+    DuplicateRouteDeclarationError,
+    GenericRouteError,
+    HeadHasWrongReturnTypeError,
+    HttpVerbNotSupportedError,
+    WrongReturnTypeError
+} from '../errors/Errors';
 import { ControllerRegistration } from '../models/ControllerRegistration';
+import { ParamRegistration } from '../models/ParamRegistration';
 import { RouteRegistration } from '../models/RouteRegistration';
+import { VersionInformation } from '../models/VersionInformation';
 import { ParamType } from '../params/ParamDecorators';
 import { RouteMethod, ROUTES_KEY } from '../routes/RouteDecorators';
+import { doRouteVersionsOverlap } from '../utilities/RouteHelpers';
+import { VERSION_KEY } from '../versioning/VersionDecorator';
+import { Configuration } from './Configuration';
 import { IoCSymbols } from './IoCSymbols';
 import { ParamHandler } from './ParamHandler';
 import { RouteHandler } from './RouteHandler';
@@ -19,19 +26,50 @@ import { inject, injectable } from 'inversify';
 const NON_JSON_TYPES = [String, Number, Boolean],
     defaultVersionInfo = VersionInformation.create('default', { from: 1 });
 
-class RegistrationHelper {
-    public wildcardCount: number;
-    public segmentCount: number;
+class RouteVersion {
+    constructor(public version: VersionInformation, public ctrlInstance: any, public params: ParamRegistration[], public middlewares: RequestHandler[]) { }
+}
 
-    constructor(public routeId: string, public routeUrl: string, public route: RouteRegistration, public decoratedMethod: Function, public middlewares: RequestHandler[]) {
+class RouteInformation {
+    public readonly wildcardCount: number;
+    public readonly segmentCount: number;
+    public readonly versions: RouteVersion[] = [];
+
+    public get routeId(): string {
+        return this.routeUrl + this.method.toString();
+    }
+
+    constructor(public routeUrl: string, public method: RouteMethod) {
         this.wildcardCount = this.routeUrl.split('*').length - 1;
         this.segmentCount = this.routeUrl.split('/').length;
+    }
+
+    public register(router: Router): void {
+        if (!this.isUnique()) {
+            throw new DuplicateRouteDeclarationError(this.routeUrl, this.method);
+        }
+
+        
+    }
+
+    private isUnique(): boolean {
+        if (this.versions.length <= 1) {
+            return true;
+        }
+
+        for (let version of this.versions) {
+            if (this.versions.some(o => o !== version && doRouteVersionsOverlap(version.version, o.version))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 
 @injectable()
 export class DefaultRouteHandler implements RouteHandler {
-    private routes: { [id: string]: RegistrationHelper[] } = {};
+    private routes: { [id: string]: RouteInformation } = {};
 
     constructor(
         @inject(IoCSymbols.paramHandler) private paramHandler: ParamHandler,
@@ -40,18 +78,17 @@ export class DefaultRouteHandler implements RouteHandler {
     }
 
     public addRoutes(controllerRegistration: ControllerRegistration, url: string): void {
-        let routes = Reflect.getOwnMetadata(ROUTES_KEY, controllerRegistration.controller) || [],
+        let routes: RouteRegistration[] = Reflect.getOwnMetadata(ROUTES_KEY, controllerRegistration.controller) || [],
             instance = new controllerRegistration.controller(),
             ctrlVersionInfo = Reflect.getMetadata(VERSION_KEY, controllerRegistration.controller);
 
         for (let route of routes) {
-            let ctrlTarget = controllerRegistration.controller,
-                routeTarget = ctrlTarget.prototype,
-                routeUrl = url + [controllerRegistration.prefix, route.path].filter(Boolean).join('/'),
-                returnType = Reflect.getMetadata('design:returntype', routeTarget, route.propertyKey),
-                middlewares = [...controllerRegistration.middlewares, ...route.middlewares],
-                method = route.descriptor.value,
-                versionInfo = Reflect.getMetadata(VERSION_KEY, routeTarget, route.propertyKey) || ctrlVersionInfo || defaultVersionInfo;
+            let routeUrl = url + [controllerRegistration.prefix, route.path].filter(Boolean).join('/'),
+                versionInfo = Reflect.getMetadata(VERSION_KEY, controllerRegistration.controller.prototype, route.propertyKey) || ctrlVersionInfo || defaultVersionInfo;
+
+            if (route.method === RouteMethod.Head && Reflect.getMetadata('design:returntype', controllerRegistration.controller.prototype, route.propertyKey) !== Boolean) {
+                throw new HeadHasWrongReturnTypeError();
+            }
 
             let index;
             if ((index = routeUrl.lastIndexOf('~')) > -1) {
@@ -62,90 +99,77 @@ export class DefaultRouteHandler implements RouteHandler {
                 routeUrl = '/' + routeUrl.split('/').filter(Boolean).join('/');
             }
 
-            let routeId = routeUrl + route.method.toString();
+            let routeInfo = new RouteInformation(routeUrl, route.method);
+            routeInfo = this.routes[routeInfo.routeId] || routeInfo;
 
-            if (route.method === RouteMethod.Head && returnType !== Boolean) {
-                throw new HeadHasWrongReturnTypeError();
-            }
+            routeInfo.versions.push(new RouteVersion(
+                versionInfo,
+                instance,
+                this.paramHandler.getParamsForRoute(controllerRegistration.controller.prototype, route.propertyKey),
+                [...controllerRegistration.middlewares, ...route.middlewares]
+            ));
 
-            let params = this.paramHandler.getParamsForRoute(routeTarget, route.propertyKey),
-                hasResponseParam = params.some(p => p.paramType === ParamType.Response);
+            this.routes[routeInfo.routeId] = routeInfo;
 
-            let decoratedMethod = (request: Request, response: Response, next) => {
-                let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
-                    paramValues = [];
+            //params.some(p => p.paramType === ParamType.Response);
 
-                if (!errorHandler) {
-                    errorHandler = new ControllerErrorHandler();
-                }
+            // let decoratedMethod = (request: Request, response: Response, next) => {
+            //     let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
+            //         paramValues = [];
 
-                let handleError = (error: any) => {
-                    if (!(error instanceof Error)) {
-                        error = new GenericRouteError(route.propertyKey, error);
-                    }
-                    errorHandler.handleError(instance, request, response, error);
-                };
+            //     if (!errorHandler) {
+            //         errorHandler = new ControllerErrorHandler();
+            //     }
 
-                try {
-                    paramValues = this.paramHandler.getParamValuesForRequest(params, request, response);
-                    let result = method.apply(instance, paramValues),
-                        responseFunction = result => {
-                            if (NON_JSON_TYPES.indexOf(result.constructor) !== -1) {
-                                response.send(result);
-                            } else {
-                                response.json(result);
-                            }
-                        };
+            //     let handleError = (error: any) => {
+            //         if (!(error instanceof Error)) {
+            //             error = new GenericRouteError(route.propertyKey, error);
+            //         }
+            //         errorHandler.handleError(instance, request, response, error);
+            //     };
 
-                    if (!returnType && hasResponseParam) {
-                        return;
-                    }
+            //     try {
+            //         paramValues = this.paramHandler.getParamValuesForRequest(params, request, response);
+            //         let result = method.apply(instance, paramValues), //effektivi methode.
+            //             responseFunction = result => {
+            //                 if (NON_JSON_TYPES.indexOf(result.constructor) !== -1) {
+            //                     response.send(result);
+            //                 } else {
+            //                     response.json(result);
+            //                 }
+            //             };
 
-                    if (!returnType && !hasResponseParam) {
-                        return response.status(httpStatus.NO_CONTENT).end();
-                    }
+            //         if (!returnType && hasResponseParam) {
+            //             return;
+            //         }
 
-                    if (!(result instanceof returnType) && !(result.constructor === returnType)) {
-                        handleError(new WrongReturnTypeError(route.propertyKey, returnType, result.constructor));
-                    }
+            //         if (!returnType && !hasResponseParam) {
+            //             return response.status(httpStatus.NO_CONTENT).end();
+            //         }
 
-                    if (route.method === RouteMethod.Head && returnType === Boolean) {
-                        return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
-                    }
+            //         if (!(result instanceof returnType) && !(result.constructor === returnType)) {
+            //             handleError(new WrongReturnTypeError(route.propertyKey, returnType, result.constructor));
+            //         }
 
-                    if (returnType === Promise) {
-                        (result as Promise<any>).then(responseFunction, handleError);
-                    } else {
-                        responseFunction(result);
-                    }
-                } catch (e) {
-                    handleError(e);
-                }
-            };
+            //         if (route.method === RouteMethod.Head && returnType === Boolean) {
+            //             return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
+            //         }
 
-            if (!this.routes[routeId]) {
-                this.routes[routeId] = [];
-            }
-            this.routes[routeId].push(new RegistrationHelper(routeId, routeUrl, route, decoratedMethod, middlewares));
+            //         if (returnType === Promise) {
+            //             (result as Promise<any>).then(responseFunction, handleError);
+            //         } else {
+            //             responseFunction(result);
+            //         }
+            //     } catch (e) {
+            //         handleError(e);
+            //     }
+            // };
         }
     }
 
     public registerRoutes(router: Router): Router {
-        for (let routeId of Object.keys(this.routes)) {
-            if (this.routes[routeId].length <= 1) {
-                continue;
-            }
-            let routes = this.routes[routeId];
-            for (let route of routes) {
-                if (routes.some(o => o !== route && doRouteVersionsOverlap(route, o))) {
-                    throw new DuplicateRouteDeclarationError(route.routeUrl, route.route.method);
-                }
-            }
-        }
-
         Object.keys(this.routes)
             .map(k => this.routes[k])
-            .reduce((all, cur) => all.concat(cur), [])
             .reduce((segmentSorted, route) => {
                 (segmentSorted[route.segmentCount] || (segmentSorted[route.segmentCount] = [])).push(route);
                 return segmentSorted;
@@ -153,7 +177,7 @@ export class DefaultRouteHandler implements RouteHandler {
             .filter(Boolean)
             .reverse()
             .reduce((routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcardCount - r2.wildcardCount)), [])
-            .forEach(r => this.registerRoute(r, router));
+            .forEach(r => r.register(router));
 
         return router;
     }

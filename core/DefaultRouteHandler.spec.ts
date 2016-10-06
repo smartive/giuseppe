@@ -638,7 +638,7 @@ describe('DefaultRouteHandler', () => {
 
     describe('route versioning', () => {
 
-        it.skip('should route a version number to a controller', () => {
+        it.only('should route a version number to a controller', () => {
             @Controller()
             @Version({ from: 1 })
             class Ctrl {
@@ -681,7 +681,110 @@ describe('DefaultRouteHandler', () => {
 
         it('should not throw when registering the same route with different versions');
 
-        it('should throw when 2 routes overlap with versions (no until info)');
+        it('should throw when 2 routes overlap with versions (1-3 | 2-4)', () => {
+            (() => {
+                @Controller()
+                class Ctrl {
+                    @Get()
+                    @Version({ from: 1, until: 3 })
+                    public func(): string {
+                        return 'hello version 1';
+                    }
+
+                    @Get()
+                    @Version({ from: 2, until: 4 })
+                    public func2(): string {
+                        return 'hello version 1';
+                    }
+                }
+
+                registerControllers('', router);
+            }).should.throw(DuplicateRouteDeclarationError);
+        });
+
+        it('should throw when 2 routes overlap with versions (-3 | 2-)', () => {
+            (() => {
+                @Controller()
+                class Ctrl {
+                    @Get()
+                    @Version({ until: 3 })
+                    public func(): string {
+                        return 'hello version 1';
+                    }
+
+                    @Get()
+                    @Version({ from: 2 })
+                    public func2(): string {
+                        return 'hello version 1';
+                    }
+                }
+
+                registerControllers('', router);
+            }).should.throw(DuplicateRouteDeclarationError);
+        });
+
+        it('should throw when 2 routes overlap with versions (1-10 | 2-4)', () => {
+            (() => {
+                @Controller()
+                class Ctrl {
+                    @Get()
+                    @Version({ from: 1, until: 10 })
+                    public func(): string {
+                        return 'hello version 1';
+                    }
+
+                    @Get()
+                    @Version({ from: 2, until: 4 })
+                    public func2(): string {
+                        return 'hello version 1';
+                    }
+                }
+
+                registerControllers('', router);
+            }).should.throw(DuplicateRouteDeclarationError);
+        });
+
+        it('should throw when 2 routes overlap with versions (1- | 2-)', () => {
+            (() => {
+                @Controller()
+                class Ctrl {
+                    @Get()
+                    @Version({ from: 1 })
+                    public func(): string {
+                        return 'hello version 1';
+                    }
+
+                    @Get()
+                    @Version({ from: 2 })
+                    public func2(): string {
+                        return 'hello version 1';
+                    }
+                }
+
+                registerControllers('', router);
+            }).should.throw(DuplicateRouteDeclarationError);
+        });
+
+        it('should throw when 2 routes overlap with versions (-3 | -4)', () => {
+            (() => {
+                @Controller()
+                class Ctrl {
+                    @Get()
+                    @Version({ until: 3 })
+                    public func(): string {
+                        return 'hello version 1';
+                    }
+
+                    @Get()
+                    @Version({ until: 4 })
+                    public func2(): string {
+                        return 'hello version 1';
+                    }
+                }
+
+                registerControllers('', router);
+            }).should.throw(DuplicateRouteDeclarationError);
+        });
 
         it('should throw if a route is not available in a certain version');
 
