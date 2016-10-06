@@ -58,7 +58,7 @@ export class HttpVerbNotSupportedError extends DesigntimeError {
 export class DuplicateRouteDeclarationError extends DesigntimeError {
     constructor(url: string, method: RouteMethod) {
         super();
-        this.message = `The route to url "${url}" with http method "${RouteMethod[method]}" is declared twice.`;
+        this.message = `The route to url "${url}" with http method "${RouteMethod[method]}" is declared twice.\nIf you use versioning, the versions could overlap!`;
     }
 }
 
