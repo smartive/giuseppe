@@ -1,3 +1,4 @@
+import { Configuration } from './core/Configuration';
 import {Registrar} from './core/Registrar';
 import {IocContainer} from './core/IoC';
 import {Router} from 'express';
@@ -36,3 +37,9 @@ export const registerControllersFromFolder = registrar.registerControllersFromFo
  * @returns {Router} - The configured router.
  */
 export const registerControllers = registrar.registerControllers.bind(registrar);
+
+/**
+ * Injected object that contains the global configuration for giuseppe.
+ * May be changed before the registration process (e.g. accept header version setting).
+ */
+export const giuseppeConfiguration = IocContainer.get<Configuration>(IoCSymbols.configuration);

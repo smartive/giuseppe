@@ -52,6 +52,7 @@ export interface Registrar {
 }
 
 /**
+ * IoC symbol for the registrar interface.
  *
  * @type {Symbol}
  */
