@@ -1,5 +1,6 @@
 import { DuplicateVersionInformation } from '../errors/Errors';
 import { VersionInformation } from '../models/VersionInformation';
+
 /**
  * Reflect metadata key for the version information.
  * 
