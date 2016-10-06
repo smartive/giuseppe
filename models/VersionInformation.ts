@@ -27,8 +27,12 @@ export class VersionInformation {
             throw new VersionInformationInvalid(name, `The from value (${versionInformation.from}) is greater than the until (${versionInformation.until})`);
         }
 
-        return new VersionInformation(versionInformation.from, versionInformation.until);
+        return new VersionInformation(versionInformation.from || -Infinity, versionInformation.until || Infinity);
     }
 
-    private constructor(public from?: number, public until?: number) { }
+    public isInVersionBounds(requestedVersion: number): boolean {
+        return this.from <= requestedVersion && requestedVersion <= this.until;
+    }
+
+    private constructor(public from: number, public until: number) { }
 }
