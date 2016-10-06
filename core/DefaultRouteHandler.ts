@@ -23,11 +23,10 @@ import { Request, RequestHandler, Response, Router } from 'express';
 import httpStatus = require('http-status');
 import { inject, injectable } from 'inversify';
 
-const NON_JSON_TYPES = [String, Number, Boolean],
-    defaultVersionInfo = VersionInformation.create('default', { from: 1 });
+const NON_JSON_TYPES = [String, Number, Boolean];
 
 class RouteVersion {
-    constructor(public version: VersionInformation, public ctrlInstance: any, public ctrlTarget: any, public routeRegistration: RouteRegistration, public middlewares: RequestHandler[]) { }
+    constructor(public ctrlInstance: any, public ctrlTarget: any, public routeRegistration: RouteRegistration, public middlewares: RequestHandler[], public version?: VersionInformation) { }
 }
 
 class RouteInformation {
@@ -49,7 +48,7 @@ class RouteInformation {
             throw new DuplicateRouteDeclarationError(this.routeUrl, this.method);
         }
 
-        if (this.versions.length === 1) {
+        if (this.versions.length === 1 && !this.versions[0].version) {
             let version = this.versions[0];
             this.registerMethod(router, this.method, this.routeUrl, version.middlewares, this.buildRouteMethod(version));
             return;
@@ -171,7 +170,7 @@ export class DefaultRouteHandler implements RouteHandler {
 
         for (let route of routes) {
             let routeUrl = url + [controllerRegistration.prefix, route.path].filter(Boolean).join('/'),
-                versionInfo = Reflect.getMetadata(VERSION_KEY, controllerRegistration.controller.prototype, route.propertyKey) || ctrlVersionInfo || defaultVersionInfo;
+                versionInfo: VersionInformation = Reflect.getMetadata(VERSION_KEY, controllerRegistration.controller.prototype, route.propertyKey) || ctrlVersionInfo;
 
             if (route.method === RouteMethod.Head && Reflect.getMetadata('design:returntype', controllerRegistration.controller.prototype, route.propertyKey) !== Boolean) {
                 throw new HeadHasWrongReturnTypeError();
@@ -190,11 +189,11 @@ export class DefaultRouteHandler implements RouteHandler {
             routeInfo = this.routes[routeInfo.routeId] || routeInfo;
 
             routeInfo.versions.push(new RouteVersion(
-                versionInfo,
                 instance,
                 controllerRegistration.controller,
                 route,
-                [...controllerRegistration.middlewares, ...route.middlewares]
+                [...controllerRegistration.middlewares, ...route.middlewares],
+                versionInfo
             ));
 
             this.routes[routeInfo.routeId] = routeInfo;
