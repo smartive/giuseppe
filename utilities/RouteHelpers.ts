@@ -8,6 +8,5 @@ import { VersionInformation } from '../models/VersionInformation';
  * @returns {boolean} - true when the two routes are overlapping in some sort, otherwise false.
  */
 export function doRouteVersionsOverlap(v1: VersionInformation, v2: VersionInformation): boolean {
-    return (v1.until || Infinity) >= (v2.from || -Infinity) &&
-        (v1.from || -Infinity) <= (v2.until || Infinity);
+    return v1.until >= v2.from && v1.from <= v2.until;
 }
