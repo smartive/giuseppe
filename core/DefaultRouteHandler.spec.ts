@@ -643,7 +643,7 @@ describe('DefaultRouteHandler', () => {
 
     describe('route versioning', () => {
 
-        it.only('should register a version number for a controller', () => {
+        it('should register a version number for a controller', () => {
             @Controller()
             @Version({ from: 1 })
             class Ctrl {
@@ -656,6 +656,11 @@ describe('DefaultRouteHandler', () => {
             registerControllers('', router);
 
             router.use.should.be.calledWith('/foobar');
+
+            let stack = (router.use as any).getCall(0).args[1].stack;
+            stack.should.be.an('array').with.lengthOf(2);
+            stack[1].route.path.should.equal('/67d79d92d6b0e4172bcf47ac820a45ea5dadbe79fdc75ad56d4457635c095e6b');
+
             router.get.should.not.be.called;
             router.put.should.not.be.called;
             router.post.should.not.be.called;
