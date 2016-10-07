@@ -8,7 +8,6 @@ import {
     WrongReturnTypeError
 } from '../errors/Errors';
 import { ControllerRegistration } from '../models/ControllerRegistration';
-import { ParamRegistration } from '../models/ParamRegistration';
 import { RouteRegistration } from '../models/RouteRegistration';
 import { VersionInformation } from '../models/VersionInformation';
 import { ParamType } from '../params/ParamDecorators';
@@ -22,14 +21,17 @@ import { RouteHandler } from './RouteHandler';
 import { Request, RequestHandler, Response, Router } from 'express';
 import httpStatus = require('http-status');
 import { inject, injectable } from 'inversify';
+import { createHash } from 'crypto';
 
-const NON_JSON_TYPES = [String, Number, Boolean];
+const NON_JSON_TYPES = [String, Number, Boolean],
+    defaultVersion = VersionInformation.create('default', { from: 1 });
 
 class RouteVersion {
     constructor(public ctrlInstance: any, public ctrlTarget: any, public routeRegistration: RouteRegistration, public middlewares: RequestHandler[], public version?: VersionInformation) { }
 }
 
 class RouteInformation {
+    public static headerName: string;
     public readonly wildcardCount: number;
     public readonly segmentCount: number;
     public readonly versions: RouteVersion[] = [];
@@ -54,7 +56,32 @@ class RouteInformation {
             return;
         }
 
+        let routeVersions = this.versions
+            .map(version => {
+                return {
+                    url: `/${this.getVersionHash(version)}`,
+                    version
+                };
+            }),
+            magicRouter = Router({ mergeParams: true });
 
+        magicRouter.use(this.routeUrl, (req: Request, res: Response, next) => {
+            let requestedVersion = parseInt(req.get(RouteInformation.headerName), 10) || 1,
+                requestedRoute = routeVersions.find(o => o.version.version.isInVersionBounds(requestedVersion));
+
+            if (!requestedRoute || req.url !== '/') {
+                return res.status(404).end();
+            }
+
+            req.url = requestedRoute.url;
+            next();
+        });
+
+        for (let version of routeVersions) {
+            this.registerMethod(magicRouter, this.method, version.url, version.version.middlewares, this.buildRouteMethod(version.version));
+        }
+
+        router.use(this.routeUrl, magicRouter);
     }
 
     private buildRouteMethod(version: RouteVersion): RequestHandler {
@@ -64,12 +91,8 @@ class RouteInformation {
             ctrlMethod = version.routeRegistration.descriptor.value;
 
         return (request: Request, response: Response, next) => {
-            let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, version.ctrlTarget),
+            let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, version.ctrlTarget) || new ControllerErrorHandler(),
                 paramValues = [];
-
-            if (!errorHandler) {
-                errorHandler = new ControllerErrorHandler();
-            }
 
             let handleError = (error: any) => {
                 if (!(error instanceof Error)) {
@@ -144,12 +167,16 @@ class RouteInformation {
         }
 
         for (let version of this.versions) {
-            if (this.versions.some(o => o !== version && doRouteVersionsOverlap(version.version, o.version))) {
+            if (this.versions.some(o => o !== version && doRouteVersionsOverlap(version.version || defaultVersion, o.version || defaultVersion))) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    private getVersionHash(version: RouteVersion): string {
+        return createHash('sha256').update(`${this.routeId}_${version.version.toString()}`).digest('hex');
     }
 }
 

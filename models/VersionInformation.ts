@@ -34,5 +34,9 @@ export class VersionInformation {
         return this.from <= requestedVersion && requestedVersion <= this.until;
     }
 
+    public toString(): string {
+        return `${this.from.toString()}|${this.until.toString()}`;
+    }
+
     private constructor(public from: number, public until: number) { }
 }

@@ -19,6 +19,10 @@ chai.use(sinonChai);
 class TestRouter {
     public routes: { [id: string]: Function } = {};
 
+    public use(route: string, func: Function): void {
+        this.routes[route] = func;
+    }
+
     public get(route: string, func: Function): void {
         this.routes[route] = func;
     }
@@ -50,6 +54,7 @@ describe('DefaultRouteHandler', () => {
 
     beforeEach(() => {
         router = Router();
+        sinon.stub(router, 'use');
         sinon.stub(router, 'get');
         sinon.stub(router, 'put');
         sinon.stub(router, 'post');
@@ -638,11 +643,11 @@ describe('DefaultRouteHandler', () => {
 
     describe('route versioning', () => {
 
-        it.skip('should register a version number for a controller', () => {
+        it.only('should register a version number for a controller', () => {
             @Controller()
             @Version({ from: 1 })
             class Ctrl {
-                @Get()
+                @Get('foobar')
                 public func(): string {
                     return 'hello version 1';
                 }
@@ -650,7 +655,11 @@ describe('DefaultRouteHandler', () => {
 
             registerControllers('', router);
 
-            
+            router.use.should.be.calledWith('/foobar');
+            router.get.should.not.be.called;
+            router.put.should.not.be.called;
+            router.post.should.not.be.called;
+            router.delete.should.not.be.called;
         });
 
         it('should route a version number to a route');
@@ -658,12 +667,6 @@ describe('DefaultRouteHandler', () => {
         it('should route a version to the correct controller');
 
         it('should route a version to the correct route');
-
-        it('should add a version info (from: 1) to a non versioned element');
-
-        it('should use the correct non versioned route');
-
-        it('should use the correct non versioned controller');
 
         it('should correctly map header to v1 if header is not provided');
 
