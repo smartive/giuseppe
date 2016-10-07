@@ -63,9 +63,9 @@ class RouteInformation {
                     version
                 };
             }),
-            magicRouter = Router({ mergeParams: true });
+            blackMagicRouter = Router({ mergeParams: true });
 
-        magicRouter.use(this.routeUrl, (req: Request, res: Response, next) => {
+        blackMagicRouter.use(this.routeUrl, (req: Request, res: Response, next) => {
             let requestedVersion = parseInt(req.get(RouteInformation.headerName), 10) || 1,
                 requestedRoute = routeVersions.find(o => o.version.version.isInVersionBounds(requestedVersion));
 
@@ -78,10 +78,10 @@ class RouteInformation {
         });
 
         for (let version of routeVersions) {
-            this.registerMethod(magicRouter, this.method, version.url, version.version.middlewares, this.buildRouteMethod(version.version));
+            this.registerMethod(blackMagicRouter, this.method, version.url, version.version.middlewares, this.buildRouteMethod(version.version));
         }
 
-        router.use(this.routeUrl, magicRouter);
+        router.use(this.routeUrl, blackMagicRouter);
     }
 
     private buildRouteMethod(version: RouteVersion): RequestHandler {
