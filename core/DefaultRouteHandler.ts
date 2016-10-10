@@ -65,11 +65,17 @@ class RouteInformation {
             }),
             blackMagicRouter = Router({ mergeParams: true });
 
-        blackMagicRouter.use(this.routeUrl, (req: Request, res: Response, next) => {
-            let requestedVersion = parseInt(req.get(RouteInformation.headerName), 10) || 1,
-                requestedRoute = routeVersions.find(o => o.version.version.isInVersionBounds(requestedVersion));
+        blackMagicRouter.use((req: Request, res: Response, next) => {
+            let requestedVersion: number;
+            try {
+                requestedVersion = parseInt(req.get(RouteInformation.headerName), 10) || 1;
+            } catch (e) {
+                requestedVersion = 1;
+            }
 
-            if (!requestedRoute || routeVersions.some(o => o.url === req.url)) {
+            let requestedRoute = routeVersions.find(o => o.version.version.isInVersionBounds(requestedVersion));
+
+            if (!requestedRoute || routeVersions.some(o => req.url.indexOf(o.url) >= 0)) {
                 return res.status(404).end();
             }
 
@@ -188,6 +194,7 @@ export class DefaultRouteHandler implements RouteHandler {
         @inject(IoCSymbols.paramHandler) private paramHandler: ParamHandler,
         @inject(IoCSymbols.configuration) private config: Configuration
     ) {
+        RouteInformation.headerName = this.config.versionHeaderName;
     }
 
     public addRoutes(controllerRegistration: ControllerRegistration, url: string): void {
