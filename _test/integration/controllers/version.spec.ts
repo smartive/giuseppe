@@ -1,158 +1,204 @@
-// // TODO.
+import 'reflect-metadata';
+import { registerControllers } from '../../../';
+import { IocContainer } from '../../../core/IoC';
+import { IoCSymbols } from '../../../core/IoCSymbols';
+import { Registrar } from '../../../core/Registrar';
+import chai = require('chai');
+import chaiHttp = require('chai-http');
+import express = require('express');
 
+let app = express();
+app.use(require('body-parser').json());
 
-// it.only('should route a version number to a controller', () => {
-//             @Controller()
-//             @Version({ from: 1 })
-//             class Ctrl {
-//                 @Get()
-//                 public func(): string {
-//                     return 'hello version 1';
-//                 }
-//             }
+const should = chai.should();
 
-//             registerControllers('', router);
+chai.use(chaiHttp);
 
+let http: Chai.ChaiStatic = chai as any,
+    server;
 
-//         });
+describe('Integration tests for route versioning', () => {
 
-//         it('should route a version number to a route');
+    before(() => {
+        require('./version');
+        app.use(registerControllers('/api'));
+        server = app.listen(8080);
+    });
 
-//         it('should route a version to the correct controller');
+    after(() => {
+        IocContainer.get<Registrar>(IoCSymbols.registrar).resetControllerRegistrations();
+        server.close();
+    });
 
-//         it('should route a version to the correct route');
+    it('should route a version number to a controller', done => {
+        http.request(app)
+            .get('/api/versioning/ctrl/v1')
+            .set('Accept-Version', '1')
+            .then(res => {
+                (res as any).text.should.equal('found-ctrl');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should add a version info (from: 1) to a non versioned element');
+    it('should route a version number to a route', done => {
+        http.request(app)
+            .get('/api/versioning/route/v1')
+            .set('Accept-Version', '1')
+            .then(res => {
+                (res as any).text.should.equal('found-route');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should use the correct non versioned route');
+    it('should route a version to the correct controller', done => {
+        http.request(app)
+            .get('/api/versioning/ctrls')
+            .set('Accept-Version', '2')
+            .then(res => {
+                (res as any).text.should.equal('found-ctrl-v2');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should use the correct non versioned controller');
+    it('should route a version to the correct route', done => {
+        http.request(app)
+            .get('/api/versioning/routes')
+            .set('Accept-Version', '2')
+            .then(res => {
+                (res as any).text.should.equal('found-route-v2');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should correctly map header to v1 if header is not provided');
+    it('should use the correct non versioned controller', done => {
+        http.request(app)
+            .get('/api/versioning/ctrl/nonversioned')
+            .set('Accept-Version', '1337')
+            .then(res => {
+                (res as any).text.should.equal('found-non-versioned-ctrl');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should use the correct controller (from)');
+    it('should use the correct non versioned route', done => {
+        http.request(app)
+            .get('/api/versioning/route/nonversioned')
+            .set('Accept-Version', '1337')
+            .then(res => {
+                (res as any).text.should.equal('found-non-versioned-route');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should use the correct controller (until)');
+    it('should prefer route version over controller version', done => {
+        Promise
+            .all([
+                http.request(app)
+                    .get('/api/versioning/route-ctrl')
+                    .set('Accept-Version', '2'),
+                http.request(app)
+                    .get('/api/versioning/route-ctrl')
+                    .set('Accept-Version', '3')
+            ])
+            .then(res => {
+                (res[0] as any).text.should.equal('found-ctrl-route-v2');
+                (res[1] as any).text.should.equal('found-ctrl-route-v3');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should use the correct controller (from / until)');
+    it('should correctly map header to v1 if header is not provided', done => {
+        http.request(app)
+            .get('/api/versioning/ctrl/v1')
+            .then(res => {
+                (res as any).text.should.equal('found-ctrl');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should use the correct route (from)');
+    it('should correctly map header to v1 if header is jibberish', done => {
+        http.request(app)
+            .get('/api/versioning/ctrl/v1')
+            .set('Accept-Version', 'foobar')
+            .then(res => {
+                (res as any).text.should.equal('found-ctrl');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should use the correct route (until)');
+    it('should pass query params to a versioned route', done => {
+        http.request(app)
+            .get('/api/versioning/query-param?qParam=yay')
+            .set('Accept-Version', '1')
+            .then(res => {
+                should.exist(res.body.qParam);
+                res.body.qParam.should.equal('yay');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should use the correct route (from / until)');
+    it('should pass url params to a versioned route', done => {
+        http.request(app)
+            .get('/api/versioning/url-param/foobar')
+            .set('Accept-Version', '1')
+            .then(res => {
+                should.exist(res.body.param);
+                res.body.param.should.equal('foobar');
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should not throw when registering the same route with different versions');
+    it('should return 404 if a route is not available in a certain version', done => {
+        http.request(app)
+            .get('/api/versioning/404')
+            .set('Accept-Version', '4')
+            .then(res => {
+                done(new Error('did not return 404'));
+            })
+            .catch(err => {
+                err.status.should.equal(404);
+                done();
+            })
+            .catch(done);
+    });
 
-//         it('should throw when 2 routes overlap with versions (1-3 | 2-4)', () => {
-//             (() => {
-//                 @Controller()
-//                 class Ctrl {
-//                     @Get()
-//                     @Version({ from: 1, until: 3 })
-//                     public func(): string {
-//                         return 'hello version 1';
-//                     }
+    it('should return 404 if a route is directly called with the hashed url', done => {
+        http.request(app)
+            .get('/api/versioning/404/66c17c4af64020041c3236a80dab013031501ad39da0f5c88ecfc859fb7b5047')
+            .set('Accept-Version', '3')
+            .then(res => {
+                done(new Error('did not return 404'));
+            })
+            .catch(err => {
+                err.status.should.equal(404);
+                done();
+            })
+            .catch(done);
+    });
 
-//                     @Get()
-//                     @Version({ from: 2, until: 4 })
-//                     public func2(): string {
-//                         return 'hello version 1';
-//                     }
-//                 }
+    it('should return 404 if a route is directly called with the hashed url and query params', done => {
+        http.request(app)
+            .get('/api/versioning/404/66c17c4af64020041c3236a80dab013031501ad39da0f5c88ecfc859fb7b5047?foo=bar')
+            .set('Accept-Version', '3')
+            .then(res => {
+                done(new Error('did not return 404'));
+            })
+            .catch(err => {
+                err.status.should.equal(404);
+                done();
+            })
+            .catch(done);
+    });
 
-//                 registerControllers('', router);
-//             }).should.throw(DuplicateRouteDeclarationError);
-//         });
-
-//         it('should throw when 2 routes overlap with versions (-3 | 2-)', () => {
-//             (() => {
-//                 @Controller()
-//                 class Ctrl {
-//                     @Get()
-//                     @Version({ until: 3 })
-//                     public func(): string {
-//                         return 'hello version 1';
-//                     }
-
-//                     @Get()
-//                     @Version({ from: 2 })
-//                     public func2(): string {
-//                         return 'hello version 1';
-//                     }
-//                 }
-
-//                 registerControllers('', router);
-//             }).should.throw(DuplicateRouteDeclarationError);
-//         });
-
-//         it('should throw when 2 routes overlap with versions (1-10 | 2-4)', () => {
-//             (() => {
-//                 @Controller()
-//                 class Ctrl {
-//                     @Get()
-//                     @Version({ from: 1, until: 10 })
-//                     public func(): string {
-//                         return 'hello version 1';
-//                     }
-
-//                     @Get()
-//                     @Version({ from: 2, until: 4 })
-//                     public func2(): string {
-//                         return 'hello version 1';
-//                     }
-//                 }
-
-//                 registerControllers('', router);
-//             }).should.throw(DuplicateRouteDeclarationError);
-//         });
-
-//         it('should throw when 2 routes overlap with versions (1- | 2-)', () => {
-//             (() => {
-//                 @Controller()
-//                 class Ctrl {
-//                     @Get()
-//                     @Version({ from: 1 })
-//                     public func(): string {
-//                         return 'hello version 1';
-//                     }
-
-//                     @Get()
-//                     @Version({ from: 2 })
-//                     public func2(): string {
-//                         return 'hello version 1';
-//                     }
-//                 }
-
-//                 registerControllers('', router);
-//             }).should.throw(DuplicateRouteDeclarationError);
-//         });
-
-//         it('should throw when 2 routes overlap with versions (-3 | -4)', () => {
-//             (() => {
-//                 @Controller()
-//                 class Ctrl {
-//                     @Get()
-//                     @Version({ until: 3 })
-//                     public func(): string {
-//                         return 'hello version 1';
-//                     }
-
-//                     @Get()
-//                     @Version({ until: 4 })
-//                     public func2(): string {
-//                         return 'hello version 1';
-//                     }
-//                 }
-
-//                 registerControllers('', router);
-//             }).should.throw(DuplicateRouteDeclarationError);
-//         });
-
-//         it('should throw if a route is not available in a certain version');
-
-//         it('should prefer route version over controller version (from)');
-
-//         it('should prefer route version over controller version (until)');
-
-//         it('should prefer route version over controller version (from / until)');
+});
