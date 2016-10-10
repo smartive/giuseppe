@@ -667,27 +667,127 @@ describe('DefaultRouteHandler', () => {
             router.delete.should.not.be.called;
         });
 
-        it('should route a version number to a route');
+        it('should register a version number for a route', () => {
+            @Controller()
+            class Ctrl {
+                @Get('foobar')
+                @Version({ from: 1 })
+                public func(): string {
+                    return 'hello version 1';
+                }
+            }
 
-        it('should route a version to the correct controller');
+            registerControllers('', router);
 
-        it('should route a version to the correct route');
+            router.use.should.be.calledWith('/foobar');
 
-        it('should correctly map header to v1 if header is not provided');
+            let stack = (router.use as any).getCall(0).args[1].stack;
+            stack.should.be.an('array').with.lengthOf(2);
+            stack[1].route.path.should.equal('/67d79d92d6b0e4172bcf47ac820a45ea5dadbe79fdc75ad56d4457635c095e6b');
 
-        it('should use the correct controller (from)');
+            router.get.should.not.be.called;
+            router.put.should.not.be.called;
+            router.post.should.not.be.called;
+            router.delete.should.not.be.called;
+        });
 
-        it('should use the correct controller (until)');
+        it('should register multiple versions to routes of a controller', () => {
+            @Controller()
+            class Ctrl {
+                @Get('foobar')
+                @Version({ from: 1 })
+                public func(): string {
+                    return 'hello version 1';
+                }
 
-        it('should use the correct controller (from / until)');
+                @Get('other')
+                @Version({ from: 2 })
+                public func2(): string {
+                    return 'hello version 2';
+                }
+            }
 
-        it('should use the correct route (from)');
+            registerControllers('', router);
 
-        it('should use the correct route (until)');
+            router.use.should.be.calledWith('/foobar');
+            router.use.should.be.calledWith('/other');
 
-        it('should use the correct route (from / until)');
+            let stack = (router.use as any).getCall(0).args[1].stack;
+            stack.should.be.an('array').with.lengthOf(2);
+            stack[1].route.path.should.equal('/67d79d92d6b0e4172bcf47ac820a45ea5dadbe79fdc75ad56d4457635c095e6b');
 
-        it('should not throw when registering the same route with different versions');
+            stack = (router.use as any).getCall(1).args[1].stack;
+            stack.should.be.an('array').with.lengthOf(2);
+            stack[1].route.path.should.equal('/9c07053eb7e8e76675334864f601cf59c07af81d1bd4a08e52a1588823119bd8');
+
+            router.get.should.not.be.called;
+            router.put.should.not.be.called;
+            router.post.should.not.be.called;
+            router.delete.should.not.be.called;
+        });
+
+        it('should not throw when registering the same route with different versions', () => {
+            (() => {
+                @Controller()
+                class Ctrl {
+                    @Version({ from: 1, until: 3 })
+                    @Get('foobar')
+                    public func(): string {
+                        return 'hello version 1';
+                    }
+
+                    @Version({ from: 4 })
+                    @Get('foobar')
+                    public func2(): string {
+                        return 'hello version 2';
+                    }
+                }
+
+                registerControllers('', router);
+            }).should.not.throw;
+        });
+
+        it('should throw when duplicate methods are in the same version of a controller', () => {
+            (() => {
+                @Controller()
+                @Version({ from: 1, until: 3 })
+                class Ctrl {
+
+                    @Get('foobar')
+                    public func(): string {
+                        return 'hello version 1';
+                    }
+
+                    @Get('foobar')
+                    public func2(): string {
+                        return 'hello version 2';
+                    }
+                }
+
+                registerControllers('', router);
+            }).should.throw(DuplicateRouteDeclarationError);
+        });
+
+        it('should throw when route versions conflict the controller version', () => {
+            (() => {
+                @Controller()
+                @Version({ from: 1, until: 3 })
+                class Ctrl {
+                    @Get('foobar')
+                    public func(): string {
+                        return 'hello version 1';
+                    }
+
+                    @Version({ from: 2 })
+                    @Get('foobar')
+                    public func2(): string {
+                        return 'hello version 2';
+                    }
+                }
+
+                registerControllers('', router);
+            }).should.throw(DuplicateRouteDeclarationError);
+        });
 
         it('should throw when 2 routes overlap with versions (1-3 | 2-4)', () => {
             (() => {
@@ -793,14 +893,6 @@ describe('DefaultRouteHandler', () => {
                 registerControllers('', router);
             }).should.throw(DuplicateRouteDeclarationError);
         });
-
-        it('should throw if a route is not available in a certain version');
-
-        it('should prefer route version over controller version (from)');
-
-        it('should prefer route version over controller version (until)');
-
-        it('should prefer route version over controller version (from / until)');
 
     });
 

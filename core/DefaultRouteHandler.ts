@@ -69,7 +69,7 @@ class RouteInformation {
             let requestedVersion = parseInt(req.get(RouteInformation.headerName), 10) || 1,
                 requestedRoute = routeVersions.find(o => o.version.version.isInVersionBounds(requestedVersion));
 
-            if (!requestedRoute || req.url !== '/') {
+            if (!requestedRoute || routeVersions.some(o => o.url === req.url)) {
                 return res.status(404).end();
             }
 
@@ -197,7 +197,7 @@ export class DefaultRouteHandler implements RouteHandler {
 
         for (let route of routes) {
             let routeUrl = url + [controllerRegistration.prefix, route.path].filter(Boolean).join('/'),
-                versionInfo: VersionInformation = Reflect.getMetadata(VERSION_KEY, controllerRegistration.controller.prototype, route.propertyKey) || ctrlVersionInfo;
+                versionInfo: VersionInformation = Reflect.getMetadata(VERSION_KEY, controllerRegistration.controller, route.propertyKey) || ctrlVersionInfo;
 
             if (route.method === RouteMethod.Head && Reflect.getMetadata('design:returntype', controllerRegistration.controller.prototype, route.propertyKey) !== Boolean) {
                 throw new HeadHasWrongReturnTypeError();
