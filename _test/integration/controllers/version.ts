@@ -123,3 +123,24 @@ class FourOFour {
         return 'found';
     }
 }
+
+@Controller('versioning/middleware')
+class Middleware {
+    @Get('', (req, res, next) => {
+        res.set('X-Test', 'v1');
+        next();
+    })
+    @Version({ from: 1, until: 1 })
+    public v1(): string {
+        return 'found-v1';
+    }
+
+    @Get('', (req, res, next) => {
+        res.set('X-Test', 'v2');
+        next();
+    })
+    @Version({ from: 2, until: 2 })
+    public v2(): string {
+        return 'found-v2';
+    }
+}

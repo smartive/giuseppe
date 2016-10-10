@@ -201,4 +201,22 @@ describe('Integration tests for route versioning', () => {
             .catch(done);
     });
 
+    it('should call the route specific middleware', done => {
+        Promise
+            .all([
+                http.request(app)
+                    .get('/api/versioning/middleware')
+                    .set('Accept-Version', '1'),
+                http.request(app)
+                    .get('/api/versioning/middleware')
+                    .set('Accept-Version', '2')
+            ])
+            .then(res => {
+                (res[0] as any).get('X-Test').should.equal('v1');
+                (res[1] as any).get('X-Test').should.equal('v2');
+                done();
+            })
+            .catch(done);
+    });
+
 });
