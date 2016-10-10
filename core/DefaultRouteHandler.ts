@@ -1,47 +1,214 @@
-import {ControllerErrorHandler} from '../errors/ControllerErrorHandler';
-import {ERRORHANDLER_KEY} from '../errors/ErrorHandlerDecorator';
-import {DuplicateRouteDeclarationError, GenericRouteError, HeadHasWrongReturnTypeError, HttpVerbNotSupportedError, WrongReturnTypeError} from '../errors/Errors';
-import {ControllerRegistration} from '../models/ControllerRegistration';
-import {RouteRegistration} from '../models/RouteRegistration';
-import {ParamType} from '../params/ParamDecorators';
-import {RouteMethod, ROUTES_KEY} from '../routes/RouteDecorators';
-import {IoCSymbols} from './IoCSymbols';
-import {ParamHandler} from './ParamHandler';
-import {RouteHandler} from './RouteHandler';
-import {Request, RequestHandler, Response, Router} from 'express';
+import { ControllerErrorHandler } from '../errors/ControllerErrorHandler';
+import { ERRORHANDLER_KEY } from '../errors/ErrorHandlerDecorator';
+import {
+    DuplicateRouteDeclarationError,
+    GenericRouteError,
+    HeadHasWrongReturnTypeError,
+    HttpVerbNotSupportedError,
+    WrongReturnTypeError
+} from '../errors/Errors';
+import { ControllerRegistration } from '../models/ControllerRegistration';
+import { RouteRegistration } from '../models/RouteRegistration';
+import { VersionInformation } from '../models/VersionInformation';
+import { ParamType } from '../params/ParamDecorators';
+import { RouteMethod, ROUTES_KEY } from '../routes/RouteDecorators';
+import { doRouteVersionsOverlap } from '../utilities/RouteHelpers';
+import { VERSION_KEY } from '../versioning/VersionDecorator';
+import { Configuration } from './Configuration';
+import { IoCSymbols } from './IoCSymbols';
+import { ParamHandler } from './ParamHandler';
+import { RouteHandler } from './RouteHandler';
+import { Request, RequestHandler, Response, Router } from 'express';
 import httpStatus = require('http-status');
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
+import { createHash } from 'crypto';
 
-const NON_JSON_TYPES = [String, Number, Boolean];
+const NON_JSON_TYPES = [String, Number, Boolean],
+    defaultVersion = VersionInformation.create('default', { from: 1 });
 
-class RegistrationHelper {
-    public wildcardCount: number;
-    public segmentCount: number;
+class RouteVersion {
+    constructor(public ctrlInstance: any, public ctrlTarget: any, public routeRegistration: RouteRegistration, public middlewares: RequestHandler[], public version?: VersionInformation) { }
+}
 
-    constructor(public routeId: string, public routeUrl: string, public route: RouteRegistration, public decoratedMethod: Function, public middlewares: RequestHandler[]) {
+class RouteInformation {
+    public static headerName: string;
+    public readonly wildcardCount: number;
+    public readonly segmentCount: number;
+    public readonly versions: RouteVersion[] = [];
+
+    public get routeId(): string {
+        return `${this.routeUrl}_${RouteMethod[this.method]}`;
+    }
+
+    constructor(private paramHandler: ParamHandler, public routeUrl: string, public method: RouteMethod) {
         this.wildcardCount = this.routeUrl.split('*').length - 1;
         this.segmentCount = this.routeUrl.split('/').length;
+    }
+
+    public register(router: Router): void {
+        if (!this.isUnique()) {
+            throw new DuplicateRouteDeclarationError(this.routeUrl, this.method);
+        }
+
+        if (this.versions.length === 1 && !this.versions[0].version) {
+            let version = this.versions[0];
+            this.registerMethod(router, this.method, this.routeUrl, version.middlewares, this.buildRouteMethod(version));
+            return;
+        }
+
+        let routeVersions = this.versions
+            .map(version => {
+                return {
+                    url: `/${this.getVersionHash(version)}`,
+                    version
+                };
+            }),
+            blackMagicRouter = Router({ mergeParams: true });
+
+        blackMagicRouter.use((req: Request, res: Response, next) => {
+            let requestedVersion: number;
+            try {
+                requestedVersion = parseInt(req.get(RouteInformation.headerName), 10) || 1;
+            } catch (e) {
+                requestedVersion = 1;
+            }
+
+            let requestedRoute = routeVersions.find(o => o.version.version.isInVersionBounds(requestedVersion));
+
+            if (!requestedRoute || routeVersions.some(o => req.url.indexOf(o.url) >= 0)) {
+                return res.status(404).end();
+            }
+
+            req.url = requestedRoute.url;
+            next();
+        });
+
+        for (let version of routeVersions) {
+            this.registerMethod(blackMagicRouter, this.method, version.url, version.version.middlewares, this.buildRouteMethod(version.version));
+        }
+
+        router.use(this.routeUrl, blackMagicRouter);
+    }
+
+    private buildRouteMethod(version: RouteVersion): RequestHandler {
+        let params = this.paramHandler.getParamsForRoute(version.ctrlTarget.prototype, version.routeRegistration.propertyKey),
+            hasResponseParam = params.some(p => p.paramType === ParamType.Response),
+            returnType = Reflect.getMetadata('design:returntype', version.ctrlTarget.prototype, version.routeRegistration.propertyKey),
+            ctrlMethod = version.routeRegistration.descriptor.value;
+
+        return (request: Request, response: Response, next) => {
+            let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, version.ctrlTarget) || new ControllerErrorHandler(),
+                paramValues = [];
+
+            let handleError = (error: any) => {
+                if (!(error instanceof Error)) {
+                    error = new GenericRouteError(this.routeId, error);
+                }
+                errorHandler.handleError(version.ctrlInstance, request, response, error);
+            };
+
+            try {
+                paramValues = this.paramHandler.getParamValuesForRequest(params, request, response);
+                let result = ctrlMethod.apply(version.ctrlInstance, paramValues),
+                    responseFunction = result => {
+                        if (NON_JSON_TYPES.indexOf(result.constructor) !== -1) {
+                            response.send(result);
+                        } else {
+                            response.json(result);
+                        }
+                    };
+
+                if (!returnType && hasResponseParam) {
+                    return;
+                }
+
+                if (!returnType && !hasResponseParam) {
+                    return response.status(httpStatus.NO_CONTENT).end();
+                }
+
+                if (!(result instanceof returnType) && !(result.constructor === returnType)) {
+                    handleError(new WrongReturnTypeError(version.routeRegistration.propertyKey, returnType, result.constructor));
+                }
+
+                if (version.routeRegistration.method === RouteMethod.Head && returnType === Boolean) {
+                    return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
+                }
+
+                if (returnType === Promise) {
+                    (result as Promise<any>).then(responseFunction, handleError);
+                } else {
+                    responseFunction(result);
+                }
+            } catch (e) {
+                handleError(e);
+            }
+        };
+    }
+
+    private registerMethod(router: Router, httpMethod: RouteMethod, url: string, middlewares: RequestHandler[], route: RequestHandler): void {
+        switch (httpMethod) {
+            case RouteMethod.Get:
+                router.get(url, ...middlewares, route);
+                break;
+            case RouteMethod.Put:
+                router.put(url, ...middlewares, route);
+                break;
+            case RouteMethod.Post:
+                router.post(url, ...middlewares, route);
+                break;
+            case RouteMethod.Delete:
+                router.delete(url, ...middlewares, route);
+                break;
+            case RouteMethod.Head:
+                router.head(url, ...middlewares, route);
+                break;
+            default:
+                throw new HttpVerbNotSupportedError(httpMethod);
+        }
+    }
+
+    private isUnique(): boolean {
+        if (this.versions.length <= 1) {
+            return true;
+        }
+
+        for (let version of this.versions) {
+            if (this.versions.some(o => o !== version && doRouteVersionsOverlap(version.version || defaultVersion, o.version || defaultVersion))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private getVersionHash(version: RouteVersion): string {
+        return createHash('sha256').update(`${this.routeId}_${version.version.toString()}`).digest('hex');
     }
 }
 
 @injectable()
 export class DefaultRouteHandler implements RouteHandler {
-    private routes: { [id: string]: RegistrationHelper } = {};
+    private routes: { [id: string]: RouteInformation } = {};
 
-    constructor( @inject(IoCSymbols.paramHandler) private paramHandler: ParamHandler) {
+    constructor(
+        @inject(IoCSymbols.paramHandler) private paramHandler: ParamHandler,
+        @inject(IoCSymbols.configuration) private config: Configuration
+    ) {
+        RouteInformation.headerName = this.config.versionHeaderName;
     }
 
     public addRoutes(controllerRegistration: ControllerRegistration, url: string): void {
-        let routes = Reflect.getOwnMetadata(ROUTES_KEY, controllerRegistration.controller) || [],
-            instance = new controllerRegistration.controller();
+        let routes: RouteRegistration[] = Reflect.getOwnMetadata(ROUTES_KEY, controllerRegistration.controller) || [],
+            instance = new controllerRegistration.controller(),
+            ctrlVersionInfo = Reflect.getMetadata(VERSION_KEY, controllerRegistration.controller);
 
         for (let route of routes) {
-            let ctrlTarget = controllerRegistration.controller,
-                routeTarget = ctrlTarget.prototype,
-                routeUrl = url + [controllerRegistration.prefix, route.path].filter(Boolean).join('/'),
-                returnType = Reflect.getMetadata('design:returntype', routeTarget, route.propertyKey),
-                middlewares = [...controllerRegistration.middlewares, ...route.middlewares],
-                method = route.descriptor.value;
+            let routeUrl = url + [controllerRegistration.prefix, route.path].filter(Boolean).join('/'),
+                versionInfo: VersionInformation = Reflect.getMetadata(VERSION_KEY, controllerRegistration.controller, route.propertyKey) || ctrlVersionInfo;
+
+            if (route.method === RouteMethod.Head && Reflect.getMetadata('design:returntype', controllerRegistration.controller.prototype, route.propertyKey) !== Boolean) {
+                throw new HeadHasWrongReturnTypeError();
+            }
 
             let index;
             if ((index = routeUrl.lastIndexOf('~')) > -1) {
@@ -52,72 +219,18 @@ export class DefaultRouteHandler implements RouteHandler {
                 routeUrl = '/' + routeUrl.split('/').filter(Boolean).join('/');
             }
 
-            let routeId = routeUrl + route.method.toString();
+            let routeInfo = new RouteInformation(this.paramHandler, routeUrl, route.method);
+            routeInfo = this.routes[routeInfo.routeId] || routeInfo;
 
-            if (this.routes[routeId]) {
-                throw new DuplicateRouteDeclarationError(routeUrl, route.method);
-            }
+            routeInfo.versions.push(new RouteVersion(
+                instance,
+                controllerRegistration.controller,
+                route,
+                [...controllerRegistration.middlewares, ...route.middlewares],
+                versionInfo
+            ));
 
-            if (route.method === RouteMethod.Head && returnType !== Boolean) {
-                throw new HeadHasWrongReturnTypeError();
-            }
-
-            let params = this.paramHandler.getParamsForRoute(routeTarget, route.propertyKey),
-                hasResponseParam = params.some(p => p.paramType === ParamType.Response);
-
-            let decoratedMethod = (request: Request, response: Response, next) => {
-                let errorHandler: ControllerErrorHandler = Reflect.getMetadata(ERRORHANDLER_KEY, ctrlTarget),
-                    paramValues = [];
-
-                if (!errorHandler) {
-                    errorHandler = new ControllerErrorHandler();
-                }
-
-                let handleError = (error: any) => {
-                    if (!(error instanceof Error)) {
-                        error = new GenericRouteError(route.propertyKey, error);
-                    }
-                    errorHandler.handleError(instance, request, response, error);
-                };
-
-                try {
-                    paramValues = this.paramHandler.getParamValuesForRequest(params, request, response);
-                    let result = method.apply(instance, paramValues),
-                        responseFunction = result => {
-                            if (NON_JSON_TYPES.indexOf(result.constructor) !== -1) {
-                                response.send(result);
-                            } else {
-                                response.json(result);
-                            }
-                        };
-
-                    if (!returnType && hasResponseParam) {
-                        return;
-                    }
-
-                    if (!returnType && !hasResponseParam) {
-                        return response.status(httpStatus.NO_CONTENT).end();
-                    }
-
-                    if (!(result instanceof returnType) && !(result.constructor === returnType)) {
-                        handleError(new WrongReturnTypeError(route.propertyKey, returnType, result.constructor));
-                    }
-
-                    if (route.method === RouteMethod.Head && returnType === Boolean) {
-                        return response.status((result) ? httpStatus.OK : httpStatus.NOT_FOUND).end();
-                    }
-
-                    if (returnType === Promise) {
-                        (result as Promise<any>).then(responseFunction, handleError);
-                    } else {
-                        responseFunction(result);
-                    }
-                } catch (e) {
-                    handleError(e);
-                }
-            };
-
-            this.routes[routeId] = new RegistrationHelper(routeId, routeUrl, route, decoratedMethod, middlewares);
+            this.routes[routeInfo.routeId] = routeInfo;
         }
     }
 
@@ -131,34 +244,12 @@ export class DefaultRouteHandler implements RouteHandler {
             .filter(Boolean)
             .reverse()
             .reduce((routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcardCount - r2.wildcardCount)), [])
-            .forEach(r => this.registerRoute(r, router));
+            .forEach(r => r.register(router));
 
         return router;
     }
 
     public resetRoutes(): void {
         this.routes = {};
-    }
-
-    private registerRoute(registration: RegistrationHelper, router: Router): void {
-        switch (registration.route.method) {
-            case RouteMethod.Get:
-                router.get(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            case RouteMethod.Put:
-                router.put(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            case RouteMethod.Post:
-                router.post(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            case RouteMethod.Delete:
-                router.delete(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            case RouteMethod.Head:
-                router.head(registration.routeUrl, ...registration.middlewares, (registration.decoratedMethod as any));
-                break;
-            default:
-                throw new HttpVerbNotSupportedError(registration.route.method);
-        }
     }
 }

@@ -1,4 +1,4 @@
-import {RouteMethod} from '../routes/RouteDecorators';
+import { RouteMethod } from '../routes/RouteDecorators';
 
 /// Error bases
 
@@ -38,7 +38,8 @@ export class ValidationError extends ParameterError {
  * Error that is thrown when a http method is not supported by the framework.
  * (Error will happen at startup)
  *
- * @class
+ * @class HttpVerbNotSupportedError
+ * @extends {DesigntimeError}
  */
 export class HttpVerbNotSupportedError extends DesigntimeError {
     constructor(method: RouteMethod) {
@@ -51,12 +52,13 @@ export class HttpVerbNotSupportedError extends DesigntimeError {
  * Error that is thrown when a route is duplicated (same url and method).
  * (Error will happen at startup)
  *
- * @class
+ * @class DuplicateRouteDeclarationError
+ * @extends {DesigntimeError}
  */
 export class DuplicateRouteDeclarationError extends DesigntimeError {
     constructor(url: string, method: RouteMethod) {
         super();
-        this.message = `The route to url "${url}" with http method "${RouteMethod[method]}" is declared twice.`;
+        this.message = `The route to url "${url}" with http method "${RouteMethod[method]}" is declared twice.\nIf you use versioning, the versions could overlap!`;
     }
 }
 
@@ -64,7 +66,8 @@ export class DuplicateRouteDeclarationError extends DesigntimeError {
  * Error that is thrown when a head route has a non boolean return type.
  * (Error will happen at startup)
  *
- * @class
+ * @class HeadHasWrongReturnTypeError
+ * @extends {DesigntimeError}
  */
 export class HeadHasWrongReturnTypeError extends DesigntimeError {
     constructor() {
@@ -77,7 +80,8 @@ export class HeadHasWrongReturnTypeError extends DesigntimeError {
  * Error that is thrown when an error handler accepts the wrong arguments.
  * (Error will happen at startup)
  *
- * @class
+ * @class ErrorHandlerWrongArgumentsError
+ * @extends {DesigntimeError}
  */
 export class ErrorHandlerWrongArgumentsError extends DesigntimeError {
     constructor() {
@@ -90,7 +94,8 @@ export class ErrorHandlerWrongArgumentsError extends DesigntimeError {
  * Error that is thrown when an error handler accepts the wrong argument types.
  * (Error will happen at startup)
  *
- * @class
+ * @class ErrorHandlerWrongArgumentTypesError
+ * @extends {DesigntimeError}
  */
 export class ErrorHandlerWrongArgumentTypesError extends DesigntimeError {
     constructor() {
@@ -103,7 +108,8 @@ export class ErrorHandlerWrongArgumentTypesError extends DesigntimeError {
  * Error that is thrown when an error handler has a non void return type.
  * (Error will happen at startup)
  *
- * @class
+ * @class ErrorHandlerWrongReturnTypeError
+ * @extends {DesigntimeError}
  */
 export class ErrorHandlerWrongReturnTypeError extends DesigntimeError {
     constructor() {
@@ -118,7 +124,8 @@ export class ErrorHandlerWrongReturnTypeError extends DesigntimeError {
  * Error that is thrown when a given parameter type supports not at least argument (used for instantiation of the type).
  * (Error will happen at startup)
  *
- * @class
+ * @class ParameterParseError
+ * @extends {DesigntimeError}
  */
 export class ParameterConstructorArgumentsError extends DesigntimeError {
     constructor(name: string) {
@@ -131,7 +138,8 @@ export class ParameterConstructorArgumentsError extends DesigntimeError {
  * Error that is thrown when a required parameter is not provided. Url parameters are always required.
  * (Runtime error)
  *
- * @class
+ * @class RequiredParameterNotProvidedError
+ * @extends {ParameterError}
  */
 export class RequiredParameterNotProvidedError extends ParameterError {
     constructor(name: string) {
@@ -144,7 +152,8 @@ export class RequiredParameterNotProvidedError extends ParameterError {
  * Error that is thrown when the parsing process of a parameters throws an error.
  * (Runtime error)
  *
- * @class
+ * @class ParameterParseError
+ * @extends {ParameterError}
  */
 export class ParameterParseError extends ParameterError {
     constructor(name: string, public innerException: Error) {
@@ -158,8 +167,9 @@ export class ParameterParseError extends ParameterError {
 /**
  * Error that is thrown when the route method returns the wrong type (i.e. a string instead of a number).
  * (Runtime error)
- *
- * @class
+
+ * @class WrongReturnTypeError
+ * @extends {RouteError}
  */
 export class WrongReturnTypeError extends RouteError {
     constructor(name: string, expected: Function, received: Function) {
@@ -172,7 +182,8 @@ export class WrongReturnTypeError extends RouteError {
  * Error that is thrown when the route method throws any error (or any Promise returned by a route).
  * (Runtime error)
  *
- * @class
+ * @class GenericRouteError
+ * @extends {RouteError}
  */
 export class GenericRouteError extends RouteError {
     constructor(name: string, public innerException: Error) {
@@ -187,11 +198,58 @@ export class GenericRouteError extends RouteError {
  * Error that is thrown when the - if provided - validator of a parameter returns "false".
  * (Runtime error)
  *
- * @class
+ * @class ParamValidationFailedError
+ * @extends {ValidationError}
  */
 export class ParamValidationFailedError extends ValidationError {
     constructor(name: string) {
         super();
         this.message = `The validator for the parameter "${name}" was not valid.`;
+    }
+}
+
+/// Versioning errors
+
+/**
+ * Error that is thrown when a version information on a route or a controller is missing both information,
+ * i.e. there is no version in "from" and no version in "until"
+ * (Error will happen at startup)
+ * 
+ * @class VersionInformationMissing
+ * @extends {DesigntimeError}
+ */
+export class VersionInformationMissing extends DesigntimeError {
+    constructor(ctrlOrRouteName: string) {
+        super();
+        this.message = `The controller or method "${ctrlOrRouteName}" has neither from nor until version information.`;
+    }
+}
+
+/**
+ * Error that is thrown when a version information contains errors.
+ * (Error will happen at startup) 
+ *
+ * @class VersionInformationInvalid
+ * @extends {DesigntimeError}
+ */
+export class VersionInformationInvalid extends DesigntimeError {
+    constructor(ctrlOrRouteName: string, reason: string) {
+        super();
+        this.message = `The controller or method "${ctrlOrRouteName}" has invalid version information.\nReason: ${reason}`;
+    }
+}
+
+/**
+ * Error that is thrown when a route or a controller contains multiple
+ * version information.
+ * (Error will happen at startup)
+ * 
+ * @class DuplicateVersionInformation
+ * @extends {DesigntimeError}
+ */
+export class DuplicateVersionInformation extends DesigntimeError {
+    constructor(ctrlOrRouteName: string) {
+        super();
+        this.message = `The controller or method "${ctrlOrRouteName}" has duplicated version decorators.`;
     }
 }
