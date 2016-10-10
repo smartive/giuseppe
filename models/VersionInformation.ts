@@ -4,6 +4,10 @@ function isDefined(value: any): boolean {
     return value !== null && value !== undefined;
 }
 
+function isInvalid(value: any): boolean {
+    return isDefined(value) && (value.constructor !== Number || value < 1 || value % 1 !== 0);
+}
+
 /**
  * Defines version information for a controller or a route. Throws if there are errors with the information.
  * 
@@ -15,11 +19,11 @@ export class VersionInformation {
             throw new VersionInformationMissing(name);
         }
 
-        if (isDefined(versionInformation.from) && (versionInformation.from.constructor !== Number || versionInformation.from < 1 || versionInformation.from % 1 !== 0)) {
+        if (isInvalid(versionInformation.from)) {
             throw new VersionInformationInvalid(name, `The from value (${versionInformation.from}) is either not a number, a floating point number or less than 1`);
         }
 
-        if (isDefined(versionInformation.until) && (versionInformation.until.constructor !== Number || versionInformation.until < 1 || versionInformation.until % 1 !== 0)) {
+        if (isInvalid(versionInformation.until)) {
             throw new VersionInformationInvalid(name, `The until value (${versionInformation.until}) is either not a number, a floating point number or less than 1`);
         }
 
