@@ -29,18 +29,8 @@ To install this package, simply run
 The suggested method would actually be: use the yeoman generator which we created @ [generator-giuseppe](http://giuseppe-generator.smartive.ch/).
 It installs all dependencies and libraries that you need.
 
-When you use the manual way and not all `typings` are installed for giuseppe
-you need to manually install the typings for this package.
-
-The dependend typings are:
-
-- `es6-shim`
-- `express`
-- `express-serve-static-core`
-- `http-status`
-- `mime`
-- `node`
-- `serve-static`
+When you use the manual way npm should install all typing dependencies.
+They are listed in the `package.json` with the `@types` prefix.
 
 This package installs the transpiled `*.js` files instead of `*.ts` files, since the compiler tries
 to compile them everytime. The declaration files with the JSDocs are provided aswell so your 
