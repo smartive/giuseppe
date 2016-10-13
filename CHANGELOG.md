@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [1.2.0]
 ### Added
 - Versioning for routes and controllers.
 
@@ -17,7 +19,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - `*.spec.js` files are no longer loaded (by default) when using `registerControllersFromFolder`.
 
-
 ## [1.1.0]
 ### Added
 - Postman / Newman integration tests to ensure giuseppe works with the given express version.
@@ -26,10 +27,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - When using `~` on a controller and a route, it uses the correct root for the route now.
 
-
 ## [1.0.0]
 No news :-)
-
 
 ## [1.0.0-rc.1]
 ### Added
@@ -45,11 +44,9 @@ No news :-)
 ### Fixed
 - Double slashes are filtered during registration (`/api//foo` -> `/api/foo`).
 
-
 ## [0.6.1] - 2016-05-17
 ### Fixed
 - `console.warn` for duplicated error handlers does not warn for default anymore.
-
 
 ## [0.6.0] - 2016-05-17
 ### Added
@@ -61,7 +58,6 @@ No news :-)
 
 ### Changed
 - Reworked the error-handler system. Errors are now bubbled until the default is hit.
-
 
 ## [0.5.0] - 2016-05-09
 ### Added
@@ -79,7 +75,6 @@ No news :-)
 - Already parsed values are not parsed again.
 - Fixed this context in error handlers.
 
-
 ## [0.4.0] - 2016-04-22
 ### Added
 - HTTP head as route annotation.
@@ -95,7 +90,6 @@ No news :-)
 ### Changed
 - Removed coveralls from `package.json` and moved its installation to Travis configuration
 
-
 ## [0.3.0] - 2016-04-20
 ### Added
 - `@Header` parameter description.
@@ -103,13 +97,16 @@ No news :-)
 ### Fixed
 - Parameter parsing with undefined values.
 
-
 ## [0.2.1] - 2016-04-20
 ### Added
 - First version of giuseppe.
 - Adding base code and travis-CI.
 
-[Unreleased]: https://github.com/smartive/giuseppe/compare/v1.1.1...master
+
+
+
+[Unreleased]: https://github.com/smartive/giuseppe/compare/v1.2.0...master
+[1.2.0]: https://github.com/smartive/giuseppe/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/smartive/giuseppe/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/smartive/giuseppe/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/smartive/giuseppe/compare/v1.0.0-rc.1...v1.0.0
