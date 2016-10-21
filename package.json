@@ -46,7 +46,6 @@
   "dependencies": {
     "@types/express": "^4.0.33",
     "@types/http-status": "^0.2.29",
-    "@types/inversify": "^2.0.31",
     "@types/node": "^6.0.45",
     "express": "^4.14.0",
     "filewalker": "^0.1.3",
