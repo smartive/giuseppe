@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
     "removeComments": false,
@@ -9,6 +9,8 @@
     "sourceMap": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "lib": [
       "es2015"
     ]
@@ -16,6 +18,7 @@
   "exclude": [
     "node_modules",
     "build",
-    "examples"
+    "examples",
+    "_old"
   ]
 }
