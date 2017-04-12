@@ -5,7 +5,6 @@
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "bootstrap": "npm install -q",
     "build": "tsc --outDir .",
     "clean": "rimraf build coverage",
     "pretest": "npm run clean && tsc --sourceMap",
@@ -14,7 +13,7 @@
     "precitest": "npm run bootstrap && npm run clean && tsc --sourceMap",
     "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd \"./build/**/*.spec.js\"",
     "postcitest": "remap-istanbul -i coverage/coverage.json -o coverage/lcov-mapped.info -t lcovonly -e _test",
-    "develop": "npm run clean && tsc --sourceMap -w"
+    "develop": "npm run clean && tsc -p ."
   },
   "engines": {
     "node": ">=7",
