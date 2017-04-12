@@ -9,6 +9,11 @@ import { Router } from 'express';
  * @class Giuseppe
  */
 export class Giuseppe {
+
+    constructor() {
+        // add core plugin with common stuff (actual feature set.)
+    }
+
     /**
      * Function that registers all decorated controller with their decorated route functions in an expressJS router.
      * When no router is provided, this function will instantiate and return a router.
