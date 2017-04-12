@@ -23,6 +23,10 @@
             false
         ],
         "object-literal-sort-keys": false,
+        "max-line-length": [
+            true,
+            140
+        ],
         "max-classes-per-file": [
             false
         ],
