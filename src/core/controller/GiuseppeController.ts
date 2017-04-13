@@ -1,3 +1,4 @@
+import { ControllerRegistration } from '../../controller/ControllerRegistration';
 import { ControllerDecorator } from '../../controller/ControllerDecorator';
 import { Giuseppe } from '../../Giuseppe';
 import { RequestHandler } from 'express';
@@ -14,7 +15,7 @@ let giuseppeInstance: Giuseppe;
  */
 export function Controller(routePrefix?: string, ...middlewares: RequestHandler[]): ClassDecorator {
     return (ctrl: any) => {
-        const a = ctrl;
+        giuseppeInstance.controller.push(new ControllerRegistration(ctrl, routePrefix, middlewares));
     };
 }
 

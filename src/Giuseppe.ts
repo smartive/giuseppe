@@ -1,5 +1,8 @@
-import { GiuseppePlugin } from './GiuseppePlugin';
+import { ControllerRegistration } from './controller/ControllerRegistration';
 import { LoadingOptions } from './controller/LoadingOptions';
+import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
+import { DuplicatePluginError } from './errors';
+import { GiuseppePlugin } from './GiuseppePlugin';
 import { Router } from 'express';
 
 /**
@@ -10,9 +13,12 @@ import { Router } from 'express';
  * @class Giuseppe
  */
 export class Giuseppe {
+    public readonly controller: ControllerRegistration[] = [];
+    private plugins: GiuseppePlugin[] = [];
 
     constructor() {
         // add core plugin with common stuff (actual feature set.)
+        this.registerPlugin(new GiuseppeCorePlugin());
     }
 
     /**
@@ -24,10 +30,11 @@ export class Giuseppe {
      * @memberOf Giuseppe
      */
     public registerPlugin(plugin: GiuseppePlugin): void {
-        // register internal plugin and call initialize.
+        if (this.plugins.find(o => o.name === plugin.name)) {
+            throw new DuplicatePluginError(plugin.name);
+        }
         plugin.initialize(this);
-        // tslint:disable-next-line
-        console.log(plugin);
+        this.plugins.push(plugin);
     }
 
     /**

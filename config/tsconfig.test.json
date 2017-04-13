@@ -3,6 +3,11 @@
     "compilerOptions": {
         "sourceMap": true,
         "noUnusedLocals": false,
-        "noUnusedParameters": false
-    }
+        "noUnusedParameters": false,
+        "rootDir": "../"
+    },
+    "include": [
+        "../src/**/*",
+        "../test/**/*"
+    ]
 }
