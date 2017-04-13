@@ -1,4 +1,8 @@
+import { ControllerDecorator } from '../../controller/ControllerDecorator';
+import { Giuseppe } from '../../Giuseppe';
 import { RequestHandler } from 'express';
+
+let giuseppeInstance: Giuseppe;
 
 /**
  * TODO
@@ -10,12 +14,14 @@ import { RequestHandler } from 'express';
  */
 export function Controller(routePrefix?: string, ...middlewares: RequestHandler[]): ClassDecorator {
     return (ctrl: any) => {
-        console.log(ctrl, routePrefix, middlewares);
+        const a = ctrl;
     };
 }
 
-export class GiuseppeController {
-    
+export class GiuseppeController implements ControllerDecorator {
+    constructor(giuseppe: Giuseppe) {
+        giuseppeInstance = giuseppe;
+    }
 }
 
 // /**

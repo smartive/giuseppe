@@ -31,18 +31,6 @@ export class Giuseppe {
     }
 
     /**
-     * Method to unregister a plugin in giuseppe. While it is possible, it's risky to do so, since you actually could unregister the
-     * core plugin and have no features at all.
-     * 
-     * @param {GiuseppePlugin} plugin 
-     * 
-     * @memberOf Giuseppe
-     */
-    public unregisterPlugin(plugin: GiuseppePlugin): void {
-        plugin.teardown(this);
-    }
-
-    /**
      * Function that registers all decorated controllers with their decorated route functions in an expressJS router.
      * Be sure to load the code files for the controller before calling this method, and register all plugins before loading any
      * controllers.

@@ -78,13 +78,4 @@ export interface GiuseppePlugin {
      * @memberOf GiuseppePlugin
      */
     initialize(giuseppeInstance: Giuseppe): void;
-
-    /**
-     * Teardown hook for the plugin. Is called when a plugin is unregistered.
-     * 
-     * @param {Giuseppe} giuseppeInstance 
-     * 
-     * @memberOf GiuseppePlugin
-     */
-    teardown(giuseppeInstance: Giuseppe): void;
 }
