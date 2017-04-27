@@ -3,25 +3,35 @@ import { ControllerDecorator } from '../../controller/ControllerDecorator';
 import { Giuseppe } from '../../Giuseppe';
 import { RequestHandler } from 'express';
 
+const instanceControllers: ControllerRegistration[] = [];
+
 let giuseppeInstance: Giuseppe;
 
 /**
  * TODO
  * 
  * @export
- * @param {string} [routePrefix]
- * @param {...RequestHandler[]} middlewares
- * @returns {ClassDecorator}
+ * @param {string} [routePrefix=''] 
+ * @param {...RequestHandler[]} middlewares 
+ * @returns {ClassDecorator} 
  */
-export function Controller(routePrefix?: string, ...middlewares: RequestHandler[]): ClassDecorator {
+export function Controller(routePrefix: string = '', ...middlewares: RequestHandler[]): ClassDecorator {
     return (ctrl: any) => {
-        giuseppeInstance.controller.push(new ControllerRegistration(ctrl, routePrefix, middlewares));
+        const controller = new ControllerRegistration(ctrl, routePrefix, middlewares);
+        if (giuseppeInstance) {
+            giuseppeInstance.controller.push(controller);
+        } else {
+            instanceControllers.push(controller);
+        }
     };
 }
 
 export class GiuseppeController implements ControllerDecorator {
     constructor(giuseppe: Giuseppe) {
         giuseppeInstance = giuseppe;
+        for (const ctrl of instanceControllers) {
+            giuseppeInstance.controller.push(ctrl);
+        }
     }
 }
 

@@ -17,6 +17,11 @@ describe('Core controller', () => {
             giuseppe = new Giuseppe();
         });
 
+        it('should return Controller decorator', () => {
+            Controller().should.be.a('function')
+                .and.have.lengthOf(1);
+        });
+
         it('should register a controller in giuseppe.', () => {
             @Controller()
             class Ctrl { }
