@@ -109,7 +109,7 @@ export class Giuseppe {
     public async loadFolderAndStart(
         loadingOptions: LoadingOptions,
         baseUrl: string = '',
-        router: Router = Router()
+        router: Router = Router(),
     ): Promise<Router> {
         // tslint:disable-next-line
         console.log(loadingOptions, baseUrl);

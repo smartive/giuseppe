@@ -1,8 +1,7 @@
-import { ControllerDefinition } from './controller/ControllerDecorator';
+import { RouteDefinition } from './routes/RouteDefinition';
+import { ControllerDefinition } from './controller/ControllerDefinition';
 import { Giuseppe } from './Giuseppe';
-import { ParameterDecorator } from './parameter/ParameterDecorator';
 import { ReturnTypeHandler } from './routes/ReturnTypeHandler';
-import { RouteDecorator } from './routes/RouteDecorator';
 import { RouteModificator } from './routes/RouteModificator';
 
 /**
@@ -30,8 +29,6 @@ export interface GiuseppePlugin {
      */
     readonly returnTypeHandler: ReturnTypeHandler[] | null;
 
-
-
     /**
      * A list of controller decorators declared by this plugin (or null if none are registered).
      * This property is accessed by giuseppe after the initialize method is called on each plugin.
@@ -48,7 +45,7 @@ export interface GiuseppePlugin {
      * @type {(RouteDecorator[] | null)}
      * @memberOf GiuseppePlugin
      */
-    readonly routeDecorators: RouteDecorator[] | null;
+    readonly routeDecorators: RouteDefinition[] | null;
 
     /**
      * A list of route / controller modificators declared by this plugin (or null if none are registered).
