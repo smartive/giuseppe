@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import { Query } from './core/parameters/Query';
-import { Controller } from './core/controller/GiuseppeApiController';
 import { Giuseppe } from './';
-import { Get} from './core/routes';
+import { Controller } from './core/controller/GiuseppeApiController';
+import { Version } from './core/modificators/Version';
+import { Query } from './core/parameters/Query';
+import { Get } from './core/routes';
 // tslint:disable
 
 console.log('lol');
@@ -10,7 +11,7 @@ console.log('lol');
 @Controller()
 export class MyController {
     
-    //@Version()
+    @Version()
     @Get()
     public getAll(@Query('test') test: string): string {
         return test;

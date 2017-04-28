@@ -1,3 +1,4 @@
+import { ROUTE_MODIFICATOR_KEY, RouteModificator } from './routes/RouteModificator';
 import { PARAMETER_DEFINITION_KEY, ParameterDefinition } from './parameter/ParameterDefinition';
 import { ROUTE_DEFINITION_KEY, RouteDefinition } from './routes/RouteDefinition';
 import { ControllerDefinition } from './controller/ControllerDefinition';
@@ -18,6 +19,12 @@ export class GiuseppeRegistrar {
         const routes: RouteDefinition[] = Reflect.getOwnMetadata(ROUTE_DEFINITION_KEY, controller) || [];
         routes.push(route);
         Reflect.defineMetadata(ROUTE_DEFINITION_KEY, routes, controller);
+    }
+
+    public registerRouteModificator(controller: Object, routeName: string, modificator: RouteModificator): void {
+        const mods: RouteModificator[] = Reflect.getOwnMetadata(ROUTE_MODIFICATOR_KEY, controller, routeName) || [];
+        mods.push(modificator);
+        Reflect.defineMetadata(ROUTE_MODIFICATOR_KEY, mods, controller, routeName);
     }
 
     public getParameterType(controller: Object, routeName: string, index: number): Function {
