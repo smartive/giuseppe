@@ -1,4 +1,4 @@
-import { ControllerDecorator } from './controller/ControllerDecorator';
+import { ControllerDefinition } from './controller/ControllerDecorator';
 import { Giuseppe } from './Giuseppe';
 import { ParameterDecorator } from './parameter/ParameterDecorator';
 import { ReturnTypeHandler } from './routes/ReturnTypeHandler';
@@ -39,7 +39,7 @@ export interface GiuseppePlugin {
      * @type {(ControllerDecorator[] | null)}
      * @memberOf GiuseppePlugin
      */
-    readonly controllerDecorators: ControllerDecorator[] | null;
+    readonly controllerDecorators: ControllerDefinition[] | null;
 
     /**
      * A list of route decorators declared by this plugin (or null if none are registered).

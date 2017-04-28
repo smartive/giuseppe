@@ -1,9 +1,40 @@
-import { ControllerRegistration } from './controller/ControllerRegistration';
+import { PARAMETER_DEFINITION_KEY, ParameterDefinition } from './parameter/ParameterDefinition';
+import { ROUTE_DEFINITION_KEY, RouteDefinition } from './routes/RouteDefinition';
+import { ControllerDefinition } from './controller/ControllerDefinition';
 import { LoadingOptions } from './controller/LoadingOptions';
 import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
 import { DuplicatePluginError } from './errors';
 import { GiuseppePlugin } from './GiuseppePlugin';
 import { Router } from 'express';
+
+export class GiuseppeRegistrar {
+    private controller: ControllerDefinition[] = [];
+
+    public registerController(controller: ControllerDefinition): void {
+        this.controller.push(controller);
+    }
+
+    public registerRoute(controller: Object, route: RouteDefinition): void {
+        const routes: RouteDefinition[] = Reflect.getOwnMetadata(ROUTE_DEFINITION_KEY, controller) || [];
+        routes.push(route);
+        Reflect.defineMetadata(ROUTE_DEFINITION_KEY, routes, controller);
+    }
+
+    public getParameterType(controller: Object, routeName: string, index: number): Function {
+        const paramTypes = Reflect.getMetadata('design:paramtypes', controller, routeName) || [];
+        return paramTypes[index];
+    }
+    
+    public registerParameter(controller: Object, routeName: string, parameter: ParameterDefinition): void {
+        const params: ParameterDefinition[] = Reflect.getOwnMetadata(PARAMETER_DEFINITION_KEY, controller, routeName) || [];
+        params.push(parameter);
+        Reflect.defineMetadata(PARAMETER_DEFINITION_KEY, params, controller, routeName);
+    }
+
+    public reset(): void {
+        this.controller = [];
+    }
+}
 
 /**
  * Main entry class for giuseppe. Does contain the necessary methods to get the application running.
@@ -13,10 +44,11 @@ import { Router } from 'express';
  * @class Giuseppe
  */
 export class Giuseppe {
-    public readonly controller: ControllerRegistration[] = [];
+    public static readonly registrar: GiuseppeRegistrar = new GiuseppeRegistrar();
     private plugins: GiuseppePlugin[] = [];
 
     constructor() {
+        // Giuseppe.register.initialize(this);
         // add core plugin with common stuff (actual feature set.)
         this.registerPlugin(new GiuseppeCorePlugin());
     }

@@ -1,38 +1,17 @@
-import { ControllerRegistration } from '../../controller/ControllerRegistration';
-import { ControllerDecorator } from '../../controller/ControllerDecorator';
+import { ControllerDefinition } from '../../controller/ControllerDefinition';
 import { Giuseppe } from '../../Giuseppe';
 import { RequestHandler } from 'express';
 
-const instanceControllers: ControllerRegistration[] = [];
-
-let giuseppeInstance: Giuseppe;
-
-/**
- * TODO
- * 
- * @export
- * @param {string} [routePrefix=''] 
- * @param {...RequestHandler[]} middlewares 
- * @returns {ClassDecorator} 
- */
 export function Controller(routePrefix: string = '', ...middlewares: RequestHandler[]): ClassDecorator {
-    return (ctrl: any) => {
-        const controller = new ControllerRegistration(ctrl, routePrefix, middlewares);
-        if (giuseppeInstance) {
-            giuseppeInstance.controller.push(controller);
-        } else {
-            instanceControllers.push(controller);
-        }
-    };
+    return (ctrl: Function) => Giuseppe.registrar.registerController(new GiuseppeApiController(ctrl, routePrefix, middlewares));
 }
 
-export class GiuseppeController implements ControllerDecorator {
-    constructor(giuseppe: Giuseppe) {
-        giuseppeInstance = giuseppe;
-        for (const ctrl of instanceControllers) {
-            giuseppeInstance.controller.push(ctrl);
-        }
-    }
+export class GiuseppeApiController implements ControllerDefinition {
+    constructor(
+        public readonly ctrlTarget: Function,
+        public readonly routePrefix: string = '',
+        public readonly middlewares: RequestHandler[] = [],
+    ) { }
 }
 
 // /**

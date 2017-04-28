@@ -5,6 +5,7 @@
     ],
     "rules": {
         "adjacent-overload-signatures": true,
+        "ban-types": false,
         "interface-name": [
             true,
             "never-prefix"
@@ -33,6 +34,13 @@
         "arrow-parens": [
             true,
             "ban-single-arg-parens"
+        ],
+        "trailing-comma": [
+            true,
+            {
+                "multiline": "always",
+                "singleline": "never"
+            }
         ],
         "no-trailing-whitespace": false,
         "member-ordering": [
@@ -78,9 +86,6 @@
             true,
             "single",
             "avoid-escape"
-        ],
-        "trailing-comma": [
-            false
         ],
         "triple-equals": true,
         "typedef": [
