@@ -1,6 +1,6 @@
 import { ControllerDefinition } from '../../controller/ControllerDefinition';
 import { Giuseppe } from '../../Giuseppe';
-import { RequestHandler } from 'express';
+import { RequestHandler, Router } from 'express';
 
 export function Controller(routePrefix: string = '', ...middlewares: RequestHandler[]): ClassDecorator {
     return (ctrl: Function) => Giuseppe.registrar.registerController(new GiuseppeApiController(ctrl, routePrefix, middlewares));
@@ -12,6 +12,10 @@ export class GiuseppeApiController implements ControllerDefinition {
         public readonly routePrefix: string = '',
         public readonly middlewares: RequestHandler[] = [],
     ) { }
+
+    public register(baseUrl: string, router: Router): void {
+        throw new Error('Not implemented yet.' + baseUrl + router);
+    }
 }
 
 // /**

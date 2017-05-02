@@ -11,8 +11,8 @@ console.log('lol');
 @Controller()
 export class MyController {
     
-    @Version()
     @Get()
+    @Version()
     public getAll(@Query('test') test: string): string {
         return test;
     }

@@ -65,7 +65,6 @@
     "body-parser": "^1.17.1",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
-    "concurrently": "^3.4.0",
     "del-cli": "^0.2.1",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
