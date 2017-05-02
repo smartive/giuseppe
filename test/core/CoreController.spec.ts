@@ -1,4 +1,3 @@
-import { DefinitionNotRegisteredError } from '../../src/errors';
 import 'reflect-metadata';
 import { Giuseppe } from '../../src/';
 import { Controller } from '../../src/core/controller/GiuseppeApiController';
