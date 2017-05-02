@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { Giuseppe, GiuseppePlugin } from '../src';
-import { ControllerDecorator } from '../src/controller/ControllerDecorator';
 import { DuplicatePluginError } from '../src/errors';
+import { ControllerDefinitionConstructor } from '../src/GiuseppePlugin';
 import { ReturnTypeHandler } from '../src/routes/ReturnTypeHandler';
-import { RouteDecorator } from '../src/routes/RouteDecorator';
+import { RouteDefinition } from '../src/routes/RouteDefinition';
 import { RouteModificator } from '../src/routes/RouteModificator';
 import chai = require('chai');
 import sinon = require('sinon');
@@ -40,14 +40,29 @@ describe('PluginSystem', () => {
             giuseppe = new Giuseppe();
         });
 
-        it('should register a plugin in giuseppe.');
+        it('should register a plugin in giuseppe.', () => {
+            class Plugin implements GiuseppePlugin {
+                public readonly name: string = 'Plugin';
+                public readonly returnTypeHandler: ReturnTypeHandler[] | null;
+                public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
+                public readonly routeDecorators: RouteDefinition[] | null;
+                public readonly routeModificators: RouteModificator[] | null;
+                public readonly parameterDecorators: ParameterDecorator[] | null;
+                public initialize(): void {
+                }
+            }
+
+            (giuseppe as any).plugins.should.be.an('array').with.lengthOf(1);
+            giuseppe.registerPlugin(new Plugin());
+            (giuseppe as any).plugins.should.be.an('array').with.lengthOf(2);
+        });
 
         it('should throw when a duplicate plugin is registered.', () => {
             class Plugin implements GiuseppePlugin {
                 public readonly name: string = 'Plugin';
                 public readonly returnTypeHandler: ReturnTypeHandler[] | null;
-                public readonly controllerDecorators: ControllerDecorator[] = [];
-                public readonly routeDecorators: RouteDecorator[] | null;
+                public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
+                public readonly routeDecorators: RouteDefinition[] | null;
                 public readonly routeModificators: RouteModificator[] | null;
                 public readonly parameterDecorators: ParameterDecorator[] | null;
                 public initialize(): void {
@@ -59,8 +74,6 @@ describe('PluginSystem', () => {
             fn();
             fn.should.throw(DuplicatePluginError);
         });
-
-        it('should add a controller decorator (controller creator) in giuseppe.');
 
     });
 

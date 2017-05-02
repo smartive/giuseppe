@@ -1,8 +1,7 @@
 import { ControllerDefinition } from './controller/ControllerDefinition';
-import { LoadingOptions } from './controller/LoadingOptions';
 import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
-import { DuplicatePluginError } from './errors';
-import { GiuseppePlugin } from './GiuseppePlugin';
+import { DefinitionNotRegisteredError, DuplicatePluginError } from './errors';
+import { ControllerDefinitionConstructor, GiuseppePlugin } from './GiuseppePlugin';
 import { ParameterDefinition } from './parameter/ParameterDefinition';
 import { RouteDefinition } from './routes/RouteDefinition';
 import { RouteModificator } from './routes/RouteModificator';
@@ -44,6 +43,16 @@ export class Giuseppe {
     public router: Router = Router();
     private plugins: GiuseppePlugin[] = [];
 
+    private _pluginController: ControllerDefinitionConstructor[] | null;
+    private get pluginController(): ControllerDefinitionConstructor[] {
+        if (!this._pluginController) {
+            this._pluginController = this.plugins
+                .filter(p => !!p.controllerDefinitions)
+                .reduce((all, cur) => all.concat(cur.controllerDefinitions!), [] as ControllerDefinitionConstructor[]);
+        }
+        return this._pluginController;
+    }
+
     constructor() {
         this.registerPlugin(new GiuseppeCorePlugin());
     }
@@ -52,12 +61,13 @@ export class Giuseppe {
         if (this.plugins.find(o => o.name === plugin.name)) {
             throw new DuplicatePluginError(plugin.name);
         }
+        this._pluginController = null;
         plugin.initialize(this);
         this.plugins.push(plugin);
     }
 
     public start(baseUrl: string = ''): Router {
-        for (const ctrl of Giuseppe.registrar.controller) {
+        for (const ctrl of Giuseppe.registrar.controller.filter(c => this.checkPluginRegistration(c))) {
             ctrl.register(baseUrl, this.router);
         }
         return this.router;
@@ -72,4 +82,12 @@ export class Giuseppe {
     //     console.log(loadingOptions, baseUrl);
     //     return router;
     // }
+
+    private checkPluginRegistration(controller: ControllerDefinition): boolean {
+        if (!this.pluginController.some(p => controller instanceof p)) {
+            throw new DefinitionNotRegisteredError(controller.constructor.name);
+        }
+
+        return true;
+    }
 }

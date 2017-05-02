@@ -1,7 +1,5 @@
-export class DuplicatePluginError {
-    public readonly message: string;
-
+export class DuplicatePluginError extends Error {
     constructor(name: string) {
-        this.message = `A plugin with the name '${name}' is already registered.`;
+        super(`A plugin with the name '${name}' is already registered.`);
     }
 }

@@ -2,7 +2,11 @@ import { ControllerDefinition } from '../../controller/ControllerDefinition';
 import { Giuseppe } from '../../Giuseppe';
 import { RequestHandler, Router } from 'express';
 
-export function Controller(routePrefix: string = '', ...middlewares: RequestHandler[]): ClassDecorator {
+export function Controller(routePrefixOrMiddleware?: string | RequestHandler, ...middlewares: RequestHandler[]): ClassDecorator {
+    const routePrefix = routePrefixOrMiddleware && typeof routePrefixOrMiddleware === 'string' ? routePrefixOrMiddleware : '';
+    if (routePrefixOrMiddleware && typeof routePrefixOrMiddleware === 'function') {
+        middlewares.unshift(routePrefixOrMiddleware);
+    }
     return (ctrl: Function) => Giuseppe.registrar.registerController(new GiuseppeApiController(ctrl, routePrefix, middlewares));
 }
 

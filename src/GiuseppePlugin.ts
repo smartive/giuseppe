@@ -4,6 +4,8 @@ import { Giuseppe } from './Giuseppe';
 import { ReturnTypeHandler } from './routes/ReturnTypeHandler';
 import { RouteModificator } from './routes/RouteModificator';
 
+export type ControllerDefinitionConstructor = new (...args: any[]) => ControllerDefinition;
+
 /**
  * Basic interface for any plugin. Defines the minimal methods that should be provided to actually be pluggable
  * into giuseppe. The plugins need to be registered with giuseppe before any controllers are loaded.
@@ -36,7 +38,7 @@ export interface GiuseppePlugin {
      * @type {(ControllerDecorator[] | null)}
      * @memberOf GiuseppePlugin
      */
-    readonly controllerDefinitions: (new (...args: any[]) => ControllerDefinition)[] | null;
+    readonly controllerDefinitions: ControllerDefinitionConstructor[] | null;
 
     /**
      * A list of route decorators declared by this plugin (or null if none are registered).
