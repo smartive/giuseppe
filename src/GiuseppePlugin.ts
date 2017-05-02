@@ -36,7 +36,7 @@ export interface GiuseppePlugin {
      * @type {(ControllerDecorator[] | null)}
      * @memberOf GiuseppePlugin
      */
-    readonly controllerDecorators: ControllerDefinition[] | null;
+    readonly controllerDefinitions: (new (...args: any[]) => ControllerDefinition)[] | null;
 
     /**
      * A list of route decorators declared by this plugin (or null if none are registered).

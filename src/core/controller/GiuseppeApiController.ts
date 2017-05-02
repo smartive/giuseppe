@@ -13,8 +13,8 @@ export class GiuseppeApiController implements ControllerDefinition {
         public readonly middlewares: RequestHandler[] = [],
     ) { }
 
-    public register(baseUrl: string, router: Router): void {
-        throw new Error('Not implemented yet.' + baseUrl + router);
+    public register(_baseUrl: string, _router: Router): void {
+        // load all routes?
     }
 }
 

@@ -19,3 +19,6 @@ export class MyController {
 }
 
 console.log(Giuseppe.registrar);
+
+const giusi = new Giuseppe();
+giusi.start();

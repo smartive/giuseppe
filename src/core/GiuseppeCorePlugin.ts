@@ -1,20 +1,23 @@
-import { RouteDefinition } from '../routes/RouteDefinition';
 import { ControllerDefinition } from '../controller/ControllerDefinition';
-import { Giuseppe } from '../Giuseppe';
 import { GiuseppePlugin } from '../GiuseppePlugin';
 import { ReturnTypeHandler } from '../routes/ReturnTypeHandler';
+import { RouteDefinition } from '../routes/RouteDefinition';
 import { RouteModificator } from '../routes/RouteModificator';
+import { GiuseppeApiController } from './controller/GiuseppeApiController';
 
 export class GiuseppeCorePlugin implements GiuseppePlugin {
-    public readonly name: string = 'GiuseppeCorePlugin';
     public readonly returnTypeHandler: ReturnTypeHandler[] | null;
-    public readonly controllerDecorators: ControllerDefinition[] = [];
+    public readonly controllerDefinitions: (new (...args: any[]) => ControllerDefinition)[] = [];
     // public readonly controllerModificators: ControllerDecorator[] = []; ?
     public readonly routeDecorators: RouteDefinition[] | null;
     public readonly routeModificators: RouteModificator[] | null;
     public readonly parameterDecorators: ParameterDecorator[] | null;
 
-    public initialize(_: Giuseppe): void {
-        // this.controllerDecorators.push(new GiuseppeController(giuseppe));
+    public get name(): string {
+        return this.constructor.name;
+    }
+
+    public initialize(): void {
+        this.controllerDefinitions.push(GiuseppeApiController);
     }
 }

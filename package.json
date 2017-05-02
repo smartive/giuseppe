@@ -9,8 +9,8 @@
     "build": "npm run clean && tsc -p ./config/tsconfig.prod.json",
     "develop": "npm run clean && tsc -p .",
     "pretest": "npm run clean && tsc -p ./config/tsconfig.test.json",
-    "test": "istanbul cover -x \"test/**/*.spec.*\" _mocha -- --ui bdd \"./build/test/**/*.spec.js\"",
-    "posttest": "remap-istanbul -i coverage/coverage.json -o coverage/html-report -t html -e _test",
+    "test": "istanbul cover -x \"test/**/*.spec.*\" _mocha --report lcovonly -- --ui bdd \"./build/test/**/*.spec.js\"",
+    "posttest": "remap-istanbul -i coverage/coverage.json -o coverage/lcov-mapped.info -t lcovonly -e _test",
     "test:watch": "mocha -w --ui bdd \"./build/test/**/*.spec.js\""
   },
   "engines": {
