@@ -3,8 +3,7 @@ node_js:
 - '7'
 
 script:
-- npm install
-- npm run citest
+- npm run test
 
 after_script: npm install coveralls@^2.11.9 && cat ./coverage/lcov-mapped.info | coveralls
 
