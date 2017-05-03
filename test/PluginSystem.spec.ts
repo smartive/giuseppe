@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Giuseppe, GiuseppePlugin } from '../src';
 import { DuplicatePluginError } from '../src/errors';
 import { ControllerDefinitionConstructor } from '../src/GiuseppePlugin';
-import { ReturnTypeHandler } from '../src/routes/ReturnTypeHandler';
+import { ReturnType } from '../src/routes/ReturnType';
 import { RouteDefinition } from '../src/routes/RouteDefinition';
 import { RouteModificator } from '../src/routes/RouteModificator';
 import chai = require('chai');
@@ -43,7 +43,7 @@ describe('PluginSystem', () => {
         it('should register a plugin in giuseppe.', () => {
             class Plugin implements GiuseppePlugin {
                 public readonly name: string = 'Plugin';
-                public readonly returnTypeHandler: ReturnTypeHandler[] | null;
+                public readonly returnTypeHandler: ReturnType<any>[] | null;
                 public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
                 public readonly routeDecorators: RouteDefinition[] | null;
                 public readonly routeModificators: RouteModificator[] | null;
@@ -60,7 +60,7 @@ describe('PluginSystem', () => {
         it('should throw when a duplicate plugin is registered.', () => {
             class Plugin implements GiuseppePlugin {
                 public readonly name: string = 'Plugin';
-                public readonly returnTypeHandler: ReturnTypeHandler[] | null;
+                public readonly returnTypeHandler: ReturnType<any>[] | null;
                 public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
                 public readonly routeDecorators: RouteDefinition[] | null;
                 public readonly routeModificators: RouteModificator[] | null;

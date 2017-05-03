@@ -1,6 +1,8 @@
+import { GiuseppeRoute } from '../../routes/GiuseppeRoute';
+import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { Giuseppe } from '../..';
-import { RouteDefinition } from '../../routes/RouteDefinition';
-import { RequestHandler } from 'express';
+import { HttpMethod, RouteDefinition } from '../../routes/RouteDefinition';
+import { RequestHandler, Request } from 'express';
 
 export function Get(route: string = '', ...middlewares: RequestHandler[]): MethodDecorator {
     return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Function>) => {
@@ -12,7 +14,7 @@ export function Get(route: string = '', ...middlewares: RequestHandler[]): Metho
 }
 
 export class GiuseppeGetRoute implements RouteDefinition {
-    public readonly httpMethod: string = 'get';
+    public readonly httpMethod: HttpMethod = HttpMethod.get;
 
     public get name(): string {
         return this.routeFunction.name;
@@ -24,12 +26,42 @@ export class GiuseppeGetRoute implements RouteDefinition {
         public readonly middlewares: RequestHandler[] = [],
     ) { }
 
-    public routeId(): string {
-        throw new Error('Not implemented yet.');
-    }
+    public createRoutes(
+        meta: ControllerMetadata,
+        baseUrl: string,
+        controllerMiddlewares: RequestHandler[],
+    ): GiuseppeRoute[] {
 
-    public register(): any {
-        throw new Error('Not implemented yet.');
+        return [
+            {
+                id: `${HttpMethod[this.httpMethod]}_${this.route}`,
+                name: this.name,
+                method: this.httpMethod,
+                url: [baseUrl, this.route].filter(Boolean).join('/'),
+                middlewares: [...controllerMiddlewares, ...this.middlewares],
+                function: this.routeFunction,
+            },
+        ];
+
+
+
+        /*
+        get modifiers for route
+        get parameters for route
+        create (one or multiple) objects that contain a route ID, a route function (with prepended middlewares)
+        route function is a wrapper (like in v1)
+        return a hash with: id => register function
+        const routeHash = route.createRouteFunctions(meta);
+
+            Object.keys(routeHash)
+                .map(k => {
+                    
+                })
+
+            // check for duplicates (in router)
+            // order routes by * and segments
+            // register them
+        */
     }
 }
 
@@ -47,8 +79,6 @@ export class GiuseppeGetRoute implements RouteDefinition {
 //         Reflect.set(target, ROUTE_DECORATOR_KEY, routes);
 //     };
 // }
-
-
 
 // export class GiuseppeController implements ControllerDecorator {
 //     constructor(giuseppe: Giuseppe) {

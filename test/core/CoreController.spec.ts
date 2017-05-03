@@ -22,7 +22,7 @@ describe('Core controller', () => {
         });
 
         it('should return Controller decorator', () => {
-            Controller().should.be.a('function').and.have.lengthOf(1);
+            Controller().should.be.a('function');
         });
 
         it('should register a controller in giuseppe.', () => {

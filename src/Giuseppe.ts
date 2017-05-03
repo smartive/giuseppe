@@ -3,7 +3,7 @@ import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
 import { DefinitionNotRegisteredError, DuplicatePluginError } from './errors';
 import { ControllerDefinitionConstructor, GiuseppePlugin } from './GiuseppePlugin';
 import { ParameterDefinition } from './parameter/ParameterDefinition';
-import { RouteDefinition } from './routes/RouteDefinition';
+import { HttpMethod, RouteDefinition } from './routes/RouteDefinition';
 import { RouteModificator } from './routes/RouteModificator';
 import { ControllerMetadata } from './utilities/ControllerMetadata';
 import { Router } from 'express';
@@ -66,9 +66,13 @@ export class Giuseppe {
         this.plugins.push(plugin);
     }
 
-    public start(baseUrl: string = ''): Router {
-        for (const ctrl of Giuseppe.registrar.controller.filter(c => this.checkPluginRegistration(c))) {
-            ctrl.register(baseUrl, this.router);
+    public start(baseUrl: string = '/'): Router {
+        const url = baseUrl.startsWith('/') ? baseUrl : `/${baseUrl}`;
+        for (const ctrl of Giuseppe.registrar.controller) {
+            this.checkPluginRegistration(ctrl);
+
+            const routes = ctrl.createRoutes(url);
+            console.log(routes);
         }
         return this.router;
     }
@@ -87,6 +91,8 @@ export class Giuseppe {
         if (!this.pluginController.some(p => controller instanceof p)) {
             throw new DefinitionNotRegisteredError(controller.constructor.name);
         }
+
+        // check all routes, modificators, parameters if they are registered. otherwise throw ex
 
         return true;
     }

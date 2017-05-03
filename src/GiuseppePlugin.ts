@@ -1,7 +1,7 @@
-import { RouteDefinition } from './routes/RouteDefinition';
 import { ControllerDefinition } from './controller/ControllerDefinition';
 import { Giuseppe } from './Giuseppe';
-import { ReturnTypeHandler } from './routes/ReturnTypeHandler';
+import { ReturnType } from './routes/ReturnType';
+import { RouteDefinition } from './routes/RouteDefinition';
 import { RouteModificator } from './routes/RouteModificator';
 
 export type ControllerDefinitionConstructor = new (...args: any[]) => ControllerDefinition;
@@ -29,7 +29,7 @@ export interface GiuseppePlugin {
      * @type {(ReturnTypeHandler[] | null)}
      * @memberOf GiuseppePlugin
      */
-    readonly returnTypeHandler: ReturnTypeHandler[] | null;
+    readonly returnTypeHandler: ReturnType<any>[] | null;
 
     /**
      * A list of controller decorators declared by this plugin (or null if none are registered).
