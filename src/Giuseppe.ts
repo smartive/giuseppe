@@ -3,10 +3,13 @@ import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
 import { DefinitionNotRegisteredError, DuplicatePluginError } from './errors';
 import { ControllerDefinitionConstructor, GiuseppePlugin } from './GiuseppePlugin';
 import { ParameterDefinition } from './parameter/ParameterDefinition';
+import { GiuseppeRoute } from './routes/GiuseppeRoute';
 import { HttpMethod, RouteDefinition } from './routes/RouteDefinition';
 import { RouteModificator } from './routes/RouteModificator';
 import { ControllerMetadata } from './utilities/ControllerMetadata';
 import { Router } from 'express';
+
+type RouteRegisterInformation = { route: GiuseppeRoute, ctrl: Object, segments: number, wildcards: number };
 
 export class GiuseppeRegistrar {
     public readonly controller: ControllerDefinition[] = [];
@@ -67,13 +70,67 @@ export class Giuseppe {
     }
 
     public start(baseUrl: string = '/'): Router {
-        const url = baseUrl.startsWith('/') ? baseUrl : `/${baseUrl}`;
+        const url = baseUrl.startsWith('/') ? baseUrl : `/${baseUrl}`,
+            giuseppeRoutes: { [id: string]: RouteRegisterInformation } = {};
+
         for (const ctrl of Giuseppe.registrar.controller) {
             this.checkPluginRegistration(ctrl);
 
-            const routes = ctrl.createRoutes(url);
-            console.log(routes);
+            // create all routes, then modify all routes, then register methods (wrapper method will get parameters)
+            const meta = new ControllerMetadata(ctrl.ctrlTarget.prototype),
+                routes = ctrl.createRoutes(url);
+
+            let ctrlRoutes: GiuseppeRoute[] = [];
+
+            for (const route of routes) {
+                // get modifiers and modify the routes (can be another array)
+                const mods = meta.modificators(route.name);
+                if (!mods.length) {
+                    ctrlRoutes.push(route);
+                    continue;
+                }
+
+                let modifiedRoutes: GiuseppeRoute[] = [route];
+                for (const mod of mods) {
+                    modifiedRoutes = modifiedRoutes.reduce((all, cur) => all.concat(mod.modifyRoute(cur)), [] as GiuseppeRoute[]);
+                }
+                ctrlRoutes = ctrlRoutes.concat(modifiedRoutes);
+            }
+
+            for (const route of ctrlRoutes) {
+                if (giuseppeRoutes[route.id]) {
+                    throw new Error('DUPLICATE!!11elf');
+                }
+                giuseppeRoutes[route.id] = {
+                    route,
+                    segments: route.url.split('/').length,
+                    wildcards: route.url.split('*').length - 1,
+                    ctrl: ctrl.ctrlTarget,
+                };
+            }
         }
+
+        // register routes
+
+        Object.keys(giuseppeRoutes)
+            .map(k => giuseppeRoutes[k])
+            .reduce((segmentSorted, route) => {
+                (segmentSorted[route.segments] || (segmentSorted[route.segments] = [])).push(route);
+                return segmentSorted;
+            }, [] as RouteRegisterInformation[][])
+            .filter(Boolean)
+            .reverse()
+            .reduce(
+            (routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcards - r2.wildcards)),
+            [] as RouteRegisterInformation[])
+            .forEach(r => {
+                this.router[HttpMethod[r.route.method]](r.route.url, ...r.route.middlewares, () => {
+                    // get all params and their values
+                    r.route.function.apply(r.ctrl);
+                    // get the return value and do the giusi magic.
+                });
+            });
+
         return this.router;
     }
 

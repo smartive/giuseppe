@@ -20,37 +20,9 @@ export class GiuseppeApiController implements ControllerDefinition {
     ) { }
 
     public createRoutes(baseUrl: string): GiuseppeRoute[] {
-        /*
-        Gather all routes from the controller (check if registered happens top lvl in giusi)
-        create routes with corresponding route function (route interface)
-          -> route function is created by route itself (param parsing and shit)
-        route hash with route ID to check for duplicates
-        route modificator can create multiple route ids and functions
-        even a route can create multiple ids and functions
-        check in express router for duplicates
-
-        register routes within express (with ctrl middlewares)
-        */
-        const metadata = new ControllerMetadata(this.ctrlTarget.prototype),
+        const meta = new ControllerMetadata(this.ctrlTarget.prototype),
             url = [baseUrl, this.routePrefix].filter(Boolean).join('/');
-        let controllerRoutes: GiuseppeRoute[] = [];
 
-        for (const route of metadata.routes()) {
-            const routes = route.createRoutes(metadata, url, this.middlewares),
-                mods = metadata.modificators(route.name);
-
-            if (!mods.length) {
-                controllerRoutes = controllerRoutes.concat(routes);
-                continue;
-            }
-
-            let modificatedRoutes = [];
-            for (const mod of mods) {
-                modificatedRoutes = modificatedRoutes.concat([]);
-            }
-            controllerRoutes = controllerRoutes.concat(modificatedRoutes);
-        }
-
-        return controllerRoutes;
+        return meta.routes().reduce((all, cur) => all.concat(cur.createRoutes(meta, url, this.middlewares)), [] as GiuseppeRoute[]);
     }
 }

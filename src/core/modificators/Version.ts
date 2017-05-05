@@ -1,3 +1,4 @@
+import { GiuseppeRoute } from '../../routes/GiuseppeRoute';
 import { RouteModificator } from '../../routes/RouteModificator';
 import { Giuseppe } from '../..';
 
@@ -6,12 +7,14 @@ export function Version(): MethodDecorator {
         if (!descriptor.value) {
             throw new TypeError(`Function is undefined in the modificator`);
         }
-        Giuseppe.registrar.registerRouteModificator(target, propertyKey, new GiuseppeVersionModificator(descriptor.value));
+        Giuseppe.registrar.registerRouteModificator(target, propertyKey, new GiuseppeVersionModificator());
     };
 }
 
 export class GiuseppeVersionModificator implements RouteModificator {
-    constructor(
-        public readonly routeFunction: Function,
-    ) { }
+    public modifyRoute(route: GiuseppeRoute): GiuseppeRoute[] {
+        const r2: GiuseppeRoute = JSON.parse(JSON.stringify(route));
+        
+        return [route, r2];
+    }
 }

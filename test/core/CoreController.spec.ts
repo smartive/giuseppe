@@ -1,3 +1,4 @@
+import { Get } from '../../src/core/routes';
 import 'reflect-metadata';
 import { Giuseppe } from '../../src/';
 import { Controller } from '../../src/core/controller/GiuseppeApiController';
@@ -98,6 +99,19 @@ describe('Core controller', () => {
             } catch (e) {
                 done();
             }
+        });
+
+        it(`should return it's registered routes`, () => {
+            @Controller()
+            class Ctrl{
+                @Get()    
+                public get(): void {}
+            }
+
+            const ctrl = Giuseppe.registrar.controller[0];
+            const route = ctrl.createRoutes('')[0];
+            route.id.should.equal('get_');
+            route.name.should.equal('get');
         });
 
     });
