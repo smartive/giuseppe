@@ -92,6 +92,7 @@ export class Giuseppe {
             throw new DuplicatePluginError(plugin.name);
         }
         this._pluginController = null;
+        this._returnTypes = null;
         plugin.initialize(this);
         this.plugins.push(plugin);
     }
@@ -102,7 +103,7 @@ export class Giuseppe {
         return this.router;
     }
 
-    // public async loadFolderAndStart(
+    // TODO: public async loadFolderAndStart(
     //     loadingOptions: LoadingOptions,
     //     baseUrl: string = '',
     //     router: Router = Router(),
@@ -163,7 +164,7 @@ export class Giuseppe {
             .reduce(
             (routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcards - r2.wildcards)),
             [] as RouteRegisterInformation[])
-            .forEach(r => this.router[HttpMethod[r.route.method]](r.route.url, ...r.route.middlewares, this.createRouteWrapper(r)));
+            .forEach(r => this.router[HttpMethod[r.route.method]](this.getRouteUrl(r), ...r.route.middlewares, this.createRouteWrapper(r)));
     }
 
     private createRouteWrapper(routeInfo: RouteRegisterInformation): RequestHandler {
@@ -193,6 +194,18 @@ export class Giuseppe {
                 meta.errorHandler().handleError(routeInfo.ctrl, req, res, e);
             }
         };
+    }
+
+    private getRouteUrl(routeInfo: RouteRegisterInformation): string {
+        const routeUrl = routeInfo.route.url,
+            index = routeUrl.lastIndexOf('~');
+        let url = '';
+        if (index > -1) {
+            url = routeUrl.substring(index + 1);
+        }
+        url = routeUrl;
+
+        return url.startsWith('/') ? url : `/${url}`;
     }
 
     private checkPluginRegistration(controller: ControllerDefinition): boolean {

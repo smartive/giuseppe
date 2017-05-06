@@ -114,6 +114,19 @@ describe('Core controller', () => {
             route.name.should.equal('get');
         });
 
+        it('should return the correct route urls for default', () => {
+            @Controller()
+            class Ctrl{
+                @Get()    
+                public get(): void {}
+            }
+
+            const ctrl = Giuseppe.registrar.controller[0];
+            const route = ctrl.createRoutes('')[0];
+            route.id.should.equal('get_');
+            route.name.should.equal('get');
+        });
+
     });
 
 });

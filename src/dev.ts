@@ -19,7 +19,7 @@ export class MyController {
     //     return test;
     // }
     
-    @Get()
+    @Get('foobar')
     public getAllFoobar(@Query('test') test: string): Promise<any> {
         return Promise.resolve({ test });
     }
