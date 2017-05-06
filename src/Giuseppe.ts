@@ -1,3 +1,6 @@
+import { ReturnTypeHandler } from './ReturnTypeHandler';
+import { ReturnType } from './routes/ReturnType';
+import { DuplicateRouteError } from './errors/DuplicateRouteError';
 import { ControllerDefinition } from './controller/ControllerDefinition';
 import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
 import { DefinitionNotRegisteredError, DuplicatePluginError } from './errors';
@@ -7,9 +10,14 @@ import { GiuseppeRoute } from './routes/GiuseppeRoute';
 import { HttpMethod, RouteDefinition } from './routes/RouteDefinition';
 import { RouteModificator } from './routes/RouteModificator';
 import { ControllerMetadata } from './utilities/ControllerMetadata';
-import { Router } from 'express';
+import { Request, Response, Router, RequestHandler } from 'express';
 
-type RouteRegisterInformation = { route: GiuseppeRoute, ctrl: Object, segments: number, wildcards: number };
+interface RouteRegisterInformation {
+    route: GiuseppeRoute;
+    ctrl: Function;
+    segments: number;
+    wildcards: number;
+}
 
 export class GiuseppeRegistrar {
     public readonly controller: ControllerDefinition[] = [];
@@ -45,6 +53,17 @@ export class Giuseppe {
     public static readonly registrar: GiuseppeRegistrar = new GiuseppeRegistrar();
     public router: Router = Router();
     private plugins: GiuseppePlugin[] = [];
+    private routes: { [id: string]: RouteRegisterInformation } = {};
+
+    private _returnTypes: ReturnType<any>[] | null;
+    private get returnTypes(): ReturnType<any>[] {
+        if (!this._returnTypes) {
+            this._returnTypes = this.plugins
+                .filter(p => !!p.returnTypeHandler)
+                .reduce((all, cur) => all.concat(cur.returnTypeHandler!), [] as ReturnType<any>[]);
+        }
+        return this._returnTypes;
+    }
 
     private _pluginController: ControllerDefinitionConstructor[] | null;
     private get pluginController(): ControllerDefinitionConstructor[] {
@@ -70,8 +89,23 @@ export class Giuseppe {
     }
 
     public start(baseUrl: string = '/'): Router {
-        const url = baseUrl.startsWith('/') ? baseUrl : `/${baseUrl}`,
-            giuseppeRoutes: { [id: string]: RouteRegisterInformation } = {};
+        this.createRoutes(baseUrl);
+        this.registerRoutes();
+        return this.router;
+    }
+
+    // public async loadFolderAndStart(
+    //     loadingOptions: LoadingOptions,
+    //     baseUrl: string = '',
+    //     router: Router = Router(),
+    // ): Promise<Router> {
+    //     // tslint:disable-next-line
+    //     console.log(loadingOptions, baseUrl);
+    //     return router;
+    // }
+
+    private createRoutes(baseUrl: string): void {
+        const url = baseUrl.startsWith('/') ? baseUrl : `/${baseUrl}`;
 
         for (const ctrl of Giuseppe.registrar.controller) {
             this.checkPluginRegistration(ctrl);
@@ -98,10 +132,10 @@ export class Giuseppe {
             }
 
             for (const route of ctrlRoutes) {
-                if (giuseppeRoutes[route.id]) {
-                    throw new Error('DUPLICATE!!11elf');
+                if (this.routes[route.id]) {
+                    throw new DuplicateRouteError(route);
                 }
-                giuseppeRoutes[route.id] = {
+                this.routes[route.id] = {
                     route,
                     segments: route.url.split('/').length,
                     wildcards: route.url.split('*').length - 1,
@@ -109,11 +143,11 @@ export class Giuseppe {
                 };
             }
         }
+    }
 
-        // register routes
-
-        Object.keys(giuseppeRoutes)
-            .map(k => giuseppeRoutes[k])
+    private registerRoutes(): void {
+        Object.keys(this.routes)
+            .map(k => this.routes[k])
             .reduce((segmentSorted, route) => {
                 (segmentSorted[route.segments] || (segmentSorted[route.segments] = [])).push(route);
                 return segmentSorted;
@@ -123,26 +157,38 @@ export class Giuseppe {
             .reduce(
             (routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcards - r2.wildcards)),
             [] as RouteRegisterInformation[])
-            .forEach(r => {
-                this.router[HttpMethod[r.route.method]](r.route.url, ...r.route.middlewares, () => {
-                    // get all params and their values
-                    r.route.function.apply(r.ctrl);
-                    // get the return value and do the giusi magic.
-                });
-            });
-
-        return this.router;
+            .forEach(r => this.router[HttpMethod[r.route.method]](r.route.url, ...r.route.middlewares, this.createRouteWrapper(r)));
     }
 
-    // public async loadFolderAndStart(
-    //     loadingOptions: LoadingOptions,
-    //     baseUrl: string = '',
-    //     router: Router = Router(),
-    // ): Promise<Router> {
-    //     // tslint:disable-next-line
-    //     console.log(loadingOptions, baseUrl);
-    //     return router;
-    // }
+    private createRouteWrapper(routeInfo: RouteRegisterInformation): RequestHandler {
+        // take return val -> run through return val handler (if there is no response handler param)
+        const meta = new ControllerMetadata(routeInfo.ctrl.prototype),
+            params = meta.parameters(routeInfo.route.name),
+            returnTypeHandler = new ReturnTypeHandler(this.returnTypes);
+
+        return async (req: Request, res: Response) => {
+            const paramValues: any[] = [];
+            for (const param of params) {
+                paramValues[param.index] = param.getValue(req);
+            }
+
+            try {
+                let result = routeInfo.route.function.apply(routeInfo.ctrl, paramValues);
+
+                if (params.some(p => p.canHandleResponse)) {
+                    return;
+                }
+
+                if (result instanceof Promise) {
+                    result = await result;
+                }
+
+                returnTypeHandler.handleValue(result, res);
+            } catch (e) {
+                // handle error
+            }
+        };
+    }
 
     private checkPluginRegistration(controller: ControllerDefinition): boolean {
         if (!this.pluginController.some(p => controller instanceof p)) {
