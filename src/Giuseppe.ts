@@ -1,16 +1,17 @@
-import { ReturnTypeHandler } from './ReturnTypeHandler';
-import { ReturnType } from './routes/ReturnType';
-import { DuplicateRouteError } from './errors/DuplicateRouteError';
 import { ControllerDefinition } from './controller/ControllerDefinition';
 import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
 import { DefinitionNotRegisteredError, DuplicatePluginError } from './errors';
+import { ErrorHandlerFunction } from './errors/ControllerErrorHandler';
+import { DuplicateRouteError } from './errors/DuplicateRouteError';
 import { ControllerDefinitionConstructor, GiuseppePlugin } from './GiuseppePlugin';
 import { ParameterDefinition } from './parameter/ParameterDefinition';
+import { ReturnTypeHandler } from './ReturnTypeHandler';
 import { GiuseppeRoute } from './routes/GiuseppeRoute';
+import { ReturnType } from './routes/ReturnType';
 import { HttpMethod, RouteDefinition } from './routes/RouteDefinition';
 import { RouteModificator } from './routes/RouteModificator';
 import { ControllerMetadata } from './utilities/ControllerMetadata';
-import { Request, Response, Router, RequestHandler } from 'express';
+import { Request, RequestHandler, Response, Router } from 'express';
 
 interface RouteRegisterInformation {
     route: GiuseppeRoute;
@@ -39,6 +40,13 @@ export class GiuseppeRegistrar {
     public registerParameter(controller: Object, routeName: string, parameter: ParameterDefinition): void {
         const meta = new ControllerMetadata(controller);
         meta.parameters(routeName).push(parameter);
+    }
+
+    public registerErrorHandler(controller: Object, handler: ErrorHandlerFunction<Error>, errors: Function[]): void {
+        const meta = new ControllerMetadata(controller);
+        for (const error of errors) {
+            meta.errorHandler().addHandler(handler, error);
+        }
     }
 }
 
@@ -88,7 +96,7 @@ export class Giuseppe {
         this.plugins.push(plugin);
     }
 
-    public start(baseUrl: string = '/'): Router {
+    public start(baseUrl: string = ''): Router {
         this.createRoutes(baseUrl);
         this.registerRoutes();
         return this.router;
@@ -105,19 +113,17 @@ export class Giuseppe {
     // }
 
     private createRoutes(baseUrl: string): void {
-        const url = baseUrl.startsWith('/') ? baseUrl : `/${baseUrl}`;
+        const url = baseUrl.startsWith('/') ? baseUrl.substring(1) : baseUrl;
 
         for (const ctrl of Giuseppe.registrar.controller) {
             this.checkPluginRegistration(ctrl);
 
-            // create all routes, then modify all routes, then register methods (wrapper method will get parameters)
             const meta = new ControllerMetadata(ctrl.ctrlTarget.prototype),
                 routes = ctrl.createRoutes(url);
 
             let ctrlRoutes: GiuseppeRoute[] = [];
 
             for (const route of routes) {
-                // get modifiers and modify the routes (can be another array)
                 const mods = meta.modificators(route.name);
                 if (!mods.length) {
                     ctrlRoutes.push(route);
@@ -161,7 +167,6 @@ export class Giuseppe {
     }
 
     private createRouteWrapper(routeInfo: RouteRegisterInformation): RequestHandler {
-        // take return val -> run through return val handler (if there is no response handler param)
         const meta = new ControllerMetadata(routeInfo.ctrl.prototype),
             params = meta.parameters(routeInfo.route.name),
             returnTypeHandler = new ReturnTypeHandler(this.returnTypes);
@@ -185,7 +190,7 @@ export class Giuseppe {
 
                 returnTypeHandler.handleValue(result, res);
             } catch (e) {
-                // handle error
+                meta.errorHandler().handleError(routeInfo.ctrl, req, res, e);
             }
         };
     }

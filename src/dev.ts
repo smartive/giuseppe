@@ -1,3 +1,4 @@
+import { ErrorHandler } from './errors/ErrorHandlerDecorator';
 import 'reflect-metadata';
 import { Giuseppe } from './';
 import { Controller } from './core/controller/GiuseppeApiController';
@@ -20,8 +21,13 @@ export class MyController {
     
     @Get()
     public getAllFoobar(@Query('test') test: string): Promise<any> {
-        return Promise.resolve({test});
+        return Promise.resolve({ test });
     }
+
+    // @ErrorHandler(Error)
+    // private handleErrs(req: express.Request, res: express.Response, err: any): void {
+    //     console.log('lulz.');
+    // }
 }
 
 console.log(Giuseppe.registrar);

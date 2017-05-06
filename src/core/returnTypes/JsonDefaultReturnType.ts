@@ -1,8 +1,8 @@
-import { HandlableType, ReturnType } from '../../routes/ReturnType';
+import { ReturnType } from '../../routes/ReturnType';
 import * as httpStatus from 'http-status';
 
 export class JsonDefaultReturnType implements ReturnType<any> {
-    public type: HandlableType<any> = 'default';
+    public type: string = 'default';
 
     public getHeaders(): { [field: string]: string; } {
         return {

@@ -1,3 +1,5 @@
+import { ERRORHANDLER_KEY } from '../errors/ErrorHandlerDecorator';
+import { ControllerErrorHandler } from '../errors/ControllerErrorHandler';
 import { PARAMETER_DEFINITION_KEY, ParameterDefinition } from '../parameter/ParameterDefinition';
 import { ROUTE_DEFINITION_KEY, RouteDefinition } from '../routes/RouteDefinition';
 import { ROUTE_MODIFICATOR_KEY, RouteModificator } from '../routes/RouteModificator';
@@ -29,5 +31,12 @@ export class ControllerMetadata {
 
     public parameterTypes(name: string): Function[] {
         return Reflect.getOwnMetadata('design:paramtypes', this.controller, name) || [];
+    }
+
+    public errorHandler(): ControllerErrorHandler {
+        if (!Reflect.hasOwnMetadata(ERRORHANDLER_KEY, this.controller)) {
+            Reflect.defineMetadata(ERRORHANDLER_KEY, new ControllerErrorHandler(), this.controller);
+        }
+        return Reflect.getOwnMetadata(ERRORHANDLER_KEY, this.controller);
     }
 }
