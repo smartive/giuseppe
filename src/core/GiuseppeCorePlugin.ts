@@ -1,3 +1,4 @@
+import { GiuseppeGetRoute } from './routes';
 import 'reflect-metadata';
 import {
     ControllerDefinitionConstructor,
@@ -13,9 +14,9 @@ import { JsonDefaultReturnType } from './returnTypes/JsonDefaultReturnType';
 export class GiuseppeCorePlugin implements GiuseppePlugin {
     public readonly returnTypeHandler: ReturnType<any>[] = [];
     public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
-    public readonly routeDecorators: RouteDefinitionConstructor[] | null;
-    public readonly routeModificators: RouteModificatorConstructor[] | null;
-    public readonly parameterDecorators: ParameterDecoratorConstructor[] | null;
+    public readonly routeDecorators: RouteDefinitionConstructor[] = [];
+    public readonly routeModificators: RouteModificatorConstructor[] = [];
+    public readonly parameterDecorators: ParameterDecoratorConstructor[] = [];
 
     public get name(): string {
         return this.constructor.name;
@@ -24,5 +25,6 @@ export class GiuseppeCorePlugin implements GiuseppePlugin {
     public initialize(): void {
         this.returnTypeHandler.push(new JsonDefaultReturnType());
         this.controllerDefinitions.push(GiuseppeApiController);
+        this.routeDecorators.push(GiuseppeGetRoute);
     }
 }

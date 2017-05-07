@@ -4,7 +4,13 @@ import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
 import { DefinitionNotRegisteredError, DuplicatePluginError } from './errors';
 import { ErrorHandlerFunction } from './errors/ControllerErrorHandler';
 import { DuplicateRouteError } from './errors/DuplicateRouteError';
-import { ControllerDefinitionConstructor, GiuseppePlugin } from './GiuseppePlugin';
+import {
+    ControllerDefinitionConstructor,
+    GiuseppePlugin,
+    ParameterDecoratorConstructor,
+    RouteDefinitionConstructor,
+    RouteModificatorConstructor,
+} from './GiuseppePlugin';
 import { ParameterDefinition } from './parameter/ParameterDefinition';
 import { ReturnTypeHandler } from './ReturnTypeHandler';
 import { GiuseppeRoute } from './routes/GiuseppeRoute';
@@ -84,6 +90,36 @@ export class Giuseppe {
         return this._pluginController;
     }
 
+    private _pluginRoutes: RouteDefinitionConstructor[] | null;
+    private get pluginRoutes(): RouteDefinitionConstructor[] {
+        if (!this._pluginRoutes) {
+            this._pluginRoutes = this.plugins
+                .filter(p => !!p.routeDecorators)
+                .reduce((all, cur) => all.concat(cur.routeDecorators!), [] as RouteDefinitionConstructor[]);
+        }
+        return this._pluginRoutes;
+    }
+
+    private _pluginRouteModificators: RouteModificatorConstructor[] | null;
+    private get pluginRouteModificators(): RouteModificatorConstructor[] {
+        if (!this._pluginRouteModificators) {
+            this._pluginRouteModificators = this.plugins
+                .filter(p => !!p.routeModificators)
+                .reduce((all, cur) => all.concat(cur.routeModificators!), [] as RouteModificatorConstructor[]);
+        }
+        return this._pluginRouteModificators;
+    }
+
+    private _pluginParameters: ParameterDecoratorConstructor[] | null;
+    private get pluginParameters(): ParameterDecoratorConstructor[] {
+        if (!this._pluginParameters) {
+            this._pluginParameters = this.plugins
+                .filter(p => !!p.parameterDecorators)
+                .reduce((all, cur) => all.concat(cur.parameterDecorators!), [] as ParameterDecoratorConstructor[]);
+        }
+        return this._pluginParameters;
+    }
+
     constructor() {
         this.registerPlugin(new GiuseppeCorePlugin());
     }
@@ -92,8 +128,7 @@ export class Giuseppe {
         if (this.plugins.find(o => o.name === plugin.name)) {
             throw new DuplicatePluginError(plugin.name);
         }
-        this._pluginController = null;
-        this._returnTypes = null;
+        this._pluginController = this._pluginParameters = this._pluginRouteModificators = this._pluginRoutes = this._returnTypes = null;
         plugin.initialize(this);
         this.plugins.push(plugin);
     }
@@ -203,7 +238,25 @@ export class Giuseppe {
             throw new DefinitionNotRegisteredError(controller.constructor.name);
         }
 
-        // check all routes, modificators, parameters if they are registered. otherwise throw ex
+        const meta = new ControllerMetadata(controller.ctrlTarget.prototype);
+
+        for (const route of meta.routes()) {
+            if (!this.pluginRoutes.some(p => route instanceof p)) {
+                throw new DefinitionNotRegisteredError(route.constructor.name);
+            }
+
+            for (const mod of meta.modificators(route.name)) {
+                if (!this.pluginRouteModificators.some(p => mod instanceof p)) {
+                    throw new DefinitionNotRegisteredError(mod.constructor.name);
+                }
+            }
+
+            for (const param of meta.parameters(route.name)) {
+                if (!this.pluginParameters.some(p => param instanceof p)) {
+                    throw new DefinitionNotRegisteredError(param.constructor.name);
+                }
+            }
+        }
 
         return true;
     }
