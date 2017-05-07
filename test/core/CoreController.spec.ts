@@ -103,9 +103,9 @@ describe('Core controller', () => {
 
         it(`should return it's registered routes`, () => {
             @Controller()
-            class Ctrl{
-                @Get()    
-                public get(): void {}
+            class Ctrl {
+                @Get()
+                public get(): void { }
             }
 
             const ctrl = Giuseppe.registrar.controller[0];
@@ -115,16 +115,32 @@ describe('Core controller', () => {
         });
 
         it('should return the correct route urls for default', () => {
-            @Controller()
-            class Ctrl{
-                @Get()    
-                public get(): void {}
+            @Controller('api')
+            class Ctrl {
+                @Get('foobar')
+                public get(): void { }
+
+                @Get('/barfoo')
+                public get2(): void { }
+                
+                @Get('~/rootfoo')
+                public get3(): void { }
             }
 
-            const ctrl = Giuseppe.registrar.controller[0];
-            const route = ctrl.createRoutes('')[0];
-            route.id.should.equal('get_');
-            route.name.should.equal('get');
+            const ctrl = Giuseppe.registrar.controller[0],
+                routes = ctrl.createRoutes('');
+            
+            let route = routes[0];
+            route.id.should.equal('get_foobar');
+            route.url.should.equal('api/foobar');
+
+            route = routes[1];
+            route.id.should.equal('get_/barfoo');
+            route.url.should.equal('api/barfoo');
+            
+            route = routes[2];
+            route.id.should.equal('get_~/rootfoo');
+            route.url.should.equal('/rootfoo');
         });
 
     });

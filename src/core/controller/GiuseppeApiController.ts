@@ -1,3 +1,4 @@
+import { UrlHelper } from '../../utilities/UrlHelper';
 import { ControllerDefinition } from '../../controller/ControllerDefinition';
 import { Giuseppe } from '../../Giuseppe';
 import { GiuseppeRoute } from '../../routes/GiuseppeRoute';
@@ -21,7 +22,7 @@ export class GiuseppeApiController implements ControllerDefinition {
 
     public createRoutes(baseUrl: string): GiuseppeRoute[] {
         const meta = new ControllerMetadata(this.ctrlTarget.prototype),
-            url = [baseUrl, this.routePrefix].filter(Boolean).join('/');
+            url = UrlHelper.buildUrl(baseUrl, this.routePrefix);
 
         return meta.routes().reduce((all, cur) => all.concat(cur.createRoutes(meta, url, this.middlewares)), [] as GiuseppeRoute[]);
     }

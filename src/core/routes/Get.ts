@@ -1,3 +1,4 @@
+import { UrlHelper } from '../../utilities/UrlHelper';
 import { Giuseppe } from '../..';
 import { GiuseppeRoute } from '../../routes/GiuseppeRoute';
 import { HttpMethod, RouteDefinition } from '../../routes/RouteDefinition';
@@ -31,13 +32,12 @@ export class GiuseppeGetRoute implements RouteDefinition {
         baseUrl: string,
         controllerMiddlewares: RequestHandler[],
     ): GiuseppeRoute[] {
-
         return [
             {
                 id: `${HttpMethod[this.httpMethod]}_${this.route}`,
                 name: this.name,
                 method: this.httpMethod,
-                url: [baseUrl, this.route].filter(Boolean).join('/'),
+                url: UrlHelper.buildUrl(baseUrl, this.route),
                 middlewares: [...controllerMiddlewares, ...this.middlewares],
                 function: this.routeFunction,
             },
