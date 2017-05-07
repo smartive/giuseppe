@@ -5,20 +5,18 @@
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "bootstrap": "npm install -q",
-    "build": "tsc --outDir .",
-    "clean": "rimraf build coverage",
-    "pretest": "npm run clean && tsc --sourceMap",
-    "test": "istanbul cover -x \"**/*.spec.*\" _mocha -- --ui bdd \"./build/**/*.spec.js\"",
-    "posttest": "remap-istanbul -i coverage/coverage.json -o coverage/html-report -t html -e _test",
-    "precitest": "npm run bootstrap && npm run clean && tsc --sourceMap",
-    "citest": "istanbul cover -x \"**/*.spec.*\" _mocha --report lcovonly -- --ui bdd \"./build/**/*.spec.js\"",
-    "postcitest": "remap-istanbul -i coverage/coverage.json -o coverage/lcov-mapped.info -t lcovonly -e _test",
-    "develop": "npm run clean && tsc --sourceMap -w"
+    "clean": "del-cli ./build ./coverage",
+    "build": "npm run clean && tsc -p ./config/tsconfig.prod.json",
+    "develop": "npm run clean && tsc -p .",
+    "pretest": "npm run clean && tsc -p ./config/tsconfig.test.json",
+    "test": "istanbul cover -x \"test/**/*.spec.*\" _mocha --report lcovonly -- --ui bdd \"./build/test/**/*.spec.js\"",
+    "posttest": "remap-istanbul -i coverage/coverage.json -o coverage/lcov-mapped.info -t lcovonly -e _test",
+    "test:watch": "mocha -w --ui bdd \"./build/test/**/*.spec.js\""
   },
   "engines": {
-    "node": ">=6",
-    "npm": "*"
+    "node": ">=7",
+    "npm": "*",
+    "yarn": "*"
   },
   "repository": {
     "type": "git",
@@ -51,30 +49,31 @@
   "dependencies": {
     "@types/express": "^4.0.35",
     "@types/http-status": "^0.2.29",
-    "@types/node": "^7.0.5",
-    "express": "^4.14.1",
+    "@types/node": "^7.0.12",
+    "express": "^4.15.2",
     "filewalker": "^0.1.3",
     "http-status": "^1.0.1",
-    "reflect-metadata": "^0.1.9"
+    "reflect-metadata": "^0.1.10",
+    "tslib": "^1.6.0"
   },
   "devDependencies": {
-    "@types/chai": "^3.4.34",
-    "@types/chai-http": "0.0.29",
-    "@types/mocha": "^2.2.39",
-    "@types/sinon": "^1.16.34",
+    "@types/chai": "^3.5.0",
+    "@types/chai-http": "^0.0.30",
+    "@types/mocha": "^2.2.40",
+    "@types/sinon": "^2.1.2",
     "@types/sinon-chai": "^2.7.27",
-    "body-parser": "^1.16.0",
+    "body-parser": "^1.17.1",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
+    "del-cli": "^0.2.1",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
-    "mocha-lcov-reporter": "^1.2.0",
-    "remap-istanbul": "^0.9.0",
-    "rimraf": "^2.5.4",
-    "sinon": "^1.17.7",
-    "sinon-chai": "^2.8.0",
-    "tslint": "^4.4.2",
+    "mocha-lcov-reporter": "^1.3.0",
+    "remap-istanbul": "^0.9.5",
+    "sinon": "^2.1.0",
+    "sinon-chai": "^2.9.0",
+    "tslint": "^5.1.0",
     "tslint-jsdoc-rules": "^0.1.2",
-    "typescript": "^2.1.5"
+    "typescript": "^2.2.2"
   }
 }

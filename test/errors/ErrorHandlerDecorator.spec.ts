@@ -1,20 +1,23 @@
-import {registerControllers} from '../';
-import {Controller} from '../controllers/ControllerDecorator';
-import {IocContainer} from '../core/IoC';
-import {IoCSymbols} from '../core/IoCSymbols';
-import {Registrar} from '../core/Registrar';
-import {Get, Route} from '../routes/RouteDecorators';
-import {ErrorHandler, ERRORHANDLER_KEY} from './ErrorHandlerDecorator';
-import {ErrorHandlerWrongArgumentsError, ErrorHandlerWrongArgumentTypesError, ErrorHandlerWrongReturnTypeError, WrongReturnTypeError} from './Errors';
+import 'reflect-metadata';
+import { Giuseppe } from '../../src';
+import { Controller } from '../../src/core/controller/GiuseppeApiController';
+import { Get } from '../../src/core/routes';
+import {
+    ErrorHandlerWrongArgumentsError,
+    ErrorHandlerWrongArgumentTypesError,
+    ErrorHandlerWrongReturnTypeError,
+} from '../../src/errors';
+import { ErrorHandler } from '../../src/errors/ErrorHandlerDecorator';
+import { ControllerMetadata } from '../../src/utilities/ControllerMetadata';
 import chai = require('chai');
-import sinon = require('sinon');
+import * as sinon from 'sinon';
 import sinonChai = require('sinon-chai');
 
-let should = chai.should();
+const should = chai.should();
 chai.use(sinonChai);
 
 class TestRouter {
-    public routes: {[id: string]: Function} = {};
+    public routes: { [id: string]: Function } = {};
 
     public get(route: string, func: Function): void {
         this.routes[route] = func;
@@ -40,11 +43,11 @@ class TestRouter {
 describe('ErrorHandlerDecorators', () => {
 
     afterEach(() => {
-        IocContainer.get<Registrar>(IoCSymbols.registrar).resetControllerRegistrations();
+        (Giuseppe.registrar as any).controller = [];
     });
 
     it('should throw on wrong handler argument count', () => {
-        let fn = () => {
+        const fn = () => {
             class Ctrl {
                 @ErrorHandler()
                 public func(): void {
@@ -56,7 +59,7 @@ describe('ErrorHandlerDecorators', () => {
     });
 
     it('should throw on wrong handler argument types', () => {
-        let fn = () => {
+        const fn = () => {
             class Ctrl {
                 @ErrorHandler()
                 public func(req: any, res: string, err: number): void {
@@ -68,7 +71,7 @@ describe('ErrorHandlerDecorators', () => {
     });
 
     it('should throw on wrong handler return type', () => {
-        let fn = () => {
+        const fn = () => {
             class Ctrl {
                 @ErrorHandler()
                 public func(req: Object, res: Object, err: Error): number {
@@ -87,12 +90,12 @@ describe('ErrorHandlerDecorators', () => {
             }
         }
 
-        let errorManager: any = Reflect.getMetadata(ERRORHANDLER_KEY, Ctrl);
+        const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
         errorManager.handlers.Error
             .should.be.a('function')
             .with.lengthOf(3)
-            .that.deep.equals(Ctrl.prototype.func);
+            .that.equals(Ctrl.prototype.func);
     });
 
     it('should register a default and a specific handler for the controller', () => {
@@ -106,7 +109,7 @@ describe('ErrorHandlerDecorators', () => {
             }
         }
 
-        let errorManager: any = Reflect.getMetadata(ERRORHANDLER_KEY, Ctrl);
+        const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
         errorManager.handlers.Error
             .should.be.a('function')
@@ -124,69 +127,69 @@ describe('ErrorHandlerDecorators', () => {
             .that.deep.equals(Ctrl.prototype.func2);
     });
 
-    it('should set the correct this context', () => {
+    it('should set the correct this context', done => {
         @Controller()
         class Ctrl {
-            private test = 'foobar';
+            private test: string = 'foobar';
 
-            @Route()
+            @Get()
             public func() {
                 throw 'Foobar.';
             }
 
             @ErrorHandler()
             public error(req: Object, res: Object, err: Error): void {
-                this.should.be.an.instanceOf(Ctrl);
-                this.test.should.equal('foobar');
+                try {
+                    this.test.should.equal('foobar');
+                    done();
+                } catch (e) {
+                    done(e);
+                }
             }
         }
 
-        let router = new TestRouter();
+        const router = new TestRouter(),
+            giuseppe = new Giuseppe();
 
-        registerControllers('', (router as any));
+        giuseppe.router = router as any;
+        giuseppe.start();
 
-        router.routes['/'].apply(this, [{}, {
-            json: () => {
-            },
-            send: () => {
-            }
-        }, null]);
+        router.routes['/'].apply(null, [{}, {}]);
     });
 
     it('should call the most specific error handler', () => {
+        class FoobarError extends Error { }
+
         @Controller()
         class Ctrl {
             @Get()
             public getErr(): string {
-                throw new WrongReturnTypeError('', String, Number);
+                throw new FoobarError();
             }
 
             @ErrorHandler()
             public func(req: Object, res: Object, err: Error): void {
             }
 
-            @ErrorHandler(WrongReturnTypeError)
+            @ErrorHandler(FoobarError)
             public func2(req: Object, res: Object, err: Error): void {
             }
         }
 
-        let router = new TestRouter();
+        const router = new TestRouter(),
+            giuseppe = new Giuseppe(),
+            errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
-        registerControllers('', (router as any));
+        giuseppe.router = router as any;
+        giuseppe.start();
 
-        let errorManager: any = Reflect.getMetadata(ERRORHANDLER_KEY, Ctrl);
-        let spy = sinon.spy(),
+        const spy = sinon.spy(),
             spy2 = sinon.spy();
 
         errorManager.addHandler(spy, Error);
-        errorManager.addHandler(spy2, WrongReturnTypeError);
+        errorManager.addHandler(spy2, FoobarError);
 
-        router.routes['/'].apply(this, [{}, {
-            json: () => {
-            },
-            send: () => {
-            }
-        }, null]);
+        router.routes['/'].apply(this, [{}, {}]);
 
         spy.should.not.be.called;
         spy2.should.be.calledOnce;
