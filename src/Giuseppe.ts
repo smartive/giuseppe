@@ -170,7 +170,8 @@ export class Giuseppe {
     private createRouteWrapper(routeInfo: RouteRegisterInformation): RequestHandler {
         const meta = new ControllerMetadata(routeInfo.ctrl.prototype),
             params = meta.parameters(routeInfo.route.name),
-            returnTypeHandler = new ReturnTypeHandler(this.returnTypes);
+            returnTypeHandler = new ReturnTypeHandler(this.returnTypes),
+            ctrlInstance = new (routeInfo as any).ctrl();
 
         return async (req: Request, res: Response) => {
             const paramValues: any[] = [];
@@ -179,7 +180,7 @@ export class Giuseppe {
             }
 
             try {
-                let result = routeInfo.route.function.apply(routeInfo.ctrl, paramValues);
+                let result = routeInfo.route.function.apply(ctrlInstance, paramValues);
 
                 if (params.some(p => p.canHandleResponse)) {
                     return;
@@ -191,7 +192,7 @@ export class Giuseppe {
 
                 returnTypeHandler.handleValue(result, res);
             } catch (e) {
-                meta.errorHandler().handleError(routeInfo.ctrl, req, res, e);
+                meta.errorHandler().handleError(ctrlInstance, req, res, e);
             }
         };
     }

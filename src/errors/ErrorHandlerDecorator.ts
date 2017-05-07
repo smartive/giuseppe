@@ -44,6 +44,10 @@ export function ErrorHandler(...errors: Function[]): MethodDecorator {
             throw new ErrorHandlerWrongReturnTypeError();
         }
 
+        if (!errors.length) {
+            errors.push(Error);
+        }
+
         Giuseppe.registrar.registerErrorHandler(target, descriptor.value, errors);
     };
 }
