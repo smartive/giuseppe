@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ReturnType } from './routes/ReturnType';
 import { Response } from 'express';
 

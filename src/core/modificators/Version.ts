@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { GiuseppeRoute } from '../../routes/GiuseppeRoute';
 import { RouteModificator } from '../../routes/RouteModificator';
 import { Giuseppe } from '../../Giuseppe';

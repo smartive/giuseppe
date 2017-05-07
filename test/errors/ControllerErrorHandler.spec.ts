@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ControllerErrorHandler, ErrorHandlerWrongArgumentsError } from '../../src/errors';
 import chai = require('chai');
 import sinon = require('sinon');

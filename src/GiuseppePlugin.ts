@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ControllerDefinition } from './controller/ControllerDefinition';
 import { Giuseppe } from './Giuseppe';
 import { ReturnType } from './routes/ReturnType';

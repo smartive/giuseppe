@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { UrlHelper } from '../../utilities/UrlHelper';
 import { Giuseppe } from '../..';
 import { GiuseppeRoute } from '../../routes/GiuseppeRoute';

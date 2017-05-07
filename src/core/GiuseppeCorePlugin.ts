@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ControllerDefinitionConstructor, GiuseppePlugin } from '../GiuseppePlugin';
 import { ReturnType } from '../routes/ReturnType';
 import { RouteDefinition } from '../routes/RouteDefinition';

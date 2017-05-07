@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { UrlHelper } from '../../utilities/UrlHelper';
 import { ControllerDefinition } from '../../controller/ControllerDefinition';
 import { Giuseppe } from '../../Giuseppe';

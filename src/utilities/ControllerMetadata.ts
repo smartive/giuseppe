@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ERRORHANDLER_KEY } from '../errors/ErrorHandlerDecorator';
 import { ControllerErrorHandler } from '../errors/ControllerErrorHandler';
 import { PARAMETER_DEFINITION_KEY, ParameterDefinition } from '../parameter/ParameterDefinition';

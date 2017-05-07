@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Giuseppe } from '../..';
 import { ParameterDefinition } from '../../parameter/ParameterDefinition';
 import { ControllerMetadata } from '../../utilities/ControllerMetadata';

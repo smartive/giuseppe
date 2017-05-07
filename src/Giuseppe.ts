@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ControllerDefinition } from './controller/ControllerDefinition';
 import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
 import { DefinitionNotRegisteredError, DuplicatePluginError } from './errors';

@@ -1,10 +1,11 @@
+import 'reflect-metadata';
 import { Giuseppe } from '../../src';
 import { Controller } from '../../src/core/controller/GiuseppeApiController';
 import { Get } from '../../src/core/routes';
 import {
     ErrorHandlerWrongArgumentsError,
     ErrorHandlerWrongArgumentTypesError,
-    ErrorHandlerWrongReturnTypeError
+    ErrorHandlerWrongReturnTypeError,
 } from '../../src/errors';
 import { ErrorHandler } from '../../src/errors/ErrorHandlerDecorator';
 import { ControllerMetadata } from '../../src/utilities/ControllerMetadata';

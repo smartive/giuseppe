@@ -1,8 +1,6 @@
-import { ErrorHandler } from './errors/ErrorHandlerDecorator';
 import 'reflect-metadata';
 import { Giuseppe } from './';
 import { Controller } from './core/controller/GiuseppeApiController';
-import { Version } from './core/modificators/Version';
 import { Query } from './core/parameters/Query';
 import { Get } from './core/routes';
 import * as express from 'express';
