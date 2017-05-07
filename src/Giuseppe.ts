@@ -212,7 +212,7 @@ export class Giuseppe {
         return async (req: Request, res: Response) => {
             const paramValues: any[] = [];
             for (const param of params) {
-                paramValues[param.index] = param.getValue(req);
+                paramValues[param.index] = param.getValue(req, res);
             }
 
             try {

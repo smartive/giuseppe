@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 export const PARAMETER_DEFINITION_KEY: string = 'giuseppe:ParameterDefinition';
 
@@ -8,5 +8,5 @@ export interface ParameterDefinition {
     readonly index: number;
     readonly canHandleResponse: boolean;
 
-    getValue(request: Request): any;
+    getValue(request: Request, response: Response): any;
 }

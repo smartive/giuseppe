@@ -3,7 +3,7 @@ export class UrlHelper {
 
     public static buildUrl(...parts: string[]): string {
         for (let x = 0; x < parts.length; x++) {
-            if (parts[x].startsWith('/')) {
+            if (parts[x] && parts[x].startsWith('/')) {
                 parts[x] = parts[x].substring(1);
             }
         }
@@ -11,7 +11,11 @@ export class UrlHelper {
             index = url.lastIndexOf('~');
 
         if (index > -1) {
-            return url.substring(index + 1);
+            const rootUrl = url.substring(index + 1);
+            if (rootUrl.startsWith('/')) {
+                return rootUrl.substring(1);
+            }
+            return rootUrl;
         }
 
         return url;

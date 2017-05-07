@@ -140,7 +140,7 @@ describe('Core controller', () => {
             
             route = routes[2];
             route.id.should.equal('get_~/rootfoo');
-            route.url.should.equal('/rootfoo');
+            route.url.should.equal('rootfoo');
         });
 
     });
