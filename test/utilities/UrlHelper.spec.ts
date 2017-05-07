@@ -25,7 +25,7 @@ describe('UrlHelper', () => {
         });
 
         it('should strip empty parts', () => {
-            UrlHelper.buildUrl('api', undefined, 'foobar').should.equal('api/foobar');
+            UrlHelper.buildUrl('api', undefined as any, 'foobar').should.equal('api/foobar');
         });
 
         it('should return a root url correctly', () => {
