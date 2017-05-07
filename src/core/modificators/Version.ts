@@ -5,7 +5,7 @@ import { Giuseppe } from '../../Giuseppe';
 
 // const VERSION_KEY = 'giuseppe:RouteVersions';
 
-export function Version(versionInformation: { from?: number, until?: number }): MethodDecorator {
+export function Version(versionInformation: { from?: number, until?: number } = {}): MethodDecorator {
     return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<Function>) => {
         if (!descriptor.value) {
             throw new TypeError(`Function is undefined in the modificator`);

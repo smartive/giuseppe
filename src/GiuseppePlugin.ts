@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { ControllerDefinition } from './controller/ControllerDefinition';
 import { Giuseppe } from './Giuseppe';
+import { ParameterDefinition } from './parameter/ParameterDefinition';
 import { ReturnType } from './routes/ReturnType';
 import { RouteDefinition } from './routes/RouteDefinition';
 import { RouteModificator } from './routes/RouteModificator';
@@ -8,7 +9,7 @@ import { RouteModificator } from './routes/RouteModificator';
 export type ControllerDefinitionConstructor = new (...args: any[]) => ControllerDefinition;
 export type RouteDefinitionConstructor = new (...args: any[]) => RouteDefinition;
 export type RouteModificatorConstructor = new (...args: any[]) => RouteModificator;
-export type ParameterDecoratorConstructor = new (...args: any[]) => ParameterDecorator;
+export type ParameterDefinitionConstructor = new (...args: any[]) => ParameterDefinition;
 
 /**
  * Basic interface for any plugin. Defines the minimal methods that should be provided to actually be pluggable
@@ -51,7 +52,7 @@ export interface GiuseppePlugin {
      * @type {(RouteDecorator[] | null)}
      * @memberOf GiuseppePlugin
      */
-    readonly routeDecorators: RouteDefinitionConstructor[] | null;
+    readonly routeDefinitions: RouteDefinitionConstructor[] | null;
 
     /**
      * A list of route / controller modificators declared by this plugin (or null if none are registered).
@@ -69,7 +70,7 @@ export interface GiuseppePlugin {
      * @type {(ParameterDecorator[] | null)}
      * @memberOf GiuseppePlugin
      */
-    readonly parameterDecorators: ParameterDecoratorConstructor[] | null;
+    readonly parameterDefinitions: ParameterDefinitionConstructor[] | null;
 
     /**
      * Initialize hook for the plugin. Is called after the plugin is registered with giuseppe.

@@ -7,7 +7,7 @@ import { DuplicateRouteError } from './errors/DuplicateRouteError';
 import {
     ControllerDefinitionConstructor,
     GiuseppePlugin,
-    ParameterDecoratorConstructor,
+    ParameterDefinitionConstructor,
     RouteDefinitionConstructor,
     RouteModificatorConstructor,
 } from './GiuseppePlugin';
@@ -94,8 +94,8 @@ export class Giuseppe {
     private get pluginRoutes(): RouteDefinitionConstructor[] {
         if (!this._pluginRoutes) {
             this._pluginRoutes = this.plugins
-                .filter(p => !!p.routeDecorators)
-                .reduce((all, cur) => all.concat(cur.routeDecorators!), [] as RouteDefinitionConstructor[]);
+                .filter(p => !!p.routeDefinitions)
+                .reduce((all, cur) => all.concat(cur.routeDefinitions!), [] as RouteDefinitionConstructor[]);
         }
         return this._pluginRoutes;
     }
@@ -110,12 +110,12 @@ export class Giuseppe {
         return this._pluginRouteModificators;
     }
 
-    private _pluginParameters: ParameterDecoratorConstructor[] | null;
-    private get pluginParameters(): ParameterDecoratorConstructor[] {
+    private _pluginParameters: ParameterDefinitionConstructor[] | null;
+    private get pluginParameters(): ParameterDefinitionConstructor[] {
         if (!this._pluginParameters) {
             this._pluginParameters = this.plugins
-                .filter(p => !!p.parameterDecorators)
-                .reduce((all, cur) => all.concat(cur.parameterDecorators!), [] as ParameterDecoratorConstructor[]);
+                .filter(p => !!p.parameterDefinitions)
+                .reduce((all, cur) => all.concat(cur.parameterDefinitions!), [] as ParameterDefinitionConstructor[]);
         }
         return this._pluginParameters;
     }

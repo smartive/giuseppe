@@ -3,13 +3,11 @@ import { Giuseppe, GiuseppePlugin } from '../src';
 import { DuplicatePluginError } from '../src/errors';
 import {
     ControllerDefinitionConstructor,
-    ParameterDecoratorConstructor,
+    ParameterDefinitionConstructor,
     RouteDefinitionConstructor,
-    RouteModificatorConstructor
+    RouteModificatorConstructor,
 } from '../src/GiuseppePlugin';
 import { ReturnType } from '../src/routes/ReturnType';
-import { RouteDefinition } from '../src/routes/RouteDefinition';
-import { RouteModificator } from '../src/routes/RouteModificator';
 import chai = require('chai');
 import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
@@ -50,9 +48,9 @@ describe('PluginSystem', () => {
                 public readonly name: string = 'Plugin';
                 public readonly returnTypeHandler: ReturnType<any>[] | null;
                 public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
-                public readonly routeDecorators: RouteDefinitionConstructor[] | null;
+                public readonly routeDefinitions: RouteDefinitionConstructor[] | null;
                 public readonly routeModificators: RouteModificatorConstructor[] | null;
-                public readonly parameterDecorators: ParameterDecoratorConstructor[] | null;
+                public readonly parameterDefinitions: ParameterDefinitionConstructor[] | null;
                 public initialize(): void {
                 }
             }
@@ -67,9 +65,9 @@ describe('PluginSystem', () => {
                 public readonly name: string = 'Plugin';
                 public readonly returnTypeHandler: ReturnType<any>[] | null;
                 public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
-                public readonly routeDecorators: RouteDefinitionConstructor[] | null;
+                public readonly routeDefinitions: RouteDefinitionConstructor[] | null;
                 public readonly routeModificators: RouteModificatorConstructor[] | null;
-                public readonly parameterDecorators: ParameterDecoratorConstructor[] | null;
+                public readonly parameterDefinitions: ParameterDefinitionConstructor[] | null;
                 public initialize(): void {
                 }
             }

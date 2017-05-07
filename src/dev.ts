@@ -11,11 +11,10 @@ console.log('lol');
 @Controller()
 export class MyController {
     
-    // @Get()
-    // @Version()
-    // public getAll(@Query('test') test: string): string {
-    //     return test;
-    // }
+    @Get()
+    public getAll(@Query('test') test: string): string {
+        return test;
+    }
     
     @Get('foobar')
     public getAllFoobar(@Query('test') test: string): Promise<any> {
