@@ -1,7 +1,12 @@
 import 'reflect-metadata';
 import { Giuseppe, GiuseppePlugin } from '../src';
 import { DuplicatePluginError } from '../src/errors';
-import { ControllerDefinitionConstructor } from '../src/GiuseppePlugin';
+import {
+    ControllerDefinitionConstructor,
+    ParameterDecoratorConstructor,
+    RouteDefinitionConstructor,
+    RouteModificatorConstructor
+} from '../src/GiuseppePlugin';
 import { ReturnType } from '../src/routes/ReturnType';
 import { RouteDefinition } from '../src/routes/RouteDefinition';
 import { RouteModificator } from '../src/routes/RouteModificator';
@@ -45,9 +50,9 @@ describe('PluginSystem', () => {
                 public readonly name: string = 'Plugin';
                 public readonly returnTypeHandler: ReturnType<any>[] | null;
                 public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
-                public readonly routeDecorators: RouteDefinition[] | null;
-                public readonly routeModificators: RouteModificator[] | null;
-                public readonly parameterDecorators: ParameterDecorator[] | null;
+                public readonly routeDecorators: RouteDefinitionConstructor[] | null;
+                public readonly routeModificators: RouteModificatorConstructor[] | null;
+                public readonly parameterDecorators: ParameterDecoratorConstructor[] | null;
                 public initialize(): void {
                 }
             }
@@ -62,9 +67,9 @@ describe('PluginSystem', () => {
                 public readonly name: string = 'Plugin';
                 public readonly returnTypeHandler: ReturnType<any>[] | null;
                 public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
-                public readonly routeDecorators: RouteDefinition[] | null;
-                public readonly routeModificators: RouteModificator[] | null;
-                public readonly parameterDecorators: ParameterDecorator[] | null;
+                public readonly routeDecorators: RouteDefinitionConstructor[] | null;
+                public readonly routeModificators: RouteModificatorConstructor[] | null;
+                public readonly parameterDecorators: ParameterDecoratorConstructor[] | null;
                 public initialize(): void {
                 }
             }

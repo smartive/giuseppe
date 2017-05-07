@@ -57,7 +57,7 @@ describe('ControllerErrorHandler', () => {
         manager.addHandler(spy);
         manager.addHandler(spy, ErrorHandlerWrongArgumentsError);
 
-        manager.handleError(null, null, null, new Error());
+        manager.handleError(null as any, null as any, null as any, new Error());
 
         spy.should.be.calledOnce;
     });
@@ -71,7 +71,7 @@ describe('ControllerErrorHandler', () => {
         manager.addHandler(spy2, TypeError);
         manager.addHandler(spy3);
 
-        manager.handleError(null, null, null, new ErrorHandlerWrongArgumentsError());
+        manager.handleError(null as any, null as any, null as any, new ErrorHandlerWrongArgumentsError());
 
         spy.should.be.calledOnce;
         spy2.should.not.be.called;
@@ -83,7 +83,7 @@ describe('ControllerErrorHandler', () => {
 
         manager.addHandler(spy);
 
-        manager.handleError(null, null, null, 'foobar' as any);
+        manager.handleError(null as any, null as any, null as any, 'foobar' as any);
 
         spy.should.be.called;
     });
