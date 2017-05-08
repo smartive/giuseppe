@@ -6,7 +6,11 @@ import { HttpMethod, RouteDefinition } from '../../routes/RouteDefinition';
 import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { RequestHandler } from 'express';
 
-export function Get(route: string = '', ...middlewares: RequestHandler[]): MethodDecorator {
+export function Get(routeOrMiddleware?: string | RequestHandler, ...middlewares: RequestHandler[]): MethodDecorator {
+    const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
+    if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
+        middlewares.unshift(routeOrMiddleware);
+    }
     return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Function>) => {
         if (!descriptor.value) {
             throw new TypeError(`Function is undefined in route ${route}`);

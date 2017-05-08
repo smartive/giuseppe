@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { Giuseppe } from '../../src/';
-import { Controller } from '../../src/core/controller/GiuseppeApiController';
-import { Get } from '../../src/core/routes';
+import { Giuseppe } from '../../../src/';
+import { Controller } from '../../../src/core/controller/GiuseppeApiController';
+import { Get } from '../../../src/core/routes';
 import chai = require('chai');
 import sinonChai = require('sinon-chai');
 
