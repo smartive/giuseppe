@@ -211,11 +211,12 @@ export class Giuseppe {
 
         return async (req: Request, res: Response) => {
             const paramValues: any[] = [];
-            for (const param of params) {
-                paramValues[param.index] = param.getValue(req, res);
-            }
 
             try {
+                for (const param of params) {
+                    paramValues[param.index] = param.getValue(req, res);
+                }
+
                 let result = routeInfo.route.function.apply(ctrlInstance, paramValues);
 
                 if (params.some(p => p.canHandleResponse)) {

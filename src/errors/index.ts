@@ -6,3 +6,7 @@ export * from './ErrorHandlerDecorator';
 export * from './ErrorHandlerWrongArgumentsError';
 export * from './ErrorHandlerWrongArgumentTypesError';
 export * from './ErrorHandlerWrongReturnTypeError';
+export * from './NoReturnValueHandlerFoundError';
+export * from './ParameterParseError';
+export * from './ParameterValidationFailedError';
+export * from './RequiredParameterNotProvidedError';

@@ -1,4 +1,4 @@
-export { Route } from './GiuseppeBasicRoute';
+export { Route } from './GiuseppeBaseRoute';
 export { Get } from './Get';
 export { Post } from './Post';
 export { Put } from './Put';

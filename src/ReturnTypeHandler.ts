@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { NoReturnValueHandlerFoundError } from './errors/NoReturnValueHandlerFoundError';
 import { ReturnType } from './routes/ReturnType';
 import { Response } from 'express';
 
@@ -14,7 +15,7 @@ export class ReturnTypeHandler {
     public handleValue(value: any, response: Response): void {
         const handler = value ? this.returnTypes[value.constructor.name] || this.returnTypes['default'] : this.returnTypes['default'];
         if (!handler) {
-            throw new Error('no handl0r!');
+            throw new NoReturnValueHandlerFoundError(value);
         }
 
         response
