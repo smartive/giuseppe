@@ -1,1 +1,0 @@
-(console as any).foobar('');
