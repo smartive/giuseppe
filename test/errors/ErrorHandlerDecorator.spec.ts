@@ -9,12 +9,6 @@ import {
 } from '../../src/errors';
 import { ErrorHandler } from '../../src/errors/ErrorHandlerDecorator';
 import { ControllerMetadata } from '../../src/utilities/ControllerMetadata';
-import chai = require('chai');
-import * as sinon from 'sinon';
-import sinonChai = require('sinon-chai');
-
-const should = chai.should();
-chai.use(sinonChai);
 
 class TestRouter {
     public routes: { [id: string]: Function } = {};
@@ -42,6 +36,17 @@ class TestRouter {
 
 describe('ErrorHandlerDecorators', () => {
 
+    let mock: jest.Mock<any>;
+
+    beforeAll(() => {
+        mock = jest.fn();
+        console.warn = mock;
+    });
+
+    afterAll(() => {
+        mock.mockClear();
+    });
+
     afterEach(() => {
         (Giuseppe.registrar as any).controller = [];
     });
@@ -55,7 +60,7 @@ describe('ErrorHandlerDecorators', () => {
             }
         };
 
-        fn.should.throw(ErrorHandlerWrongArgumentsError);
+        expect(fn).toThrow(ErrorHandlerWrongArgumentsError);
     });
 
     it('should throw on wrong handler argument types', () => {
@@ -67,7 +72,7 @@ describe('ErrorHandlerDecorators', () => {
             }
         };
 
-        fn.should.throw(ErrorHandlerWrongArgumentTypesError);
+        expect(fn).toThrow(ErrorHandlerWrongArgumentTypesError);
     });
 
     it('should throw on wrong handler return type', () => {
@@ -80,7 +85,7 @@ describe('ErrorHandlerDecorators', () => {
             }
         };
 
-        fn.should.throw(ErrorHandlerWrongReturnTypeError);
+        expect(fn).toThrow(ErrorHandlerWrongReturnTypeError);
     });
 
     it('should register a handler for the controller', () => {
@@ -92,10 +97,8 @@ describe('ErrorHandlerDecorators', () => {
 
         const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
-        errorManager.handlers.Error
-            .should.be.a('function')
-            .with.lengthOf(3)
-            .that.equals(Ctrl.prototype.func);
+        expect(errorManager.handlers.Error).toBe(Ctrl.prototype.func);
+        expect(errorManager.handlers.Error.length).toBe(3);
     });
 
     it('should register a default and a specific handler for the controller', () => {
@@ -111,20 +114,14 @@ describe('ErrorHandlerDecorators', () => {
 
         const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
-        errorManager.handlers.Error
-            .should.be.a('function')
-            .with.lengthOf(3)
-            .that.deep.equals(Ctrl.prototype.func);
+        expect(errorManager.handlers.Error).toBe(Ctrl.prototype.func);
+        expect(errorManager.handlers.Error.length).toBe(3);
 
-        errorManager.handlers.ErrorHandlerWrongReturnTypeError
-            .should.be.a('function')
-            .with.lengthOf(3)
-            .that.deep.equals(Ctrl.prototype.func2);
+        expect(errorManager.handlers.ErrorHandlerWrongReturnTypeError).toBe(Ctrl.prototype.func2);
+        expect(errorManager.handlers.ErrorHandlerWrongReturnTypeError.length).toBe(3);
 
-        errorManager.handlers.ErrorHandlerWrongArgumentsError
-            .should.be.a('function')
-            .with.lengthOf(3)
-            .that.deep.equals(Ctrl.prototype.func2);
+        expect(errorManager.handlers.ErrorHandlerWrongArgumentsError).toBe(Ctrl.prototype.func2);
+        expect(errorManager.handlers.ErrorHandlerWrongArgumentsError.length).toBe(3);
     });
 
     it('should set the correct this context', done => {
@@ -139,12 +136,8 @@ describe('ErrorHandlerDecorators', () => {
 
             @ErrorHandler()
             public error(req: Object, res: Object, err: Error): void {
-                try {
-                    this.test.should.equal('foobar');
-                    done();
-                } catch (e) {
-                    done(e);
-                }
+                expect(this.test).toBe('foobar');
+                done();
             }
         }
 
@@ -183,16 +176,16 @@ describe('ErrorHandlerDecorators', () => {
         giuseppe.router = router as any;
         giuseppe.start();
 
-        const spy = sinon.spy(),
-            spy2 = sinon.spy();
+        const spy = jest.fn(),
+            spy2 = jest.fn();
 
         errorManager.addHandler(spy, Error);
         errorManager.addHandler(spy2, FoobarError);
 
         router.routes['/'].apply(this, [{}, {}]);
 
-        spy.should.not.be.called;
-        spy2.should.be.calledOnce;
+        expect(spy.mock.calls.length).toBe(0);
+        expect(spy2.mock.calls.length).toBe(1);
     });
 
 });

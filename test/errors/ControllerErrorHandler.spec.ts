@@ -1,15 +1,19 @@
 import 'reflect-metadata';
 import { ControllerErrorHandler, ErrorHandlerWrongArgumentsError } from '../../src/errors';
-import chai = require('chai');
-import sinon = require('sinon');
-import sinonChai = require('sinon-chai');
-
-const should = chai.should();
-chai.use(sinonChai);
 
 describe('ControllerErrorHandler', () => {
 
-    let manager: ControllerErrorHandler;
+    let manager: ControllerErrorHandler,
+        mock: jest.Mock<any>;
+
+    beforeAll(() => {
+        mock = jest.fn();
+        console.warn = mock;
+    });
+
+    afterAll(() => {
+        mock.mockClear();
+    });
 
     beforeEach(() => {
         manager = new ControllerErrorHandler();
@@ -20,7 +24,7 @@ describe('ControllerErrorHandler', () => {
 
         manager.addHandler(func);
 
-        (manager as any).handlers.Error.should.equal(func);
+        expect((manager as any).handlers.Error).toBe(func);
     });
 
     it('should add a handler to a specific error', () => {
@@ -28,7 +32,7 @@ describe('ControllerErrorHandler', () => {
 
         manager.addHandler(func, TypeError);
 
-        (manager as any).handlers.TypeError.should.equal(func);
+        expect((manager as any).handlers.TypeError).toBe(func);
     });
 
     it('should add a handler to multiple specific errors', () => {
@@ -37,8 +41,8 @@ describe('ControllerErrorHandler', () => {
         manager.addHandler(func, TypeError);
         manager.addHandler(func, ErrorHandlerWrongArgumentsError);
 
-        (manager as any).handlers.TypeError.should.equals(func);
-        (manager as any).handlers.ErrorHandlerWrongArgumentsError.should.equals(func);
+        expect((manager as any).handlers.TypeError).toBe(func);
+        expect((manager as any).handlers.ErrorHandlerWrongArgumentsError).toBe(func);
     });
 
     it('should replace the handler if another is registered', () => {
@@ -48,24 +52,24 @@ describe('ControllerErrorHandler', () => {
         manager.addHandler(func, TypeError);
         manager.addHandler(func2, TypeError);
 
-        (manager as any).handlers.TypeError.should.equal(func2);
+        expect((manager as any).handlers.TypeError).toBe(func2);
     });
 
     it('should call correct handler error', () => {
-        const spy = sinon.spy();
+        const spy = jest.fn();
 
         manager.addHandler(spy);
         manager.addHandler(spy, ErrorHandlerWrongArgumentsError);
 
         manager.handleError(null as any, null as any, null as any, new Error());
 
-        spy.should.be.calledOnce;
+        expect(spy.mock.calls.length).toBe(1);
     });
 
     it('should call correct handler for a specific error', () => {
-        const spy = sinon.spy(),
-            spy2 = sinon.spy(),
-            spy3 = sinon.spy();
+        const spy = jest.fn(),
+            spy2 = jest.fn(),
+            spy3 = jest.fn();
 
         manager.addHandler(spy, ErrorHandlerWrongArgumentsError);
         manager.addHandler(spy2, TypeError);
@@ -73,19 +77,19 @@ describe('ControllerErrorHandler', () => {
 
         manager.handleError(null as any, null as any, null as any, new ErrorHandlerWrongArgumentsError());
 
-        spy.should.be.calledOnce;
-        spy2.should.not.be.called;
-        spy3.should.not.be.called;
+        expect(spy.mock.calls.length).toBe(1);
+        expect(spy2.mock.calls.length).toBe(0);
+        expect(spy3.mock.calls.length).toBe(0);
     });
 
     it('should call the default if a non error type is thrown in', () => {
-        const spy = sinon.spy();
+        const spy = jest.fn();
 
         manager.addHandler(spy);
 
         manager.handleError(null as any, null as any, null as any, 'foobar' as any);
 
-        spy.should.be.called;
+        expect(spy.mock.calls.length).toBe(1);
     });
 
 });

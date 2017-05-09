@@ -2,11 +2,7 @@ import 'reflect-metadata';
 import { Giuseppe } from '../../../src/';
 import { Controller } from '../../../src/core/controller/GiuseppeApiController';
 import { Get } from '../../../src/core/routes';
-import chai = require('chai');
-import sinonChai = require('sinon-chai');
-
-const should = chai.should();
-chai.use(sinonChai);
+import { DefinitionNotRegisteredError } from '../../../src/errors';
 
 describe('Core controller', () => {
 
@@ -23,28 +19,28 @@ describe('Core controller', () => {
         });
 
         it('should return Controller decorator', () => {
-            Controller().should.be.a('function');
+            expect(Controller()).toBeInstanceOf(Function);
         });
 
         it('should register a controller in giuseppe.', () => {
             @Controller()
             class Ctrl { }
 
-            Giuseppe.registrar.controller.should.have.length(1);
+            expect(Giuseppe.registrar.controller.length).toBe(1);
         });
 
         it('should register the correct contextual target', () => {
             @Controller()
             class Ctrl { }
 
-            Giuseppe.registrar.controller[0].ctrlTarget.should.equal(Ctrl);
+            expect(Giuseppe.registrar.controller[0].ctrlTarget).toBe(Ctrl);
         });
 
         it('should use the correct route prefix', () => {
             @Controller('foobar')
             class Ctrl { }
 
-            (Giuseppe.registrar.controller[0] as any).routePrefix.should.equal('foobar');
+            expect((Giuseppe.registrar.controller[0] as any).routePrefix).toBe('foobar');
         });
 
         it('should use the correct middlewares when prefix is set', () => {
@@ -52,8 +48,8 @@ describe('Core controller', () => {
             @Controller('foobar', fn)
             class Ctrl { }
 
-            (Giuseppe.registrar.controller[0] as any).routePrefix.should.equal('foobar');
-            Giuseppe.registrar.controller[0].middlewares[0].should.equal(fn);
+            expect((Giuseppe.registrar.controller[0] as any).routePrefix).toBe('foobar');
+            expect(Giuseppe.registrar.controller[0].middlewares[0]).toBe(fn);
         });
 
         it('should use the correct middlewares when prefix is not set', () => {
@@ -61,8 +57,8 @@ describe('Core controller', () => {
             @Controller(fn)
             class Ctrl { }
 
-            (Giuseppe.registrar.controller[0] as any).routePrefix.should.equal('');
-            Giuseppe.registrar.controller[0].middlewares[0].should.equal(fn);
+            expect((Giuseppe.registrar.controller[0] as any).routePrefix).toBe('');
+            expect(Giuseppe.registrar.controller[0].middlewares[0]).toBe(fn);
         });
 
         it('should use the correct middlewares for multiple functions with a prefix', () => {
@@ -71,9 +67,9 @@ describe('Core controller', () => {
             @Controller('foobar', fn, fn2)
             class Ctrl { }
 
-            (Giuseppe.registrar.controller[0] as any).routePrefix.should.equal('foobar');
-            Giuseppe.registrar.controller[0].middlewares[0].should.equal(fn);
-            Giuseppe.registrar.controller[0].middlewares[1].should.equal(fn2);
+            expect((Giuseppe.registrar.controller[0] as any).routePrefix).toBe('foobar');
+            expect(Giuseppe.registrar.controller[0].middlewares[0]).toBe(fn);
+            expect(Giuseppe.registrar.controller[0].middlewares[1]).toBe(fn2);
         });
 
         it('should use the correct middlewares for multiple functions', () => {
@@ -82,23 +78,22 @@ describe('Core controller', () => {
             @Controller(fn, fn2)
             class Ctrl { }
 
-            (Giuseppe.registrar.controller[0] as any).routePrefix.should.equal('');
-            Giuseppe.registrar.controller[0].middlewares[0].should.equal(fn);
-            Giuseppe.registrar.controller[0].middlewares[1].should.equal(fn2);
+            expect((Giuseppe.registrar.controller[0] as any).routePrefix).toBe('');
+            expect(Giuseppe.registrar.controller[0].middlewares[0]).toBe(fn);
+            expect(Giuseppe.registrar.controller[0].middlewares[1]).toBe(fn2);
         });
 
-        it('should throw if the controller (plugin) is not registered', done => {
+        it('should throw if the controller (plugin) is not registered', () => {
             (giuseppe as any).plugins = [];
 
             @Controller()
             class Ctrl { }
 
-            try {
+            const fn = () => {
                 giuseppe.start();
-                done(new Error('did not throw.'));
-            } catch (e) {
-                done();
-            }
+            };
+
+            expect(fn).toThrow(DefinitionNotRegisteredError);
         });
 
         it(`should return it's registered routes`, () => {
@@ -110,8 +105,8 @@ describe('Core controller', () => {
 
             const ctrl = Giuseppe.registrar.controller[0];
             const route = ctrl.createRoutes('')[0];
-            route.id.should.equal('get_');
-            route.name.should.equal('get');
+            expect(route.id).toBe('get_');
+            expect(route.name).toBe('get');
         });
 
         it('should return the correct route urls for default', () => {
@@ -122,25 +117,25 @@ describe('Core controller', () => {
 
                 @Get('/barfoo')
                 public get2(): void { }
-                
+
                 @Get('~/rootfoo')
                 public get3(): void { }
             }
 
             const ctrl = Giuseppe.registrar.controller[0],
                 routes = ctrl.createRoutes('');
-            
+
             let route = routes[0];
-            route.id.should.equal('get_foobar');
-            route.url.should.equal('api/foobar');
+            expect(route.id).toBe('get_foobar');
+            expect(route.url).toBe('api/foobar');
 
             route = routes[1];
-            route.id.should.equal('get_/barfoo');
-            route.url.should.equal('api/barfoo');
-            
+            expect(route.id).toBe('get_/barfoo');
+            expect(route.url).toBe('api/barfoo');
+
             route = routes[2];
-            route.id.should.equal('get_~/rootfoo');
-            route.url.should.equal('rootfoo');
+            expect(route.id).toBe('get_~/rootfoo');
+            expect(route.url).toBe('rootfoo');
         });
 
     });

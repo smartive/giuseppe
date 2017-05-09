@@ -5,12 +5,6 @@ import { Get } from '../../../src/core/routes';
 import { GiuseppeGetRoute } from '../../../src/core/routes/Get';
 import { HttpMethod } from '../../../src/routes/RouteDefinition';
 import { ControllerMetadata } from '../../../src/utilities/ControllerMetadata';
-import chai = require('chai');
-import sinon = require('sinon');
-import sinonChai = require('sinon-chai');
-
-const should = chai.should();
-chai.use(sinonChai);
 
 describe('Core get routes', () => {
 
@@ -27,7 +21,7 @@ describe('Core get routes', () => {
         });
 
         it('should return Route decorator', () => {
-            Get().should.be.a('function');
+            expect(Get()).toBeInstanceOf(Function);
         });
 
         it('should register a route in a controller.', () => {
@@ -38,10 +32,10 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0];
-            route.should.be.an.instanceof(GiuseppeGetRoute);
+            expect(route).toBeInstanceOf(GiuseppeGetRoute);
         });
 
         it('should use the correct route', () => {
@@ -52,10 +46,10 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0];
-            route.route.should.equal('foobar');
+            expect(route.route).toBe('foobar');
         });
 
         it('should register the correct middlewares 1', () => {
@@ -66,10 +60,10 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0];
-            route.middlewares.should.have.lengthOf(0);
+            expect(route.middlewares.length).toBe(0);
         });
 
         it('should register the correct middlewares 2', () => {
@@ -81,11 +75,11 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0];
-            route.middlewares.should.have.lengthOf(1);
-            route.middlewares[0].should.equal(fn);
+            expect(route.middlewares.length).toBe(1);
+            expect(route.middlewares[0]).toBe(fn);
         });
 
         it('should register the correct middlewares 3', () => {
@@ -98,12 +92,12 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0];
-            route.middlewares.should.have.lengthOf(2);
-            route.middlewares[0].should.equal(fn);
-            route.middlewares[1].should.equal(fn2);
+            expect(route.middlewares.length).toBe(2);
+            expect(route.middlewares[0]).toBe(fn);
+            expect(route.middlewares[1]).toBe(fn2);
         });
 
         it('should register the correct middlewares 4', () => {
@@ -116,13 +110,13 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0];
-            route.middlewares.should.have.lengthOf(2);
-            route.route.should.equal('foobar');
-            route.middlewares[0].should.equal(fn);
-            route.middlewares[1].should.equal(fn2);
+            expect(route.middlewares.length).toBe(2);
+            expect(route.route).toBe('foobar');
+            expect(route.middlewares[0]).toBe(fn);
+            expect(route.middlewares[1]).toBe(fn2);
         });
 
         it('should register the correct http method', () => {
@@ -133,10 +127,10 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0];
-            route.httpMethod.should.equal(HttpMethod.get);
+            expect(route.httpMethod).toBe(HttpMethod.get);
         });
 
         it('should contain the correct function', () => {
@@ -147,10 +141,10 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0];
-            route.routeFunction.should.equal(Ctrl.prototype.get);
+            expect(route.routeFunction).toBe(Ctrl.prototype.get);
         });
 
     });
@@ -165,12 +159,12 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0],
                 generated = route.createRoutes(meta, '', [])[0];
 
-            generated.id.should.equal('get_TheUrl');
+            expect(generated.id).toBe('get_TheUrl');
         });
 
         it('should use the correct name', () => {
@@ -181,12 +175,12 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0],
                 generated = route.createRoutes(meta, '', [])[0];
 
-            generated.name.should.equal('yourFancyWordedFunction');
+            expect(generated.name).toBe('yourFancyWordedFunction');
         });
 
         it('should generate the correct url', () => {
@@ -197,10 +191,10 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0];
-            route.createRoutes(meta, '', [])[0].url.should.equal('TheUrl');
+            expect(route.createRoutes(meta, '', [])[0].url).toBe('TheUrl');
         });
 
         it('should generate the correct http method', () => {
@@ -211,12 +205,12 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0],
                 generated = route.createRoutes(meta, '', [])[0];
 
-            generated.method.should.equal(HttpMethod.get);
+            expect(generated.method).toBe(HttpMethod.get);
         });
 
         it('should use the correct function', () => {
@@ -227,12 +221,12 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0],
                 generated = route.createRoutes(meta, '', [])[0];
 
-            generated.function.should.equal(Ctrl.prototype.get);
+            expect(generated.function).toBe(Ctrl.prototype.get);
         });
 
         it('should add the correct middlewares', () => {
@@ -244,12 +238,12 @@ describe('Core get routes', () => {
 
             const meta = new ControllerMetadata(Ctrl.prototype);
 
-            meta.routes().should.have.lengthOf(1);
+            expect(meta.routes().length).toBe(1);
 
             const route = meta.routes()[0],
                 generated = route.createRoutes(meta, '', [])[0];
 
-            generated.middlewares[0].should.equal(fn);
+            expect(generated.middlewares[0]).toBe(fn);
         });
 
     });
@@ -257,15 +251,15 @@ describe('Core get routes', () => {
     describe('Giuseppe start', () => {
 
         let giuseppe: Giuseppe,
-            stub: sinon.SinonStub;
+            spy: jest.SpyInstance<any>;
 
         beforeEach(() => {
             giuseppe = new Giuseppe();
-            stub = sinon.stub(giuseppe.router, 'get');
+            spy = jest.spyOn(giuseppe.router, 'get');
         });
 
         afterEach(() => {
-            stub.restore();
+            spy.mockRestore();
             (Giuseppe.registrar as any).controller = [];
         });
 
@@ -278,7 +272,7 @@ describe('Core get routes', () => {
 
             giuseppe.start();
 
-            stub.should.have.been.calledOnce;
+            expect(spy).toBeCalled();
         });
 
         it('should register the correct url', () => {
@@ -290,7 +284,7 @@ describe('Core get routes', () => {
 
             giuseppe.start();
 
-            stub.should.have.been.calledWith('/api/foobar');
+            expect(spy.mock.calls[0]).toContain('/api/foobar');
         });
 
         it('should register the correct middlewares', () => {
@@ -304,7 +298,9 @@ describe('Core get routes', () => {
 
             giuseppe.start();
 
-            stub.should.have.been.calledWith('/api/foobar', fn, fn2);
+            expect(spy.mock.calls[0]).toContain('/api/foobar');
+            expect(spy.mock.calls[0]).toContain(fn);
+            expect(spy.mock.calls[0]).toContain(fn2);
         });
 
     });
