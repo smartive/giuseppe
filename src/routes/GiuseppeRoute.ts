@@ -4,8 +4,8 @@ import { RequestHandler } from 'express';
 export interface GiuseppeRoute {
     id: string;
     url: string;
-    readonly name: string;
-    readonly method: HttpMethod;
-    readonly function: Function;
-    readonly middlewares: RequestHandler[];
+    name: string;
+    method: HttpMethod;
+    function: Function;
+    middlewares: RequestHandler[];
 }
