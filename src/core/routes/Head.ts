@@ -4,7 +4,7 @@ import { HttpMethod } from '../../routes/RouteDefinition';
 import { GiuseppeBasicRoute } from './GiuseppeBasicRoute';
 import { RequestHandler } from 'express';
 
-export function Post(routeOrMiddleware?: string | RequestHandler, ...middlewares: RequestHandler[]): MethodDecorator {
+export function Head(routeOrMiddleware?: string | RequestHandler, ...middlewares: RequestHandler[]): MethodDecorator {
     const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
     if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
         middlewares.unshift(routeOrMiddleware);
@@ -13,16 +13,16 @@ export function Post(routeOrMiddleware?: string | RequestHandler, ...middlewares
         if (!descriptor.value) {
             throw new TypeError(`Function is undefined in route ${route}`);
         }
-        Giuseppe.registrar.registerRoute(target, new GiuseppePostRoute(descriptor.value, route, middlewares));
+        Giuseppe.registrar.registerRoute(target, new GiuseppeHeadRoute(descriptor.value, route, middlewares));
     };
 }
 
-export class GiuseppePostRoute extends GiuseppeBasicRoute {
+export class GiuseppeHeadRoute extends GiuseppeBasicRoute {
     constructor(
         routeFunction: Function,
         route: string = '',
         middlewares: RequestHandler[] = [],
     ) {
-        super(HttpMethod.post, routeFunction, route, middlewares);
+        super(HttpMethod.head, routeFunction, route, middlewares);
     }
 }
