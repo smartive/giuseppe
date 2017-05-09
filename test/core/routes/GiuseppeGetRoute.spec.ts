@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { Giuseppe } from '../../../src/';
-import { Get, GiuseppeGetRoute } from '../../../src/core/routes';
+import { Get } from '../../../src/core/routes';
+import { GiuseppeGetRoute } from '../../../src/core/routes/Get';
 import { HttpMethod } from '../../../src/routes/RouteDefinition';
 import { ControllerMetadata } from '../../../src/utilities/ControllerMetadata';
 import chai = require('chai');

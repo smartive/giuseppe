@@ -1,5 +1,3 @@
-import { GiuseppeQueryParameter } from './parameters/Query';
-import { GiuseppeGetRoute } from './routes';
 import 'reflect-metadata';
 import {
     ControllerDefinitionConstructor,
@@ -10,7 +8,9 @@ import {
 } from '../GiuseppePlugin';
 import { ReturnType } from '../routes/ReturnType';
 import { GiuseppeApiController } from './controller/GiuseppeApiController';
+import { GiuseppeQueryParameter } from './parameters/Query';
 import { JsonDefaultReturnType } from './returnTypes/JsonDefaultReturnType';
+import { GiuseppeGetRoute } from './routes/Get';
 
 export class GiuseppeCorePlugin implements GiuseppePlugin {
     public readonly returnTypeHandler: ReturnType<any>[] = [];
