@@ -1,10 +1,12 @@
 import 'reflect-metadata';
 import { Giuseppe } from '../../../src/';
+import { Controller } from '../../../src/core/controller/GiuseppeApiController';
 import { Get } from '../../../src/core/routes';
 import { GiuseppeGetRoute } from '../../../src/core/routes/Get';
 import { HttpMethod } from '../../../src/routes/RouteDefinition';
 import { ControllerMetadata } from '../../../src/utilities/ControllerMetadata';
 import chai = require('chai');
+import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
 
 const should = chai.should();
@@ -248,6 +250,61 @@ describe('Core get routes', () => {
                 generated = route.createRoutes(meta, '', [])[0];
 
             generated.middlewares[0].should.equal(fn);
+        });
+
+    });
+
+    describe('Giuseppe start', () => {
+
+        let giuseppe: Giuseppe,
+            stub: sinon.SinonStub;
+
+        beforeEach(() => {
+            giuseppe = new Giuseppe();
+            stub = sinon.stub(giuseppe.router, 'get');
+        });
+
+        afterEach(() => {
+            stub.restore();
+            (Giuseppe.registrar as any).controller = [];
+        });
+
+        it('should be registered in the router as a get method', () => {
+            @Controller()    
+            class Ctrl {
+                @Get()
+                public get(): void { }
+            }
+
+            giuseppe.start();
+
+            stub.should.have.been.calledOnce;
+        });
+
+        it('should register the correct url', () => {
+            @Controller('api')
+            class Ctrl {
+                @Get('foobar')
+                public get(): void { }
+            }
+
+            giuseppe.start();
+
+            stub.should.have.been.calledWith('/api/foobar');
+        });
+
+        it('should register the correct middlewares', () => {
+            const fn = () => { },
+                fn2 = () => { };
+            @Controller('api')
+            class Ctrl {
+                @Get('foobar', fn, fn2)
+                public get(): void { }
+            }
+
+            giuseppe.start();
+
+            stub.should.have.been.calledWith('/api/foobar', fn, fn2);
         });
 
     });

@@ -169,7 +169,7 @@ export class Giuseppe {
 
                 let modifiedRoutes: GiuseppeRoute[] = [route];
                 for (const mod of mods) {
-                    modifiedRoutes = modifiedRoutes.reduce((all, cur) => all.concat(mod.modifyRoute(cur)), [] as GiuseppeRoute[]);
+                    modifiedRoutes = mod.modifyRoute(modifiedRoutes);
                 }
                 ctrlRoutes = ctrlRoutes.concat(modifiedRoutes);
             }
