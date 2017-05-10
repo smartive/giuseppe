@@ -20,7 +20,7 @@ export function Version(versionInformation: { from?: number, until?: number } = 
 export class GiuseppeVersionModificator implements RouteModificator {
     constructor(public readonly from?: number, public readonly until?: number) { }
 
-    public modifyRoute(route: GiuseppeRoute): GiuseppeRoute[] {
+    public modifyRoute(routes: GiuseppeRoute[]): GiuseppeRoute[] {
         // take the route, make multiple (with different id's, one "router" route)
 
         /*
@@ -29,9 +29,9 @@ export class GiuseppeVersionModificator implements RouteModificator {
         */
 
         // const routingRoute: GiuseppeRoute = {
-
         // }
 
-        return [route];
+        // versions routing in middleware machen und versionen über meta data speichern
+        return routes;
     }
 }

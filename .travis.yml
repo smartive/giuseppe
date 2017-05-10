@@ -3,9 +3,9 @@ node_js:
 - '7'
 
 script:
-- npm run test
+- npm test
 
-after_script: npm install coveralls@^2.11.9 && cat ./coverage/lcov-mapped.info | coveralls
+after_script: npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
 
 before_deploy:
 - npm install

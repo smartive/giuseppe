@@ -1,33 +1,28 @@
 import 'reflect-metadata';
-import { Giuseppe, GiuseppePlugin } from '../src';
-import { DuplicatePluginError } from '../src/errors';
 import {
     ControllerDefinitionConstructor,
+    Giuseppe,
+    GiuseppePlugin,
     ParameterDefinitionConstructor,
     RouteDefinitionConstructor,
     RouteModificatorConstructor,
-} from '../src/GiuseppePlugin';
+} from '../src';
+import { DuplicatePluginError } from '../src/errors';
 import { ReturnType } from '../src/routes/ReturnType';
-import chai = require('chai');
-import sinon = require('sinon');
-import sinonChai = require('sinon-chai');
 
-chai.should();
-chai.use(sinonChai);
-
-describe('PluginSystem', () => {
+describe('Plugin system', () => {
 
     describe('Giuseppe constructor', () => {
 
-        it('should register the giuseppe core plugin.', () => {
-            const spy = sinon.spy(),
+        it('should register the giuseppe core plugin', () => {
+            const mockFn = jest.fn(),
                 orig = Giuseppe.prototype.registerPlugin;
-            Giuseppe.prototype.registerPlugin = spy;
+            Giuseppe.prototype.registerPlugin = mockFn;
 
             try {
                 const giusi = new Giuseppe();
 
-                spy.should.be.calledOnce;
+                expect(mockFn.mock.calls.length).toBe(1);
             } finally {
                 Giuseppe.prototype.registerPlugin = orig;
             }
@@ -55,9 +50,12 @@ describe('PluginSystem', () => {
                 }
             }
 
-            (giuseppe as any).plugins.should.be.an('array').with.lengthOf(1);
+            expect((giuseppe as any).plugins).toBeInstanceOf(Array);
+            expect((giuseppe as any).plugins.length).toBe(1);
+
             giuseppe.registerPlugin(new Plugin());
-            (giuseppe as any).plugins.should.be.an('array').with.lengthOf(2);
+
+            expect((giuseppe as any).plugins.length).toBe(2);
         });
 
         it('should throw when a duplicate plugin is registered.', () => {
@@ -75,7 +73,8 @@ describe('PluginSystem', () => {
             const fn = () => giuseppe.registerPlugin(new Plugin());
 
             fn();
-            fn.should.throw(DuplicatePluginError);
+
+            expect(fn).toThrow(DuplicatePluginError);
         });
 
     });
