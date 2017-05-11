@@ -55,10 +55,6 @@ describe('JsonDefaultReturnType', () => {
                 value: { foo: 'bar', baz: 1337 },
                 result: '{"foo":"bar","baz":1337}',
             },
-            {
-                value: { foo: null, bar: undefined, thisIsA: new Date(2017, 3, 31, 2, 33, 15) },
-                result: '{"foo":null,"thisIsA":"2017-05-01T00:33:15.000Z"}',
-            },
         ];
 
         for (const valueCase of cases) {
