@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Giuseppe } from '../..';
 import { HttpMethod } from '../../routes/RouteDefinition';
-import { GiuseppeBasicRoute } from './GiuseppeBasicRoute';
+import { GiuseppeBaseRoute } from './GiuseppeBaseRoute';
 import { RequestHandler } from 'express';
 
 export function Post(routeOrMiddleware?: string | RequestHandler, ...middlewares: RequestHandler[]): MethodDecorator {
@@ -17,7 +17,7 @@ export function Post(routeOrMiddleware?: string | RequestHandler, ...middlewares
     };
 }
 
-export class GiuseppePostRoute extends GiuseppeBasicRoute {
+export class GiuseppePostRoute extends GiuseppeBaseRoute {
     constructor(
         routeFunction: Function,
         route: string = '',

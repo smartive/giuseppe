@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Giuseppe } from '../..';
 import { HttpMethod } from '../../routes/RouteDefinition';
-import { GiuseppeBasicRoute } from './GiuseppeBasicRoute';
+import { GiuseppeBaseRoute } from './GiuseppeBaseRoute';
 import { RequestHandler } from 'express';
 
 export function Delete(routeOrMiddleware?: string | RequestHandler, ...middlewares: RequestHandler[]): MethodDecorator {
@@ -17,7 +17,7 @@ export function Delete(routeOrMiddleware?: string | RequestHandler, ...middlewar
     };
 }
 
-export class GiuseppeDeleteRoute extends GiuseppeBasicRoute {
+export class GiuseppeDeleteRoute extends GiuseppeBaseRoute {
     constructor(
         routeFunction: Function,
         route: string = '',
