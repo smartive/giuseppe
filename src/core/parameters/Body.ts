@@ -38,6 +38,6 @@ export class GiuseppeBodyParameter extends GiuseppeBaseParameter {
     }
 
     protected getRawValue(request: Request): any {
-        return request.params[this.name];
+        return request.body;
     }
 }

@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { Body, GiuseppeBodyParameter } from '../../../src/core/parameters/Body';
 import { GiuseppeBaseParameter } from '../../../src/core/parameters/GiuseppeBaseParameter';
 import {
     isNumber,
@@ -11,7 +12,7 @@ import { GiuseppeUrlParameter, UrlParam } from '../../../src/core/parameters/Url
 import {
     ParameterParseError,
     ParameterValidationFailedError,
-    RequiredParameterNotProvidedError,
+    RequiredParameterNotProvidedError
 } from '../../../src/errors';
 import { ControllerMetadata } from '../../../src/utilities/ControllerMetadata';
 
@@ -63,6 +64,21 @@ describe('Giuseppe parameter common', () => {
                 validator?: ParameterValidator,
                 factory?: ParameterFactory<any>,
             ) => new GiuseppeUrlParameter(name, type, index, validator, factory),
+        },
+        {
+            class: GiuseppeBodyParameter,
+            name: 'Body',
+            alwaysRequired: false,
+            getRequestMock: value => ({ body: value }),
+            getDecorator: name => Body(),
+            getInstance: (
+                name: string,
+                type: Function,
+                index: number,
+                required?: boolean,
+                validator?: ParameterValidator,
+                factory?: ParameterFactory<any>,
+            ) => new GiuseppeBodyParameter(type, index, required, validator, factory),
         },
     ];
 
