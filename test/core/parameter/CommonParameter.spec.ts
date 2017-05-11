@@ -1,6 +1,11 @@
 import 'reflect-metadata';
 import { GiuseppeBaseParameter } from '../../../src/core/parameters/GiuseppeBaseParameter';
-import { isNumber, isString } from '../../../src/core/parameters/ParameterAdditions';
+import {
+    isNumber,
+    isString,
+    ParameterFactory,
+    ParameterValidator
+} from '../../../src/core/parameters/ParameterAdditions';
 import { GiuseppeQueryParameter, Query } from '../../../src/core/parameters/Query';
 import { GiuseppeUrlParameter, UrlParam } from '../../../src/core/parameters/UrlParam';
 import {
@@ -11,29 +16,53 @@ import {
 import { ControllerMetadata } from '../../../src/utilities/ControllerMetadata';
 
 interface ParamCase {
-    decorator: Function;
     class: new (...args: any[]) => GiuseppeBaseParameter;
     name: string;
     alwaysRequired: boolean;
     getRequestMock: (value?: any) => any;
+    getDecorator: (name?: any) => any;
+    getInstance: (
+        name: string,
+        type: Function,
+        index: number,
+        required?: boolean,
+        validator?: ParameterValidator,
+        factory?: ParameterFactory<any>,
+    ) => GiuseppeBaseParameter;
 }
 
 describe('Giuseppe parameter common', () => {
 
     const params: ParamCase[] = [
         {
-            decorator: Query,
             class: GiuseppeQueryParameter,
             name: 'Query',
             alwaysRequired: false,
             getRequestMock: value => ({ query: { 'name': value } }),
+            getDecorator: name => Query(name),
+            getInstance: (
+                name: string,
+                type: Function,
+                index: number,
+                required?: boolean,
+                validator?: ParameterValidator,
+                factory?: ParameterFactory<any>,
+            ) => new GiuseppeQueryParameter(name, type, index, required, validator, factory),
         },
         {
-            decorator: UrlParam,
             class: GiuseppeUrlParameter,
             name: 'UrlParam',
             alwaysRequired: true,
             getRequestMock: value => ({ params: { 'name': value } }),
+            getDecorator: name => UrlParam(name),
+            getInstance: (
+                name: string,
+                type: Function,
+                index: number,
+                required?: boolean,
+                validator?: ParameterValidator,
+                factory?: ParameterFactory<any>,
+            ) => new GiuseppeUrlParameter(name, type, index, validator, factory),
         },
     ];
 
@@ -42,13 +71,13 @@ describe('Giuseppe parameter common', () => {
         describe(`@${param.name} decorator`, () => {
 
             it('should return a param decorator', () => {
-                expect(param.decorator('name')).toBeInstanceOf(Function);
-                expect(param.decorator('name').length).toBe(3);
+                expect(param.getDecorator('name')).toBeInstanceOf(Function);
+                expect(param.getDecorator('name').length).toBe(3);
             });
 
             it('should add the correct parameter declaration to the class', () => {
                 class Ctrl {
-                    public func( @param.decorator('name') param: string): void { }
+                    public func( @param.getDecorator('name') param: string): void { }
                 }
 
                 const meta = new ControllerMetadata(Ctrl.prototype);
@@ -62,7 +91,7 @@ describe('Giuseppe parameter common', () => {
                 class Foobar { }
 
                 class Ctrl {
-                    public func( @param.decorator('name') param: Foobar): void { }
+                    public func( @param.getDecorator('name') param: Foobar): void { }
                 }
 
                 const meta = new ControllerMetadata(Ctrl.prototype);
@@ -77,21 +106,21 @@ describe('Giuseppe parameter common', () => {
         describe(`Giuseppe${param.name}Parameter class`, () => {
 
             it('should inject the correct value', () => {
-                const instance = new param.class('name', String, 0);
+                const instance = param.getInstance('name', String, 0);
 
                 expect(instance.getValue(param.getRequestMock('value'))).toBe('value');
             });
 
             it('should parse the correct value type', () => {
-                const instance = new param.class('name', String, 0);
+                const instance = param.getInstance('name', String, 0);
                 expect(instance.getValue(param.getRequestMock('value')).constructor).toBe(String);
 
-                const instance2 = new param.class('name', Number, 0);
+                const instance2 = param.getInstance('name', Number, 0);
                 expect(instance2.getValue(param.getRequestMock(1337)).constructor).toBe(Number);
             });
 
             it('should throw on not provided required parameter', () => {
-                const instance = new param.class('name', String, 0, true),
+                const instance = param.getInstance('name', String, 0, true),
                     fn = () => instance.getValue(param.getRequestMock());
 
                 expect(fn).toThrow(RequiredParameterNotProvidedError);
@@ -99,7 +128,7 @@ describe('Giuseppe parameter common', () => {
 
             if (!param.alwaysRequired) {
                 it('should inject undefined if param is not provided', () => {
-                    const instance = new param.class('name', String, 0);
+                    const instance = param.getInstance('name', String, 0);
 
                     expect(instance.getValue(param.getRequestMock())).toBeUndefined();
                 });
@@ -110,7 +139,7 @@ describe('Giuseppe parameter common', () => {
                     constructor(value: any) { }
                 }
 
-                const instance = new param.class('name', Foobar, 0);
+                const instance = param.getInstance('name', Foobar, 0);
 
                 expect(instance.getValue(param.getRequestMock('value'))).toBeInstanceOf(Foobar);
             });
@@ -122,7 +151,7 @@ describe('Giuseppe parameter common', () => {
                     }
                 }
 
-                const instance = new param.class('name', Foobar, 0),
+                const instance = param.getInstance('name', Foobar, 0),
                     fn = () => instance.getValue(param.getRequestMock('value'));
 
                 expect(fn).toThrow(ParameterParseError);
@@ -141,7 +170,7 @@ describe('Giuseppe parameter common', () => {
                     }
                 }
 
-                const instance = new param.class('name', String, 0, false, null, raw => Foobar.create(raw));
+                const instance = param.getInstance('name', String, 0, false, null, raw => Foobar.create(raw));
 
                 expect(instance.getValue(param.getRequestMock('value'))).toBeInstanceOf(Foobar);
                 expect(instance.getValue(param.getRequestMock('value')).test).toBe('value');
@@ -158,14 +187,14 @@ describe('Giuseppe parameter common', () => {
                     }
                 }
 
-                const instance = new param.class('name', String, 0, false, null, raw => Foobar.create(raw)),
+                const instance = param.getInstance('name', String, 0, false, null, raw => Foobar.create(raw)),
                     fn = () => instance.getValue(param.getRequestMock('value'));
 
                 expect(fn).toThrow();
             });
 
             it('should validate correctly', () => {
-                const instance = new param.class('name', String, 0, false, isString());
+                const instance = param.getInstance('name', String, 0, false, isString());
 
                 const fn = () => instance.getValue(param.getRequestMock('value'));
 
@@ -175,7 +204,7 @@ describe('Giuseppe parameter common', () => {
             it('should validate correctly with multiple validators', () => {
                 const isNotEmpty = value => value.length > 0;
 
-                const instance = new param.class('name', String, 0, false, [isString(), isNotEmpty]);
+                const instance = param.getInstance('name', String, 0, false, [isString(), isNotEmpty]);
 
                 const fn = () => instance.getValue(param.getRequestMock('value'));
 
@@ -183,7 +212,7 @@ describe('Giuseppe parameter common', () => {
             });
 
             it('should throw on validation error', () => {
-                const instance = new param.class('name', Number, 0, false, isString());
+                const instance = param.getInstance('name', Number, 0, false, isString());
 
                 const fn = () => instance.getValue(param.getRequestMock(1337));
 
@@ -191,7 +220,7 @@ describe('Giuseppe parameter common', () => {
             });
 
             it('should throw on a later validation error (if multiple)', () => {
-                const instance = new param.class('name', String, 0, false, [isString(), isNumber()]);
+                const instance = param.getInstance('name', String, 0, false, [isString(), isNumber()]);
 
                 const fn = () => instance.getValue(param.getRequestMock('1337'));
 

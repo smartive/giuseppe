@@ -5,8 +5,7 @@ import { GiuseppeBaseParameter } from './GiuseppeBaseParameter';
 import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
 import { Request } from 'express';
 
-export function UrlParam(
-    name: string,
+export function Body(
     {
         validator,
         factory,
@@ -16,26 +15,26 @@ export function UrlParam(
         Giuseppe.registrar.registerParameter(
             target,
             propertyKey,
-            new GiuseppeUrlParameter(
-                name,
+            new GiuseppeBodyParameter(
                 new ControllerMetadata(target).parameterTypes(propertyKey)[parameterIndex],
                 parameterIndex,
+                true,
                 validator,
                 factory,
             ),
         );
 }
 
-export class GiuseppeUrlParameter extends GiuseppeBaseParameter {
+export class GiuseppeBodyParameter extends GiuseppeBaseParameter {
 
     constructor(
-        name: string,
         type: Function,
         index: number,
+        required?: boolean,
         validator?: ParameterValidator,
         factory?: ParameterFactory<any>,
     ) {
-        super(name, type, index, true, validator, factory);
+        super('body', type, index, required, validator, factory);
     }
 
     protected getRawValue(request: Request): any {
