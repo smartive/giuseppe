@@ -22,8 +22,8 @@ export class GiuseppeApiController implements ControllerDefinition {
     ) { }
 
     public createRoutes(baseUrl: string): GiuseppeRoute[] {
-        const meta = new ControllerMetadata(this.ctrlTarget.prototype),
-            url = UrlHelper.buildUrl(baseUrl, this.routePrefix);
+        const meta = new ControllerMetadata(this.ctrlTarget.prototype);
+        const url = UrlHelper.buildUrl(baseUrl, this.routePrefix);
 
         return meta.routes().reduce((all, cur) => all.concat(cur.createRoutes(meta, url, this.middlewares)), [] as GiuseppeRoute[]);
     }

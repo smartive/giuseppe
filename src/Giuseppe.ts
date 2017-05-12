@@ -155,8 +155,8 @@ export class Giuseppe {
         for (const ctrl of Giuseppe.registrar.controller) {
             this.checkPluginRegistration(ctrl);
 
-            const meta = new ControllerMetadata(ctrl.ctrlTarget.prototype),
-                routes = ctrl.createRoutes(url);
+            const meta = new ControllerMetadata(ctrl.ctrlTarget.prototype);
+            const routes = ctrl.createRoutes(url);
 
             let ctrlRoutes: GiuseppeRoute[] = [];
 
@@ -191,10 +191,13 @@ export class Giuseppe {
     private registerRoutes(): void {
         Object.keys(this.routes)
             .map(k => this.routes[k])
-            .reduce((segmentSorted, route) => {
+            .reduce(
+            (segmentSorted, route) => {
                 (segmentSorted[route.segments] || (segmentSorted[route.segments] = [])).push(route);
                 return segmentSorted;
-            }, [] as RouteRegisterInformation[][])
+            },
+            [] as RouteRegisterInformation[][],
+        )
             .filter(Boolean)
             .reverse()
             .reduce(
@@ -204,10 +207,10 @@ export class Giuseppe {
     }
 
     private createRouteWrapper(routeInfo: RouteRegisterInformation): RequestHandler {
-        const meta = new ControllerMetadata(routeInfo.ctrl.prototype),
-            params = meta.parameters(routeInfo.route.name),
-            returnTypeHandler = new ReturnTypeHandler(this.returnTypes),
-            ctrlInstance = new (routeInfo as any).ctrl();
+        const meta = new ControllerMetadata(routeInfo.ctrl.prototype);
+        const params = meta.parameters(routeInfo.route.name);
+        const returnTypeHandler = new ReturnTypeHandler(this.returnTypes);
+        const ctrlInstance = new (routeInfo as any).ctrl();
 
         return async (req: Request, res: Response) => {
             const paramValues: any[] = [];

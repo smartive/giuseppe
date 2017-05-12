@@ -7,8 +7,9 @@ export class UrlHelper {
                 parts[x] = parts[x].substring(1);
             }
         }
-        const url = parts.filter(Boolean).join('/'),
-            index = url.lastIndexOf('~');
+
+        const url = parts.filter(Boolean).join('/');
+        const index = url.lastIndexOf('~');
 
         if (index > -1) {
             const rootUrl = url.substring(index + 1);
