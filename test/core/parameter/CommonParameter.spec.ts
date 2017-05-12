@@ -1,3 +1,5 @@
+import { Cookie, GiuseppeCookieParameter } from '../../../src/core/parameters/Cookie';
+import { GiuseppeHeaderParameter, Header } from '../../../src/core/parameters/Header';
 import 'reflect-metadata';
 import { Body, GiuseppeBodyParameter } from '../../../src/core/parameters/Body';
 import { GiuseppeBaseParameter } from '../../../src/core/parameters/GiuseppeBaseParameter';
@@ -79,6 +81,43 @@ describe('Giuseppe parameter common', () => {
                 validator?: ParameterValidator,
                 factory?: ParameterFactory<any>,
             ) => new GiuseppeBodyParameter(type, index, required, validator, factory),
+        },
+        {
+            class: GiuseppeHeaderParameter,
+            name: 'Header',
+            alwaysRequired: false,
+            getRequestMock: value => ({
+                get: name => {
+                    const foo = { 'name': value };
+                    return foo[name];
+                },
+            }),
+            getDecorator: name => Header(name),
+            getInstance: (
+                name: string,
+                type: Function,
+                index: number,
+                required?: boolean,
+                validator?: ParameterValidator,
+                factory?: ParameterFactory<any>,
+            ) => new GiuseppeHeaderParameter(name, type, index, required, validator, factory),
+        },
+        {
+            class: GiuseppeCookieParameter,
+            name: 'Cookie',
+            alwaysRequired: false,
+            getRequestMock: value => ({
+                get: () => value ? `name=${value};` : null,
+            }),
+            getDecorator: name => Cookie(name),
+            getInstance: (
+                name: string,
+                type: Function,
+                index: number,
+                required?: boolean,
+                validator?: ParameterValidator,
+                factory?: ParameterFactory<any>,
+            ) => new GiuseppeCookieParameter(name, type, index, required, validator, factory),
         },
     ];
 
