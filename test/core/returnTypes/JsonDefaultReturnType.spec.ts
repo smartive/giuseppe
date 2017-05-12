@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as httpStatus from 'http-status';
 import { JsonDefaultReturnType } from '../../../src/core/returnTypes/JsonDefaultReturnType';
 
