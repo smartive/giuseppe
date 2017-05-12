@@ -3,7 +3,6 @@ import 'reflect-metadata';
 // Basic types and interfaces for giuseppe
 export { Giuseppe } from './Giuseppe';
 export * from './GiuseppePlugin';
-export * from './ReturnTypeHandler';
 export * from './controller/ControllerDefinition';
 export * from './controller/LoadingOptions';
 export { ErrorHandler, ErrorHandlerFunction } from './errors';

@@ -90,7 +90,7 @@ describe('Core controller', () => {
             class Ctrl { }
 
             const fn = () => {
-                giuseppe.start();
+                giuseppe.configureRouter();
             };
 
             expect(fn).toThrow(DefinitionNotRegisteredError);

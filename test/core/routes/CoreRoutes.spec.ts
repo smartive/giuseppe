@@ -316,7 +316,7 @@ describe('Core routes', () => {
                         public ctrlFunction(): void { }
                     }
 
-                    giuseppe.start();
+                    giuseppe.configureRouter();
 
                     expect(spy).toBeCalled();
                 });
@@ -328,7 +328,7 @@ describe('Core routes', () => {
                         public ctrlFunction(): void { }
                     }
 
-                    giuseppe.start();
+                    giuseppe.configureRouter();
 
                     expect(spy.mock.calls[0]).toContain('/api/foobar');
                 });
@@ -342,7 +342,7 @@ describe('Core routes', () => {
                         public ctrlFunction(): void { }
                     }
 
-                    giuseppe.start();
+                    giuseppe.configureRouter();
 
                     expect(spy.mock.calls[0]).toContain('/api/foobar');
                     expect(spy.mock.calls[0]).toContain(fn);
@@ -359,7 +359,7 @@ describe('Core routes', () => {
                     }
 
                     const fn = () => {
-                        giuseppe.start();
+                        giuseppe.configureRouter();
                     };
 
                     expect(fn).toThrow(DefinitionNotRegisteredError);
