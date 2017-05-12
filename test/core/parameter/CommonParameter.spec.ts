@@ -1,20 +1,20 @@
-import { Cookie, GiuseppeCookieParameter } from '../../../src/core/parameters/Cookie';
-import { GiuseppeHeaderParameter, Header } from '../../../src/core/parameters/Header';
 import 'reflect-metadata';
 import { Body, GiuseppeBodyParameter } from '../../../src/core/parameters/Body';
+import { Cookie, GiuseppeCookieParameter } from '../../../src/core/parameters/Cookie';
 import { GiuseppeBaseParameter } from '../../../src/core/parameters/GiuseppeBaseParameter';
+import { GiuseppeHeaderParameter, Header } from '../../../src/core/parameters/Header';
 import {
     isNumber,
     isString,
     ParameterFactory,
-    ParameterValidator
+    ParameterValidator,
 } from '../../../src/core/parameters/ParameterAdditions';
 import { GiuseppeQueryParameter, Query } from '../../../src/core/parameters/Query';
 import { GiuseppeUrlParameter, UrlParam } from '../../../src/core/parameters/UrlParam';
 import {
     ParameterParseError,
     ParameterValidationFailedError,
-    RequiredParameterNotProvidedError
+    RequiredParameterNotProvidedError,
 } from '../../../src/errors';
 import { ControllerMetadata } from '../../../src/utilities/ControllerMetadata';
 
