@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Giuseppe } from '../../src';
 import { Controller } from '../../src/core/controller/GiuseppeApiController';
-import { Get } from '../../src/core/routes';
+import { Get } from '../../src/core/routes/Get';
 import {
     ErrorHandlerWrongArgumentsError,
     ErrorHandlerWrongArgumentTypesError,
