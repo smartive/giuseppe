@@ -40,18 +40,6 @@ export function Cookie(
 }
 
 export class GiuseppeCookieParameter extends GiuseppeBaseParameter {
-
-    constructor(
-        name: string,
-        type: Function,
-        index: number,
-        required?: boolean,
-        validator?: ParameterValidator,
-        factory?: ParameterFactory<any>,
-    ) {
-        super(name, type, index, required, validator, factory);
-    }
-
     protected getRawValue(request: Request): any {
         const cookies = request.get('cookie');
         if (!cookies) {

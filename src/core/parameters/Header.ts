@@ -29,18 +29,6 @@ export function Header(
 }
 
 export class GiuseppeHeaderParameter extends GiuseppeBaseParameter {
-
-    constructor(
-        name: string,
-        type: Function,
-        index: number,
-        required?: boolean,
-        validator?: ParameterValidator,
-        factory?: ParameterFactory<any>,
-    ) {
-        super(name, type, index, required, validator, factory);
-    }
-
     protected getRawValue(request: Request): any {
         return request.get(this.name);
     }
