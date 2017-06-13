@@ -106,118 +106,144 @@ describe('Giuseppe', () => {
 
     describe('Core', () => {
 
-        let giuseppe: Giuseppe,
-            plugin: any;
+        describe('plugin operations', () => {
 
-        beforeEach(() => {
-            giuseppe = new Giuseppe();
-            (giuseppe as any).plugins = [];
-            plugin = {
-                name: 'plugin',
-                initialize: () => { },
-                controllerDefinitions: null,
-                parameterDefinitions: null,
-                routeDefinitions: null,
-                routeModificators: null,
-                returnTypeHandler: null,
-            };
-        });
+            let giuseppe: Giuseppe;
+            let plugin: any;
 
-        describe('returnTypes()', () => {
+            beforeEach(() => {
+                giuseppe = new Giuseppe();
+                (giuseppe as any).plugins = [];
+                plugin = {
+                    name: 'plugin',
+                    initialize: () => { },
+                    controllerDefinitions: null,
+                    parameterDefinitions: null,
+                    routeDefinitions: null,
+                    routeModificators: null,
+                    returnTypeHandler: null,
+                };
+            });
 
-            it('should return the definitions', () => {
-                expect((giuseppe as any)._returnTypes).toBeNull();
+            describe('returnTypes()', () => {
 
-                plugin.returnTypeHandler = [
-                    {
-                        getHeaders: () => ({}),
-                        getStatus: () => 0,
-                        getValue: () => '',
-                        type: 'default',
-                    },
-                ];
-                giuseppe.registerPlugin(plugin);
+                it('should return the definitions', () => {
+                    expect((giuseppe as any)._returnTypes).toBeNull();
 
-                expect((giuseppe as any).returnTypes.length).toBe(1);
+                    plugin.returnTypeHandler = [
+                        {
+                            getHeaders: () => ({}),
+                            getStatus: () => 0,
+                            getValue: () => '',
+                            type: 'default',
+                        },
+                    ];
+                    giuseppe.registerPlugin(plugin);
+
+                    expect((giuseppe as any).returnTypes.length).toBe(1);
+                });
+
+            });
+
+            describe('pluginController()', () => {
+
+                it('should return the definitions', () => {
+                    expect((giuseppe as any)._pluginController).toBeNull();
+
+                    plugin.controllerDefinitions = [() => { }];
+                    giuseppe.registerPlugin(plugin);
+
+                    expect((giuseppe as any).pluginController.length).toBe(1);
+                });
+
+            });
+
+            describe('pluginRoutes()', () => {
+
+                it('should return the definitions', () => {
+                    expect((giuseppe as any)._pluginRoutes).toBeNull();
+
+                    plugin.routeDefinitions = [() => { }];
+                    giuseppe.registerPlugin(plugin);
+
+                    expect((giuseppe as any).pluginRoutes.length).toBe(1);
+                });
+
+            });
+
+            describe('pluginRouteModificators()', () => {
+
+                it('should return the definitions', () => {
+                    expect((giuseppe as any)._pluginRouteModificators).toBeNull();
+
+                    plugin.routeModificators = [() => { }];
+                    giuseppe.registerPlugin(plugin);
+
+                    expect((giuseppe as any).pluginRouteModificators.length).toBe(1);
+                });
+
+            });
+
+            describe('pluginParameters()', () => {
+
+                it('should return the definitions', () => {
+                    expect((giuseppe as any)._pluginParameters).toBeNull();
+
+                    plugin.parameterDefinitions = [() => { }];
+                    giuseppe.registerPlugin(plugin);
+
+                    expect((giuseppe as any).pluginParameters.length).toBe(1);
+                });
+
+            });
+
+            describe('registerPlugin()', () => {
+
+                it('should reset the plugin list', () => {
+                    (giuseppe as any).returnTypes;
+                    (giuseppe as any).pluginController;
+                    (giuseppe as any).pluginRoutes;
+                    (giuseppe as any).pluginRouteModificators;
+                    (giuseppe as any).pluginParameters;
+
+                    expect((giuseppe as any).returnTypes.length).toBe(0);
+                    expect((giuseppe as any).pluginController.length).toBe(0);
+                    expect((giuseppe as any).pluginRoutes.length).toBe(0);
+                    expect((giuseppe as any).pluginRouteModificators.length).toBe(0);
+                    expect((giuseppe as any).pluginParameters.length).toBe(0);
+
+                    giuseppe.registerPlugin(plugin);
+
+                    expect((giuseppe as any)._returnTypes).toBeNull();
+                    expect((giuseppe as any)._pluginController).toBeNull();
+                    expect((giuseppe as any)._pluginRoutes).toBeNull();
+                    expect((giuseppe as any)._pluginRouteModificators).toBeNull();
+                    expect((giuseppe as any)._pluginParameters).toBeNull();
+                });
+
             });
 
         });
 
-        describe('pluginController()', () => {
+        describe('configureRouter()', () => {
 
-            it('should return the definitions', () => {
-                expect((giuseppe as any)._pluginController).toBeNull();
+            it('should register a route with the correct url');
 
-                plugin.controllerDefinitions = [() => { }];
-                giuseppe.registerPlugin(plugin);
+            it('should register a root route with the correct url');
 
-                expect((giuseppe as any).pluginController.length).toBe(1);
-            });
+            it('should register a root controller route with the correct url');
 
-        });
+            it('should register a root controller and a root route with the correct url');
 
-        describe('pluginRoutes()', () => {
+            it('should register a higher segmented route first');
 
-            it('should return the definitions', () => {
-                expect((giuseppe as any)._pluginRoutes).toBeNull();
+            it('should register a lower wildcarded route first');
 
-                plugin.routeDefinitions = [() => { }];
-                giuseppe.registerPlugin(plugin);
+            it('should not contain double slashes in routes');
 
-                expect((giuseppe as any).pluginRoutes.length).toBe(1);
-            });
+            it('should throw on a duplicate route');
 
-        });
-
-        describe('pluginRouteModificators()', () => {
-
-            it('should return the definitions', () => {
-                expect((giuseppe as any)._pluginRouteModificators).toBeNull();
-
-                plugin.routeModificators = [() => { }];
-                giuseppe.registerPlugin(plugin);
-
-                expect((giuseppe as any).pluginRouteModificators.length).toBe(1);
-            });
-
-        });
-
-        describe('pluginParameters()', () => {
-
-            it('should return the definitions', () => {
-                expect((giuseppe as any)._pluginParameters).toBeNull();
-
-                plugin.parameterDefinitions = [() => { }];
-                giuseppe.registerPlugin(plugin);
-
-                expect((giuseppe as any).pluginParameters.length).toBe(1);
-            });
-
-        });
-
-        describe('registerPlugin()', () => {
-
-            it('should reset the plugin list', () => {
-                (giuseppe as any).returnTypes;
-                (giuseppe as any).pluginController;
-                (giuseppe as any).pluginRoutes;
-                (giuseppe as any).pluginRouteModificators;
-                (giuseppe as any).pluginParameters;
-
-                expect((giuseppe as any).returnTypes.length).toBe(0);
-                expect((giuseppe as any).pluginController.length).toBe(0);
-                expect((giuseppe as any).pluginRoutes.length).toBe(0);
-                expect((giuseppe as any).pluginRouteModificators.length).toBe(0);
-                expect((giuseppe as any).pluginParameters.length).toBe(0);
-
-                giuseppe.registerPlugin(plugin);
-
-                expect((giuseppe as any)._returnTypes).toBeNull();
-                expect((giuseppe as any)._pluginController).toBeNull();
-                expect((giuseppe as any)._pluginRoutes).toBeNull();
-                expect((giuseppe as any)._pluginRouteModificators).toBeNull();
-                expect((giuseppe as any)._pluginParameters).toBeNull();
-            });
+            it('should throw on duplicate root routes');
 
         });
 

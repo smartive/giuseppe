@@ -1,12 +1,11 @@
 import 'reflect-metadata';
 import { Giuseppe } from '../../../src/';
 import { Controller } from '../../../src/core/controller/GiuseppeApiController';
-import { Delete, Get, Head, Post, Put } from '../../../src/core/routes';
-import { GiuseppeDeleteRoute } from '../../../src/core/routes/Delete';
-import { GiuseppeGetRoute } from '../../../src/core/routes/Get';
-import { GiuseppeHeadRoute } from '../../../src/core/routes/Head';
-import { GiuseppePostRoute } from '../../../src/core/routes/Post';
-import { GiuseppePutRoute } from '../../../src/core/routes/Put';
+import { Delete, GiuseppeDeleteRoute } from '../../../src/core/routes/Delete';
+import { Get, GiuseppeGetRoute } from '../../../src/core/routes/Get';
+import { GiuseppeHeadRoute, Head } from '../../../src/core/routes/Head';
+import { GiuseppePostRoute, Post } from '../../../src/core/routes/Post';
+import { GiuseppePutRoute, Put } from '../../../src/core/routes/Put';
 import { DefinitionNotRegisteredError } from '../../../src/errors';
 import { HttpMethod } from '../../../src/routes/RouteDefinition';
 import { ControllerMetadata } from '../../../src/utilities/ControllerMetadata';
@@ -317,7 +316,7 @@ describe('Core routes', () => {
                         public ctrlFunction(): void { }
                     }
 
-                    giuseppe.start();
+                    giuseppe.configureRouter();
 
                     expect(spy).toBeCalled();
                 });
@@ -329,7 +328,7 @@ describe('Core routes', () => {
                         public ctrlFunction(): void { }
                     }
 
-                    giuseppe.start();
+                    giuseppe.configureRouter();
 
                     expect(spy.mock.calls[0]).toContain('/api/foobar');
                 });
@@ -343,7 +342,7 @@ describe('Core routes', () => {
                         public ctrlFunction(): void { }
                     }
 
-                    giuseppe.start();
+                    giuseppe.configureRouter();
 
                     expect(spy.mock.calls[0]).toContain('/api/foobar');
                     expect(spy.mock.calls[0]).toContain(fn);
@@ -360,7 +359,7 @@ describe('Core routes', () => {
                     }
 
                     const fn = () => {
-                        giuseppe.start();
+                        giuseppe.configureRouter();
                     };
 
                     expect(fn).toThrow(DefinitionNotRegisteredError);

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ParameterParseError, ParameterValidationFailedError, RequiredParameterNotProvidedError } from '../../errors';
 import { ParameterDefinition } from '../../parameter/ParameterDefinition';
 import { ParameterFactory, ParameterValidator } from './ParameterAdditions';

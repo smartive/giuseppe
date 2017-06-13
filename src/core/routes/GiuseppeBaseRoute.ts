@@ -6,7 +6,11 @@ import { HttpMethod, RouteDefinition } from '../../routes/RouteDefinition';
 import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { RequestHandler } from 'express';
 
-export function Route(method: HttpMethod, routeOrMiddleware?: string | RequestHandler, ...middlewares: RequestHandler[]): MethodDecorator {
+export function Route(
+    method: HttpMethod,
+    routeOrMiddleware?: string | RequestHandler,
+    ...middlewares: RequestHandler[],
+): MethodDecorator {
     const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
     if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
         middlewares.unshift(routeOrMiddleware);

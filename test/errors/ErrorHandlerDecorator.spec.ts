@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Giuseppe } from '../../src';
 import { Controller } from '../../src/core/controller/GiuseppeApiController';
-import { Get } from '../../src/core/routes';
+import { Get } from '../../src/core/routes/Get';
 import {
     ErrorHandlerWrongArgumentsError,
     ErrorHandlerWrongArgumentTypesError,
@@ -145,7 +145,7 @@ describe('ErrorHandlerDecorators', () => {
             giuseppe = new Giuseppe();
 
         giuseppe.router = router as any;
-        giuseppe.start();
+        giuseppe.configureRouter();
 
         router.routes['/'].apply(null, [{}, {}]);
     });
@@ -174,7 +174,7 @@ describe('ErrorHandlerDecorators', () => {
             errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
         giuseppe.router = router as any;
-        giuseppe.start();
+        giuseppe.configureRouter();
 
         const spy = jest.fn(),
             spy2 = jest.fn();

@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { ControllerDefinition } from './controller/ControllerDefinition';
+import { LoadingOptions } from './controller/LoadingOptions';
 import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
 import { DefinitionNotRegisteredError, DuplicatePluginError } from './errors';
 import { ErrorHandlerFunction } from './errors/ControllerErrorHandler';
@@ -18,7 +19,9 @@ import { ReturnType } from './routes/ReturnType';
 import { HttpMethod, RouteDefinition } from './routes/RouteDefinition';
 import { RouteModificator } from './routes/RouteModificator';
 import { ControllerMetadata } from './utilities/ControllerMetadata';
-import { Request, RequestHandler, Response, Router } from 'express';
+import * as express from 'express';
+import { Express, Request, RequestHandler, Response, Router } from 'express';
+import { join } from 'path';
 
 interface RouteRegisterInformation {
     route: GiuseppeRoute;
@@ -66,7 +69,9 @@ export class GiuseppeRegistrar {
  */
 export class Giuseppe {
     public static readonly registrar: GiuseppeRegistrar = new GiuseppeRegistrar();
+    public expressApp: Express = express();
     public router: Router = Router();
+
     private plugins: GiuseppePlugin[] = [];
     private routes: { [id: string]: RouteRegisterInformation } = {};
 
@@ -124,30 +129,76 @@ export class Giuseppe {
         this.registerPlugin(new GiuseppeCorePlugin());
     }
 
-    public registerPlugin(plugin: GiuseppePlugin): void {
+    public registerPlugin(plugin: GiuseppePlugin): this {
         if (this.plugins.find(o => o.name === plugin.name)) {
             throw new DuplicatePluginError(plugin.name);
         }
-        this._pluginController = this._pluginParameters = this._pluginRouteModificators = this._pluginRoutes = this._returnTypes = null;
+
+        this._pluginController = null;
+        this._pluginParameters = null;
+        this._pluginRouteModificators = null;
+        this._pluginRoutes = null;
+        this._returnTypes = null;
+
         plugin.initialize(this);
         this.plugins.push(plugin);
+        return this;
     }
 
-    public start(baseUrl: string = ''): Router {
+    public start(port: number = 8080, baseUrl: string = '', hostname?: string, callback?: Function): void {
+        const router = this.configureRouter(baseUrl);
+        this.expressApp.use(router);
+        this.expressApp.listen.apply(this.expressApp, [port, hostname, callback].filter(Boolean));
+    }
+
+    public async loadAndStart(
+        loadingOptions: LoadingOptions,
+        port: number = 8080,
+        baseUrl: string = '',
+        hostname?: string,
+        callback?: Function,
+    ): Promise<void> {
+        const router = await this.loadAndConfigureRouter(loadingOptions, baseUrl);
+        this.expressApp.use(router);
+        this.expressApp.listen.apply(this.expressApp, [port, hostname, callback].filter(Boolean));
+    }
+
+    public configureRouter(baseUrl: string = ''): Router {
         this.createRoutes(baseUrl);
         this.registerRoutes();
         return this.router;
     }
 
-    // TODO: public async loadFolderAndStart(
-    //     loadingOptions: LoadingOptions,
-    //     baseUrl: string = '',
-    //     router: Router = Router(),
-    // ): Promise<Router> {
-    //     // tslint:disable-next-line
-    //     console.log(loadingOptions, baseUrl);
-    //     return router;
-    // }
+    public async loadAndConfigureRouter(
+        { folderPath, root = process.cwd(), recursive = false, matchRegExp = /(.*)[.]js$/ }: LoadingOptions,
+        baseUrl: string = '',
+    ): Promise<Router> {
+        const filewalker = require('filewalker');
+
+        return new Promise<Router>((resolve, reject) => {
+            const controllersPath = join(root, folderPath);
+            console.info(`Load controllers from path '${controllersPath}' ${recursive ? '' : 'non '}recursive.`);
+
+            filewalker(controllersPath, { recursive, matchRegExp })
+                .on('error', err => {
+                    console.error(`Error happened during loading controllers from path: ${err}`);
+                    reject(err);
+                })
+                .on('file', controller => {
+                    try {
+                        console.info(`Loading controller '${controller}'.`);
+                        require(join(controllersPath, controller));
+                    } catch (e) {
+                        console.error(`Error happened during load of the '${controller}' controller: ${e}`);
+                        reject(e);
+                    }
+                })
+                .on('done', () => {
+                    resolve(this.configureRouter(baseUrl));
+                })
+                .walk();
+        });
+    }
 
     private createRoutes(baseUrl: string): void {
         const url = baseUrl.startsWith('/') ? baseUrl.substring(1) : baseUrl;
@@ -155,8 +206,8 @@ export class Giuseppe {
         for (const ctrl of Giuseppe.registrar.controller) {
             this.checkPluginRegistration(ctrl);
 
-            const meta = new ControllerMetadata(ctrl.ctrlTarget.prototype),
-                routes = ctrl.createRoutes(url);
+            const meta = new ControllerMetadata(ctrl.ctrlTarget.prototype);
+            const routes = ctrl.createRoutes(url);
 
             let ctrlRoutes: GiuseppeRoute[] = [];
 
@@ -191,23 +242,30 @@ export class Giuseppe {
     private registerRoutes(): void {
         Object.keys(this.routes)
             .map(k => this.routes[k])
-            .reduce((segmentSorted, route) => {
+            .reduce(
+            (segmentSorted, route) => {
                 (segmentSorted[route.segments] || (segmentSorted[route.segments] = [])).push(route);
                 return segmentSorted;
-            }, [] as RouteRegisterInformation[][])
+            },
+            [] as RouteRegisterInformation[][],
+        )
             .filter(Boolean)
             .reverse()
             .reduce(
             (routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcards - r2.wildcards)),
             [] as RouteRegisterInformation[])
-            .forEach(r => this.router[HttpMethod[r.route.method]](`/${r.route.url}`, ...r.route.middlewares, this.createRouteWrapper(r)));
+            .forEach(r => this.router[HttpMethod[r.route.method]](
+                `/${r.route.url}`,
+                ...r.route.middlewares,
+                this.createRouteWrapper(r),
+            ));
     }
 
     private createRouteWrapper(routeInfo: RouteRegisterInformation): RequestHandler {
-        const meta = new ControllerMetadata(routeInfo.ctrl.prototype),
-            params = meta.parameters(routeInfo.route.name),
-            returnTypeHandler = new ReturnTypeHandler(this.returnTypes),
-            ctrlInstance = new (routeInfo as any).ctrl();
+        const meta = new ControllerMetadata(routeInfo.ctrl.prototype);
+        const params = meta.parameters(routeInfo.route.name);
+        const returnTypeHandler = new ReturnTypeHandler(this.returnTypes);
+        const ctrlInstance = new (routeInfo as any).ctrl();
 
         return async (req: Request, res: Response) => {
             const paramValues: any[] = [];

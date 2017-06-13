@@ -4,11 +4,14 @@ import {
     GiuseppePlugin,
     ParameterDefinitionConstructor,
     RouteDefinitionConstructor,
-    RouteModificatorConstructor,
 } from '../GiuseppePlugin';
 import { ReturnType } from '../routes/ReturnType';
 import { GiuseppeApiController } from './controller/GiuseppeApiController';
+import { GiuseppeBodyParameter } from './parameters/Body';
+import { GiuseppeCookieParameter } from './parameters/Cookie';
+import { GiuseppeHeaderParameter } from './parameters/Header';
 import { GiuseppeQueryParameter } from './parameters/Query';
+import { GiuseppeUrlParameter } from './parameters/UrlParam';
 import { JsonDefaultReturnType } from './returnTypes/JsonDefaultReturnType';
 import { GiuseppeDeleteRoute } from './routes/Delete';
 import { GiuseppeGetRoute } from './routes/Get';
@@ -20,7 +23,7 @@ export class GiuseppeCorePlugin implements GiuseppePlugin {
     public readonly returnTypeHandler: ReturnType<any>[] = [];
     public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
     public readonly routeDefinitions: RouteDefinitionConstructor[] = [];
-    public readonly routeModificators: RouteModificatorConstructor[] = [];
+    public readonly routeModificators: null = null;
     public readonly parameterDefinitions: ParameterDefinitionConstructor[] = [];
 
     public get name(): string {
@@ -39,5 +42,9 @@ export class GiuseppeCorePlugin implements GiuseppePlugin {
         this.routeDefinitions.push(GiuseppeHeadRoute);
 
         this.parameterDefinitions.push(GiuseppeQueryParameter);
+        this.parameterDefinitions.push(GiuseppeUrlParameter);
+        this.parameterDefinitions.push(GiuseppeBodyParameter);
+        this.parameterDefinitions.push(GiuseppeHeaderParameter);
+        this.parameterDefinitions.push(GiuseppeCookieParameter);
     }
 }

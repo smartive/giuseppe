@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Giuseppe } from '../../../src/';
 import { Controller } from '../../../src/core/controller/GiuseppeApiController';
-import { Get } from '../../../src/core/routes';
+import { Get } from '../../../src/core/routes/Get';
 import { DefinitionNotRegisteredError } from '../../../src/errors';
 
 describe('Core controller', () => {
@@ -90,7 +90,7 @@ describe('Core controller', () => {
             class Ctrl { }
 
             const fn = () => {
-                giuseppe.start();
+                giuseppe.configureRouter();
             };
 
             expect(fn).toThrow(DefinitionNotRegisteredError);
