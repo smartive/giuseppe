@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-
 function isNullOrUndefined(value: any): boolean {
     return value === null || value === undefined;
 }
@@ -30,7 +28,9 @@ export type Validator = <T>(value: T) => boolean;
  * @param {number} [max] - Maximum length of the string.
  * @returns {Validator} - Validator function for the given parameters.
  */
-export function isString({ allowEmpty = false, min, max }: { allowEmpty?: boolean, min?: number, max?: number } = {}): Validator {
+export function isString(
+    { allowEmpty = false, min, max }: { allowEmpty?: boolean, min?: number, max?: number } = {},
+): Validator {
     return (value: string) => {
         if (isNullOrUndefined(value) || typeof value !== 'string') {
             return false;
@@ -85,7 +85,8 @@ export function isNumber({ min, max, multipleOf }: { min?: number, max?: number,
  * @returns {Validator} - Validator function for the given parameters.
  */
 export function isArray(
-    { min, max, type, validator }: { min?: number, max?: number, type?: Function | Function[], validator?: Validator | Validator[] } = {},
+    { min, max, type, validator }:
+        { min?: number, max?: number, type?: Function | Function[], validator?: Validator | Validator[] } = {},
 ): Validator {
     return (value: any[]) => {
         if (isNullOrUndefined(value) || !Array.isArray(value)) {

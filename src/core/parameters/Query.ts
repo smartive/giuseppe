@@ -12,7 +12,12 @@ export function Query(
         required,
         validator,
         factory,
-    }: { alias?: string | string[], required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
+    }: {
+            alias?: string | string[],
+            required?: boolean,
+            validator?: ParameterValidator,
+            factory?: ParameterFactory<any>,
+        } = {},
 ): ParameterDecorator {
     return (target: Object, propertyKey: string, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(

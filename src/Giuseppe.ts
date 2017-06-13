@@ -133,7 +133,13 @@ export class Giuseppe {
         if (this.plugins.find(o => o.name === plugin.name)) {
             throw new DuplicatePluginError(plugin.name);
         }
-        this._pluginController = this._pluginParameters = this._pluginRouteModificators = this._pluginRoutes = this._returnTypes = null;
+
+        this._pluginController = null;
+        this._pluginParameters = null;
+        this._pluginRouteModificators = null;
+        this._pluginRoutes = null;
+        this._returnTypes = null;
+
         plugin.initialize(this);
         this.plugins.push(plugin);
         return this;
@@ -248,7 +254,11 @@ export class Giuseppe {
             .reduce(
             (routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcards - r2.wildcards)),
             [] as RouteRegisterInformation[])
-            .forEach(r => this.router[HttpMethod[r.route.method]](`/${r.route.url}`, ...r.route.middlewares, this.createRouteWrapper(r)));
+            .forEach(r => this.router[HttpMethod[r.route.method]](
+                `/${r.route.url}`,
+                ...r.route.middlewares,
+                this.createRouteWrapper(r),
+            ));
     }
 
     private createRouteWrapper(routeInfo: RouteRegisterInformation): RequestHandler {

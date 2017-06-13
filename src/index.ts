@@ -19,7 +19,14 @@ export { Controller } from './core/controller/GiuseppeApiController';
 export { Body } from './core/parameters/Body';
 export { Cookie } from './core/parameters/Cookie';
 export { Header } from './core/parameters/Header';
-export { isArray, isNumber, isString, ParameterFactory, ParameterValidator, Validator } from './core/parameters/ParameterAdditions';
+export {
+    isArray,
+    isNumber,
+    isString,
+    ParameterFactory,
+    ParameterValidator,
+    Validator,
+} from './core/parameters/ParameterAdditions';
 export { Query } from './core/parameters/Query';
 export { UrlParam } from './core/parameters/UrlParam';
 

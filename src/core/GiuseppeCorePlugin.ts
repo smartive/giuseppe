@@ -23,7 +23,7 @@ export class GiuseppeCorePlugin implements GiuseppePlugin {
     public readonly returnTypeHandler: ReturnType<any>[] = [];
     public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];
     public readonly routeDefinitions: RouteDefinitionConstructor[] = [];
-    public readonly routeModificators = null;
+    public readonly routeModificators: null = null;
     public readonly parameterDefinitions: ParameterDefinitionConstructor[] = [];
 
     public get name(): string {
