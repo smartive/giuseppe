@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.1]
+### Fixed
+- Urls are not sorted the wrong way anymore (when params and `*` are present)
+
 ## [1.2.0]
 ### Added
 - Versioning for routes and controllers.
@@ -105,7 +109,8 @@ No news :-)
 
 
 
-[Unreleased]: https://github.com/smartive/giuseppe/compare/v1.2.0...master
+[Unreleased]: https://github.com/smartive/giuseppe/compare/v1.2.1...master
+[1.2.1]: https://github.com/smartive/giuseppe/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/smartive/giuseppe/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/smartive/giuseppe/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/smartive/giuseppe/compare/v1.0.0...v1.1.0
