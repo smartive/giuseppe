@@ -5,7 +5,7 @@ import {
     GenericRouteError,
     HeadHasWrongReturnTypeError,
     HttpVerbNotSupportedError,
-    WrongReturnTypeError
+    WrongReturnTypeError,
 } from '../errors/Errors';
 import { ControllerRegistration } from '../models/ControllerRegistration';
 import { RouteRegistration } from '../models/RouteRegistration';
@@ -18,10 +18,10 @@ import { Configuration } from './Configuration';
 import { IoCSymbols } from './IoCSymbols';
 import { ParamHandler } from './ParamHandler';
 import { RouteHandler } from './RouteHandler';
+import { createHash } from 'crypto';
 import { Request, RequestHandler, Response, Router } from 'express';
 import httpStatus = require('http-status');
 import { inject, injectable } from 'inversify';
-import { createHash } from 'crypto';
 
 const NON_JSON_TYPES = [String, Number, Boolean],
     defaultVersion = VersionInformation.create('default', { from: 1 });
@@ -34,6 +34,7 @@ class RouteInformation {
     public static headerName: string;
     public readonly wildcardCount: number;
     public readonly segmentCount: number;
+    public readonly urlParamCount: number;
     public readonly versions: RouteVersion[] = [];
 
     public get routeId(): string {
@@ -43,6 +44,7 @@ class RouteInformation {
     constructor(private paramHandler: ParamHandler, public routeUrl: string, public method: RouteMethod) {
         this.wildcardCount = this.routeUrl.split('*').length - 1;
         this.segmentCount = this.routeUrl.split('/').length;
+        this.urlParamCount = this.routeUrl.split('/').filter(s => s.indexOf(':') >= 0).length;
     }
 
     public register(router: Router): void {
@@ -235,15 +237,11 @@ export class DefaultRouteHandler implements RouteHandler {
     }
 
     public registerRoutes(router: Router): Router {
+        const score = (route: RouteInformation) => route.segmentCount * 1000 - route.urlParamCount * 0.001 - route.wildcardCount;
+
         Object.keys(this.routes)
             .map(k => this.routes[k])
-            .reduce((segmentSorted, route) => {
-                (segmentSorted[route.segmentCount] || (segmentSorted[route.segmentCount] = [])).push(route);
-                return segmentSorted;
-            }, [])
-            .filter(Boolean)
-            .reverse()
-            .reduce((routeList, segments) => routeList.concat(segments.sort((r1, r2) => r1.wildcardCount - r2.wildcardCount)), [])
+            .sort((a, b) => score(b) - score(a))
             .forEach(r => r.register(router));
 
         return router;

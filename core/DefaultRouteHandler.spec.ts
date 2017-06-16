@@ -553,6 +553,33 @@ describe('DefaultRouteHandler', () => {
             spy.getCall(3).should.be.calledWith('/2/func1');
         });
 
+        it('should order urls with less parameters before such with more parameters', () => {
+            @Controller()
+            class Ctrl {
+                @Get('url1/:id/:type')
+                public funcGet3(): void {
+                }
+
+                @Get('url1/fixedvalue/otherstuff')
+                public funcGet(): void {
+                }
+
+                @Get('url1/:id/otherstuff')
+                public funcGet2(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(3);
+
+            spy.getCall(0).should.be.calledWith('/url1/fixedvalue/otherstuff');
+            spy.getCall(1).should.be.calledWith('/url1/:id/otherstuff');
+            spy.getCall(2).should.be.calledWith('/url1/:id/:type');
+        });
+
         it('should order less wildcarded urls before more wildcarded ones', () => {
             @Controller('1')
             class Ctrl {
@@ -573,6 +600,78 @@ describe('DefaultRouteHandler', () => {
 
             spy.getCall(0).should.be.calledWith('/1/func1/foo/*/bar');
             spy.getCall(1).should.be.calledWith('/1/func1/*/2/*');
+        });
+
+        it('should order the urls correctly (all cases)', () => {
+            @Controller()
+            class Ctrl {
+                @Get('*')
+                public funcGet5(): void {
+                }
+
+                @Get('url/:two/:params')
+                public funcGet3(): void {
+                }
+                
+                @Get('url/:two/*')
+                public funcGet7(): void {
+                }
+                
+                @Get('url/foo/bar')
+                public funcGet9(): void {
+                }
+                
+                @Get('url/*/*')
+                public funcGet8(): void {
+                }
+
+                @Get('url/with/many/segments/there')
+                public funcGet(): void {
+                }
+                
+                @Get('url/with/:many/segments/there')
+                public funcGet6(): void {
+                }
+
+                @Get('url/with/*/segments/there')
+                public funcGet4(): void {
+                }
+
+                @Get('url/*/:param')
+                public funcGet11(): void {
+                }
+                
+                @Get('url/foo/:param')
+                public funcGet12(): void {
+                }
+
+                @Get('url/*/param')
+                public funcGet10(): void {
+                }
+                
+                @Get('url/:one/param')
+                public funcGet2(): void {
+                }
+            }
+
+            registerControllers('', router);
+
+            let spy = router.get as SinonSpy;
+
+            spy.callCount.should.equal(12);
+
+            spy.getCall(0).should.be.calledWith('/url/with/many/segments/there');
+            spy.getCall(1).should.be.calledWith('/url/with/:many/segments/there');
+            spy.getCall(2).should.be.calledWith('/url/with/*/segments/there');
+            spy.getCall(3).should.be.calledWith('/url/foo/bar');
+            spy.getCall(4).should.be.calledWith('/url/foo/:param');
+            spy.getCall(5).should.be.calledWith('/url/:one/param');
+            spy.getCall(6).should.be.calledWith('/url/:two/:params');
+            spy.getCall(7).should.be.calledWith('/url/*/param');
+            spy.getCall(8).should.be.calledWith('/url/*/:param');
+            spy.getCall(9).should.be.calledWith('/url/:two/*');
+            spy.getCall(10).should.be.calledWith('/url/*/*');
+            spy.getCall(11).should.be.calledWith('/*');
         });
 
         it('should order a list of urls correctly', () => {
