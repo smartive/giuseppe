@@ -1,10 +1,11 @@
 import 'reflect-metadata';
+
 import { ControllerErrorHandler, ErrorHandlerWrongArgumentsError } from '../../src/errors';
 
 describe('ControllerErrorHandler', () => {
 
-    let manager: ControllerErrorHandler,
-        mock: jest.Mock<any>;
+    let manager: ControllerErrorHandler;
+    let mock: jest.Mock<any>;
 
     beforeAll(() => {
         mock = jest.fn();
@@ -67,9 +68,9 @@ describe('ControllerErrorHandler', () => {
     });
 
     it('should call correct handler for a specific error', () => {
-        const spy = jest.fn(),
-            spy2 = jest.fn(),
-            spy3 = jest.fn();
+        const spy = jest.fn();
+        const spy2 = jest.fn();
+        const spy3 = jest.fn();
 
         manager.addHandler(spy, ErrorHandlerWrongArgumentsError);
         manager.addHandler(spy2, TypeError);

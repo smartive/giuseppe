@@ -1,5 +1,7 @@
 import 'reflect-metadata';
+
 import * as httpStatus from 'http-status';
+
 import { JsonDefaultReturnType } from '../../../src/core/returnTypes/JsonDefaultReturnType';
 
 describe('JsonDefaultReturnType', () => {
@@ -60,9 +62,9 @@ describe('JsonDefaultReturnType', () => {
 
         for (const valueCase of cases) {
             it(`should be able to get a value for: ` +
-                `${valueCase.value}; constructor: ${valueCase.value ? valueCase.value.constructor.name : valueCase.value} `, () => {
-                    expect(handler.getValue(valueCase.value)).toBe(valueCase.result);
-                });
+               `${valueCase.value}; constructor: ${valueCase.value ? valueCase.value.constructor.name : valueCase.value} `,
+               () => { expect(handler.getValue(valueCase.value)).toBe(valueCase.result); },
+            );
         }
 
     });

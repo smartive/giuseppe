@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { UrlHelper } from '../../src/utilities/UrlHelper';
 
 describe('UrlHelper', () => {
@@ -26,7 +27,7 @@ describe('UrlHelper', () => {
         });
 
         it('should return a root url correctly', () => {
-            expect(UrlHelper.buildUrl('api', '~/foobar')).toBe('foobar');
+            expect(UrlHelper.buildUrl('api', '/foobar')).toBe('api/foobar');
         });
 
         it('should return a built url', () => {

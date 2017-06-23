@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { Giuseppe } from '../../src';
 import { Controller } from '../../src/core/controller/GiuseppeApiController';
 import { Get } from '../../src/core/routes/Get';
@@ -141,8 +142,8 @@ describe('ErrorHandlerDecorators', () => {
             }
         }
 
-        const router = new TestRouter(),
-            giuseppe = new Giuseppe();
+        const router = new TestRouter();
+        const giuseppe = new Giuseppe();
 
         giuseppe.router = router as any;
         giuseppe.configureRouter();
@@ -169,15 +170,15 @@ describe('ErrorHandlerDecorators', () => {
             }
         }
 
-        const router = new TestRouter(),
-            giuseppe = new Giuseppe(),
-            errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
+        const router = new TestRouter();
+        const giuseppe = new Giuseppe();
+        const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
         giuseppe.router = router as any;
         giuseppe.configureRouter();
 
-        const spy = jest.fn(),
-            spy2 = jest.fn();
+        const spy = jest.fn();
+        const spy2 = jest.fn();
 
         errorManager.addHandler(spy, Error);
         errorManager.addHandler(spy2, FoobarError);

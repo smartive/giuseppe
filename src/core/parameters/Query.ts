@@ -1,9 +1,11 @@
 import 'reflect-metadata';
+
+import { Request } from 'express';
+
 import { Giuseppe } from '../../Giuseppe';
 import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { GiuseppeBaseParameter } from './GiuseppeBaseParameter';
 import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
-import { Request } from 'express';
 
 export function Query(
     name: string,
@@ -12,7 +14,8 @@ export function Query(
         required,
         validator,
         factory,
-    }: {
+    }:
+        {
             alias?: string | string[],
             required?: boolean,
             validator?: ParameterValidator,

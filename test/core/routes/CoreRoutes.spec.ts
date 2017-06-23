@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { Giuseppe } from '../../../src/';
 import { Controller } from '../../../src/core/controller/GiuseppeApiController';
 import { Delete, GiuseppeDeleteRoute } from '../../../src/core/routes/Delete';
@@ -129,8 +130,8 @@ describe('Core routes', () => {
                 });
 
                 it('should register the correct middlewares 3', () => {
-                    const fn = () => { },
-                        fn2 = () => { };
+                    const fn = () => { };
+                    const fn2 = () => { };
                     class Ctrl {
                         @run.decorator(fn, fn2)
                         public ctrlFunction(): void { }
@@ -147,8 +148,8 @@ describe('Core routes', () => {
                 });
 
                 it('should register the correct middlewares 4', () => {
-                    const fn = () => { },
-                        fn2 = () => { };
+                    const fn = () => { };
+                    const fn2 = () => { };
                     class Ctrl {
                         @run.decorator('foobar', fn, fn2)
                         public ctrlFunction(): void { }
@@ -207,8 +208,8 @@ describe('Core routes', () => {
 
                     expect(meta.routes().length).toBe(1);
 
-                    const route = meta.routes()[0],
-                        generated = route.createRoutes(meta, '', [])[0];
+                    const route = meta.routes()[0];
+                    const generated = route.createRoutes(meta, '', [])[0];
 
                     expect(generated.id).toBe(`${run.name}_TheUrl`);
                 });
@@ -223,8 +224,8 @@ describe('Core routes', () => {
 
                     expect(meta.routes().length).toBe(1);
 
-                    const route = meta.routes()[0],
-                        generated = route.createRoutes(meta, '', [])[0];
+                    const route = meta.routes()[0];
+                    const generated = route.createRoutes(meta, '', [])[0];
 
                     expect(generated.name).toBe('yourFancyWordedFunction');
                 });
@@ -253,8 +254,8 @@ describe('Core routes', () => {
 
                     expect(meta.routes().length).toBe(1);
 
-                    const route = meta.routes()[0],
-                        generated = route.createRoutes(meta, '', [])[0];
+                    const route = meta.routes()[0];
+                    const generated = route.createRoutes(meta, '', [])[0];
 
                     expect(generated.method).toBe(run.method);
                 });
@@ -269,8 +270,8 @@ describe('Core routes', () => {
 
                     expect(meta.routes().length).toBe(1);
 
-                    const route = meta.routes()[0],
-                        generated = route.createRoutes(meta, '', [])[0];
+                    const route = meta.routes()[0];
+                    const generated = route.createRoutes(meta, '', [])[0];
 
                     expect(generated.function).toBe(Ctrl.prototype.ctrlFunction);
                 });
@@ -286,8 +287,8 @@ describe('Core routes', () => {
 
                     expect(meta.routes().length).toBe(1);
 
-                    const route = meta.routes()[0],
-                        generated = route.createRoutes(meta, '', [])[0];
+                    const route = meta.routes()[0];
+                    const generated = route.createRoutes(meta, '', [])[0];
 
                     expect(generated.middlewares[0]).toBe(fn);
                 });
@@ -296,8 +297,8 @@ describe('Core routes', () => {
 
             describe(`Giuseppe start`, () => {
 
-                let giuseppe: Giuseppe,
-                    spy: jest.SpyInstance<any>;
+                let giuseppe: Giuseppe;
+                let spy: jest.SpyInstance<any>;
 
                 beforeEach(() => {
                     giuseppe = new Giuseppe();
@@ -334,8 +335,8 @@ describe('Core routes', () => {
                 });
 
                 it('should register the correct middlewares', () => {
-                    const fn = () => { },
-                        fn2 = () => { };
+                    const fn = () => { };
+                    const fn2 = () => { };
                     @Controller('api')
                     class Ctrl {
                         @run.decorator('foobar', fn, fn2)

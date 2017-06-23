@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { Request, Response } from 'express';
 import httpStatus = require('http-status');
 
@@ -59,15 +60,16 @@ export class ControllerErrorHandler {
      * @param {Error} error - Error object that was thrown.
      */
     public handleError<T extends Error>(context: any, request: Request, response: Response, error: T): void {
-        if (!(error instanceof Error)) {
-            error = new Error(error as any) as T;
+        let err: Error = error;
+        if (!(err instanceof Error)) {
+            err = new Error(err as any) as T;
         }
 
-        let proto = Object.getPrototypeOf(error);
+        let proto = Object.getPrototypeOf(err);
         while (proto) {
             const type = proto.constructor;
             if (this.handlers[type.name]) {
-                this.handlers[type.name].apply(context, [request, response, error]);
+                this.handlers[type.name].apply(context, [request, response, err]);
                 break;
             }
             proto = Object.getPrototypeOf(proto);

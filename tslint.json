@@ -31,6 +31,13 @@
             true,
             "as-needed"
         ],
+        "ter-indent": [
+            true,
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
         "typedef": [
             true,
             "call-signature",

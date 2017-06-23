@@ -1,6 +1,12 @@
 import 'reflect-metadata';
+
+import { IRouterMatcher, Router } from 'express';
+
 import { Giuseppe } from '../src';
 import { ControllerDefinition } from '../src/controller/ControllerDefinition';
+import { Controller } from '../src/core/controller/GiuseppeApiController';
+import { Get } from '../src/core/routes/Get';
+import { GiuseppeRegistrar } from '../src/Giuseppe';
 import { ParameterDefinition } from '../src/parameter/ParameterDefinition';
 import { RouteDefinition } from '../src/routes/RouteDefinition';
 import { RouteModificator } from '../src/routes/RouteModificator';
@@ -75,7 +81,7 @@ describe('Giuseppe', () => {
                 getValue: () => '',
                 index: 0,
                 name: 'name',
-                type: 'type',
+                type: String,
             };
 
             Giuseppe.registrar.registerParameter(Ctrl, 'func', param);
@@ -227,24 +233,216 @@ describe('Giuseppe', () => {
 
         describe('configureRouter()', () => {
 
-            it('should register a route with the correct url');
+            let giuseppe: Giuseppe;
+            let spy: jest.SpyInstance<IRouterMatcher<Router>> | null;
 
-            it('should register a root route with the correct url');
+            beforeEach(() => {
+                giuseppe = new Giuseppe();
+            });
 
-            it('should register a root controller route with the correct url');
+            afterEach(() => {
+                (Giuseppe as any).registrar = new GiuseppeRegistrar();
 
-            it('should register a root controller and a root route with the correct url');
+                if (spy) {
+                    spy.mockReset();
+                    spy.mockRestore();
+                    spy = null;
+                }
+            });
 
-            it('should register a higher segmented route first');
+            it('should use the correct baseUrl', () => {
+                @Controller()
+                class Ctrl {
+                    @Get('getFunc')
+                    public func(): void { }
+                }
 
-            it('should register a lower wildcarded route first');
+                spy = jest.spyOn(giuseppe.router, 'get');
 
-            it('should not contain double slashes in routes');
+                giuseppe.configureRouter('baseUrl');
 
-            it('should throw on a duplicate route');
+                expect(spy).toHaveBeenCalled();
+                expect(spy.mock.calls[0][0]).toBe('/baseUrl/getFunc');
+            });
 
-            it('should throw on duplicate root routes');
+            it('should use a controller prefix correctly', () => {
+                @Controller('prefix')
+                class Ctrl {
+                    @Get('getFunc')
+                    public func(): void { }
+                }
 
+                spy = jest.spyOn(giuseppe.router, 'get');
+
+                giuseppe.configureRouter();
+
+                expect(spy).toHaveBeenCalled();
+                expect(spy.mock.calls[0][0]).toBe('/prefix/getFunc');
+            });
+
+            it('should use baseUrl and controller prefix correctly', () => {
+                @Controller('prefix')
+                class Ctrl {
+                    @Get('getFunc')
+                    public func(): void { }
+                }
+
+                spy = jest.spyOn(giuseppe.router, 'get');
+
+                giuseppe.configureRouter('baseUrl');
+
+                expect(spy).toHaveBeenCalled();
+                expect(spy.mock.calls[0][0]).toBe('/baseUrl/prefix/getFunc');
+            });
+
+            it('should register a higher segmented route first', () => {
+                @Controller()
+                class Ctrl {
+                    @Get('/this/has/four/segments')
+                    public func(): void { }
+
+                    @Get('/this/has/five/segments/yo')
+                    public func2(): void { }
+                }
+
+                spy = jest.spyOn(giuseppe.router, 'get');
+
+                giuseppe.configureRouter();
+
+                expect(spy.mock.calls[0][0]).toBe('/this/has/five/segments/yo');
+                expect(spy.mock.calls[1][0]).toBe('/this/has/four/segments');
+            });
+
+            it('should register a lower parameterized route first', () => {
+                @Controller()
+                class Ctrl {
+                    @Get('/url/:id/:type')
+                    public func(): void { }
+
+                    @Get('/this/:id/notparam')
+                    public func2(): void { }
+
+                    @Get('/this/no/hotdog')
+                    public func3(): void { }
+                }
+
+                spy = jest.spyOn(giuseppe.router, 'get');
+
+                giuseppe.configureRouter();
+
+                expect(spy.mock.calls[0][0]).toBe('/this/no/hotdog');
+                expect(spy.mock.calls[1][0]).toBe('/this/:id/notparam');
+                expect(spy.mock.calls[2][0]).toBe('/url/:id/:type');
+            });
+
+            it('should register a lower wildcarded route first', () => {
+                @Controller()
+                class Ctrl {
+                    @Get('func1/*/2/*')
+                    public func(): void {
+                    }
+
+                    @Get('func1/foo/*/bar')
+                    public func2(): void {
+                    }
+                }
+
+                spy = jest.spyOn(giuseppe.router, 'get');
+
+                giuseppe.configureRouter();
+
+                expect(spy.mock.calls[0][0]).toBe('/func1/foo/*/bar');
+                expect(spy.mock.calls[1][0]).toBe('/func1/*/2/*');
+            });
+
+            it('should not contain double slashes in routes', () => {
+                @Controller('/')
+                class Ctrl {
+                    @Get('/foo//bar')
+                    public func(): void {
+                    }
+                }
+
+                spy = jest.spyOn(giuseppe.router, 'get');
+
+                giuseppe.configureRouter('/');
+
+                expect(spy.mock.calls[0][0]).toBe('/foo/bar');
+            });
+
+            it('should throw on a duplicate route', () => {
+                @Controller()
+                class Ctrl {
+                    @Get('getFunc')
+                    public func(): void { }
+
+                    @Get('getFunc')
+                    public func2(): void { }
+                }
+
+                const fn = () => giuseppe.configureRouter('baseUrl');
+
+                expect(fn).toThrowErrorMatchingSnapshot();
+            });
+
+            it('should order the urls correctly (all cases)', () => {
+                @Controller()
+                class Ctrl {
+                    @Get('*')
+                    public funcGet5(): void {
+                    }
+
+                    @Get('url/:two/:params')
+                    public funcGet3(): void {
+                    }
+
+                    @Get('url/:two/*')
+                    public funcGet7(): void {
+                    }
+
+                    @Get('url/foo/bar')
+                    public funcGet9(): void {
+                    }
+
+                    @Get('url/*/*')
+                    public funcGet8(): void {
+                    }
+
+                    @Get('url/with/many/segments/there')
+                    public funcGet(): void {
+                    }
+
+                    @Get('url/with/:many/segments/there')
+                    public funcGet6(): void {
+                    }
+
+                    @Get('url/with/*/segments/there')
+                    public funcGet4(): void {
+                    }
+
+                    @Get('url/*/:param')
+                    public funcGet11(): void {
+                    }
+
+                    @Get('url/foo/:param')
+                    public funcGet12(): void {
+                    }
+
+                    @Get('url/*/param')
+                    public funcGet10(): void {
+                    }
+
+                    @Get('url/:one/param')
+                    public funcGet2(): void {
+                    }
+                }
+
+                spy = jest.spyOn(giuseppe.router, 'get');
+
+                giuseppe.configureRouter();
+
+                expect(spy.mock.calls).toMatchSnapshot();
+            });
         });
 
     });

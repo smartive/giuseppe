@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import {
     ControllerDefinitionConstructor,
     Giuseppe,
@@ -15,8 +16,9 @@ describe('Plugin system', () => {
     describe('Giuseppe constructor', () => {
 
         it('should register the giuseppe core plugin', () => {
-            const mockFn = jest.fn(),
-                orig = Giuseppe.prototype.registerPlugin;
+            const mockFn = jest.fn();
+            const orig = Giuseppe.prototype.registerPlugin;
+
             Giuseppe.prototype.registerPlugin = mockFn;
 
             try {

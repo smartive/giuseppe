@@ -124,7 +124,8 @@ describe('Validators', () => {
 
         it('should validate multiple validators correctly', () => {
             expect(isArray({ validator: [isString({ min: 3 }), isString({ max: 5 })] })(['aaa', 'bbb', 'ccc'])).toBeTruthy();
-            expect(isArray({ validator: [isString({ min: 3 }), isString({ max: 5 })] })(['aaa', 'bbbbbb', 'ccc'])).toBeFalsy();
+            expect(isArray({ validator: [isString({ min: 3 }), isString({ max: 5 })] })(['aaa', 'bbbbbb', 'ccc']))
+                .toBeFalsy();
         });
 
     });

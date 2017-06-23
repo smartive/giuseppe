@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { Giuseppe } from '../../../src/';
 import { Controller } from '../../../src/core/controller/GiuseppeApiController';
 import { Get } from '../../../src/core/routes/Get';
@@ -62,8 +63,8 @@ describe('Core controller', () => {
         });
 
         it('should use the correct middlewares for multiple functions with a prefix', () => {
-            const fn = (req, res, next) => { next(); },
-                fn2 = (req, res, next) => { next(); };
+            const fn = (req, res, next) => { next(); };
+            const fn2 = (req, res, next) => { next(); };
             @Controller('foobar', fn, fn2)
             class Ctrl { }
 
@@ -73,8 +74,8 @@ describe('Core controller', () => {
         });
 
         it('should use the correct middlewares for multiple functions', () => {
-            const fn = (req, res, next) => { next(); },
-                fn2 = (req, res, next) => { next(); };
+            const fn = (req, res, next) => { next(); };
+            const fn2 = (req, res, next) => { next(); };
             @Controller(fn, fn2)
             class Ctrl { }
 
@@ -118,12 +119,12 @@ describe('Core controller', () => {
                 @Get('/barfoo')
                 public get2(): void { }
 
-                @Get('~/rootfoo')
+                @Get('/rootfoo')
                 public get3(): void { }
             }
 
-            const ctrl = Giuseppe.registrar.controller[0],
-                routes = ctrl.createRoutes('');
+            const ctrl = Giuseppe.registrar.controller[0];
+            const routes = ctrl.createRoutes('');
 
             let route = routes[0];
             expect(route.id).toBe('get_foobar');
@@ -134,8 +135,8 @@ describe('Core controller', () => {
             expect(route.url).toBe('api/barfoo');
 
             route = routes[2];
-            expect(route.id).toBe('get_~/rootfoo');
-            expect(route.url).toBe('rootfoo');
+            expect(route.id).toBe('get_/rootfoo');
+            expect(route.url).toBe('api/rootfoo');
         });
 
     });

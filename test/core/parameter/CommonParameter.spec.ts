@@ -1,21 +1,13 @@
 import 'reflect-metadata';
+
 import { Body, GiuseppeBodyParameter } from '../../../src/core/parameters/Body';
 import { Cookie, GiuseppeCookieParameter } from '../../../src/core/parameters/Cookie';
 import { GiuseppeBaseParameter } from '../../../src/core/parameters/GiuseppeBaseParameter';
 import { GiuseppeHeaderParameter, Header } from '../../../src/core/parameters/Header';
-import {
-    isNumber,
-    isString,
-    ParameterFactory,
-    ParameterValidator,
-} from '../../../src/core/parameters/ParameterAdditions';
+import { isNumber, isString, ParameterFactory, ParameterValidator } from '../../../src/core/parameters/ParameterAdditions';
 import { GiuseppeQueryParameter, Query } from '../../../src/core/parameters/Query';
 import { GiuseppeUrlParameter, UrlParam } from '../../../src/core/parameters/UrlParam';
-import {
-    ParameterParseError,
-    ParameterValidationFailedError,
-    RequiredParameterNotProvidedError,
-} from '../../../src/errors';
+import { ParameterParseError, ParameterValidationFailedError, RequiredParameterNotProvidedError } from '../../../src/errors';
 import { ControllerMetadata } from '../../../src/utilities/ControllerMetadata';
 
 interface ParamCase {
@@ -41,7 +33,7 @@ describe('Giuseppe parameter common', () => {
             class: GiuseppeQueryParameter,
             name: 'Query',
             alwaysRequired: false,
-            getRequestMock: value => ({ query: { 'name': value } }),
+            getRequestMock: value => ({ query: { name: value } }),
             getDecorator: name => Query(name),
             getInstance: (
                 name: string,
@@ -56,7 +48,7 @@ describe('Giuseppe parameter common', () => {
             class: GiuseppeUrlParameter,
             name: 'UrlParam',
             alwaysRequired: true,
-            getRequestMock: value => ({ params: { 'name': value } }),
+            getRequestMock: value => ({ params: { name: value } }),
             getDecorator: name => UrlParam(name),
             getInstance: (
                 name: string,
@@ -88,7 +80,7 @@ describe('Giuseppe parameter common', () => {
             alwaysRequired: false,
             getRequestMock: value => ({
                 get: name => {
-                    const foo = { 'name': value };
+                    const foo = { name: value };
                     return foo[name];
                 },
             }),
@@ -175,8 +167,8 @@ describe('Giuseppe parameter common', () => {
             });
 
             it('should throw on not provided required parameter', () => {
-                const instance = param.getInstance('name', String, 0, true),
-                    fn = () => instance.getValue(param.getRequestMock());
+                const instance = param.getInstance('name', String, 0, true);
+                const fn = () => instance.getValue(param.getRequestMock());
 
                 expect(fn).toThrow(RequiredParameterNotProvidedError);
             });
@@ -206,8 +198,8 @@ describe('Giuseppe parameter common', () => {
                     }
                 }
 
-                const instance = param.getInstance('name', Foobar, 0),
-                    fn = () => instance.getValue(param.getRequestMock('value'));
+                const instance = param.getInstance('name', Foobar, 0);
+                const fn = () => instance.getValue(param.getRequestMock('value'));
 
                 expect(fn).toThrow(ParameterParseError);
             });
@@ -242,8 +234,8 @@ describe('Giuseppe parameter common', () => {
                     }
                 }
 
-                const instance = param.getInstance('name', String, 0, false, null, raw => Foobar.create(raw)),
-                    fn = () => instance.getValue(param.getRequestMock('value'));
+                const instance = param.getInstance('name', String, 0, false, null, raw => Foobar.create(raw));
+                const fn = () => instance.getValue(param.getRequestMock('value'));
 
                 expect(fn).toThrow();
             });
