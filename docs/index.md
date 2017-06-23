@@ -26,7 +26,8 @@ To install this package, simply run
 
 [![NPM](https://nodei.co/npm/giuseppe.png?downloads=true&stars=true)](https://nodei.co/npm/giuseppe/)
 
-The suggested method would actually be: use the yeoman generator which we created @ [generator-giuseppe](http://giuseppe-generator.smartive.ch/).
+The suggested method would actually be: use the yeoman generator which we created @ 
+[generator-giuseppe](http://giuseppe-generator.smartive.ch/).
 It installs all dependencies and libraries that you need.
 
 When you use the manual way npm should install all typing dependencies.
@@ -35,6 +36,11 @@ They are listed in the `package.json` with the `@types` prefix.
 This package installs the transpiled `*.js` files instead of `*.ts` files, since the compiler tries
 to compile them everytime. The declaration files with the JSDocs are provided aswell so your 
 autocomplete does work as it should.
+
+## Migrate to new major versions
+
+If you are migrating from the 1.x version (or any other version for the future) please have a look at our
+[migration documents](./migration)
 
 ### tsconfig.json
 
@@ -72,8 +78,7 @@ that you use the [generator-giuseppe](http://giuseppe-generator.smartive.ch/) fo
 To start with a very simple "ping-pong" example, just use the following lines of code (app.ts):
 
 ```typescript
-import {Controller, Get, registerControllers} from 'giuseppe';
-import express = require('express');
+import { Controller, Get, Giuseppe } from 'giuseppe';
 
 @Controller()
 class PingPongController {
@@ -85,13 +90,9 @@ class PingPongController {
     
 }
 
-let app = express();
+const giusi = new Giuseppe();
 
-app.use(registerControllers('/api'));
-
-app.listen(8080, () => {
-    console.log('Up and running on port 8080');
-});
+giusi.start();
 ```
 
 If you run this basic example, the pingpong controller will be registered to the route
@@ -104,7 +105,7 @@ function is called.
 `controllers.ts`:
 
 ```typescript
-import {Controller, Get, Query} from 'giuseppe';
+import { Controller, Get, Query } from 'giuseppe';
 
 @Controller()
 export class PingPongController {
@@ -131,47 +132,39 @@ export class EchoController {
 
 ```typescript
 import './controllers';
-import {registerControllers} from 'giuseppe';
-import express = require('express');
+import { Giuseppe } from 'giuseppe';
 
-let app = express();
+const giusi = new Giuseppe();
 
-app.use(registerControllers('/api'));
-
-app.listen(8080, () => {
-    console.log('Up and running on port 8080');
-});
+giusi.start(8080, '/api');
 ```
 
 In the example above, the two controllers are registered in expressJS with the routes
 `/api/ping` and `/api/echo`. The echo route does listen to a `Query` parameter with the
 name `data`. If it's not provided, undefined is injected.
 
-This was a short example of the possiblities of giuseppe. Please find a more detailed version
-of the documentation in the [links at the start](#docs) and/or the `docs/` folder.
-
-#### Examples
-
-There are many examples located in the [examples](https://github.com/smartive/giuseppe/tree/master/examples) folder!
-Please have a look there for various use cases.
+This was a short example of the possiblities of giuseppe. Please find more details in the other topics of this
+documentation and the [API documentation](./api/).
 
 ## Testing
 
 If you checked out this repository (yay!) and installed all the dependencies, you
-can run the ninety-ish tests with
+can run the tests with
 
 ```typescript
 npm test
 ```
 
-If you get any errors, maybe you didn't install the dependencies. There is a `npm run bootstrap`
-command that will install them for you.
+If you get any errors, maybe you didn't install the dependencies.
 
 ## Contribute
 
 We're happy if you have any contributions! Every participation counts. Feel free to
 open pull requests, issues or use any other form of contribution. Maybe we'll
 set up a `CONTRIBUTING.md` file in the future. soon(tm).
+
+If you want to create a plugin for giuseppe, use the other yeoman generator @ 
+[generator-giuseppe-plugin](http://giuseppe-plugin-generator.smartive.ch/)
 
 [Full list of contributors](https://github.com/smartive/giuseppe/graphs/contributors)
 

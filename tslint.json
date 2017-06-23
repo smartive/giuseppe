@@ -27,6 +27,11 @@
             }
         ],
         "no-increment-decrement": false,
+        "no-trailing-whitespace": [
+            true,
+            "ignore-jsdoc",
+            "ignore-template-strings"
+        ],
         "ter-arrow-parens": [
             true,
             "as-needed"

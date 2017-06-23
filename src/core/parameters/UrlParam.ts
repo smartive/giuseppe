@@ -1,10 +1,24 @@
 import 'reflect-metadata';
+
+import { Request } from 'express';
+
 import { Giuseppe } from '../../Giuseppe';
 import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { GiuseppeBaseParameter } from './GiuseppeBaseParameter';
 import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
-import { Request } from 'express';
 
+/**
+ * Parameter decorator. Creates a parameter definition that injects a url parameter value from the request.
+ * Can contain validators and a factory if the value is complex.
+ * 
+ * @export
+ * @param {string} name 
+ * @param {{ validator?: ParameterValidator, factory?: ParameterFactory<any> }} [{
+ *         validator,
+ *         factory,
+ *     }={}] 
+ * @returns {ParameterDecorator} 
+ */
 export function UrlParam(
     name: string,
     {
@@ -26,6 +40,13 @@ export function UrlParam(
         );
 }
 
+/**
+ * Default core url parameter of giuseppe. Injects a given url parameter for a route.
+ * 
+ * @export
+ * @class GiuseppeUrlParameter
+ * @extends {GiuseppeBaseParameter}
+ */
 export class GiuseppeUrlParameter extends GiuseppeBaseParameter {
 
     constructor(

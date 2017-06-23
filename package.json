@@ -1,21 +1,21 @@
 {
   "name": "giuseppe",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "An attributed controller routing system for expressJS with typescript decorators and annotations",
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
     "clean": "del-cli ./build ./coverage",
-    "build": "npm run clean && tsc -p ./config/tsconfig.prod.json",
+    "build": "npm run clean && tsc -p ./config/tsconfig.build.json",
     "develop": "npm run clean && tsc -p .",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint": "tslint -c ./tslint.json -p ./config/tsconfig.build.json",
     "test": "npm run lint && npm run clean && jest -c ./jest.json",
-    "test:watch": "npm run clean && jest -c ./jest.json --watch"
+    "test:watch": "npm run clean && jest -c ./jest.json --watch",
+    "typedoc": "del-cli ./docs/api && typedoc --ignoreCompilerErrors --out ./docs/api --mode file --tsconfig ./config/tsconfig.build.json --theme ./docs/typedoc-theme --readme none ./src/"
   },
   "engines": {
     "node": ">=7",
-    "npm": "*",
-    "yarn": "*"
+    "npm": "*"
   },
   "repository": {
     "type": "git",
@@ -47,7 +47,9 @@
   "homepage": "https://github.com/smartive/giuseppe#readme",
   "dependencies": {
     "@types/express": "^4.0.36",
+    "@types/glob": "^5.0.30",
     "@types/http-status": "^0.2.29",
+    "@types/node": "^8.0.4",
     "express": "^4.15.3",
     "glob": "^7.1.2",
     "http-status": "^1.0.1",
@@ -55,15 +57,14 @@
     "tslib": "^1.7.1"
   },
   "devDependencies": {
-    "@types/glob": "^5.0.30",
-    "@types/jest": "^20.0.1",
-    "@types/node": "^8.0.1",
-    "del-cli": "^1.0.0",
+    "@types/jest": "^20.0.2",
+    "del-cli": "^1.1.0",
     "jest": "^20.0.4",
     "ts-jest": "^20.0.6",
     "tslint": "^5.4.3",
     "tslint-config-airbnb": "^5.2.0",
     "tsutils": "^2.4.0",
-    "typescript": "^2.3.4"
+    "typedoc": "^0.7.1",
+    "typescript": "~2.3.4"
   }
 }

@@ -1,10 +1,25 @@
 import 'reflect-metadata';
+
+import { Request } from 'express';
+
 import { Giuseppe } from '../../Giuseppe';
 import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { GiuseppeBaseParameter } from './GiuseppeBaseParameter';
 import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
-import { Request } from 'express';
 
+/**
+ * Parameter decorator. Creates a parameter definition that injects a specific header value from the request.
+ * Can contain validators and a factory if the value is complex.
+ * 
+ * @export
+ * @param {string} name 
+ * @param {{ required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> }} [{
+ *         required,
+ *         validator,
+ *         factory,
+ *     }={}] 
+ * @returns {ParameterDecorator} 
+ */
 export function Header(
     name: string,
     {
@@ -28,6 +43,13 @@ export function Header(
         );
 }
 
+/**
+ * Default core header parameter of giuseppe. Injects a specific header value into the route.
+ * 
+ * @export
+ * @class GiuseppeHeaderParameter
+ * @extends {GiuseppeBaseParameter}
+ */
 export class GiuseppeHeaderParameter extends GiuseppeBaseParameter {
     protected getRawValue(request: Request): any {
         return request.get(this.name);

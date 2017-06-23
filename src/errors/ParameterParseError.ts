@@ -2,6 +2,7 @@
  * Error that is thrown when the parsing process of a parameters throws an error.
  * (Runtime error)
  *
+ * @export
  * @class ParameterParseError
  * @extends {Error}
  */

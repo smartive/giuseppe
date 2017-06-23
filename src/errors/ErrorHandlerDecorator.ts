@@ -1,10 +1,14 @@
 import 'reflect-metadata';
+
 import { Giuseppe } from '../Giuseppe';
 import { ErrorHandlerFunction } from './ControllerErrorHandler';
 import { ErrorHandlerWrongArgumentsError } from './ErrorHandlerWrongArgumentsError';
 import { ErrorHandlerWrongArgumentTypesError } from './ErrorHandlerWrongArgumentTypesError';
 import { ErrorHandlerWrongReturnTypeError } from './ErrorHandlerWrongReturnTypeError';
 
+/**
+ * Defines the length of the needed arguments for an error handler.
+ */
 const ARGUMENT_COUNT = 3;
 
 /**
@@ -19,8 +23,8 @@ export const ERRORHANDLER_KEY = 'giuseppe:errorHandler';
  * and is only called if the thrown error matches the registered type. If errors are omitted, the handler will be
  * registered as 'default' and is called if no other specialized handler matches the thrown error.
  *
- * @param {...Error[]} errors - List of error classes to register to.
- * @returns {(any, string, PropertyDescriptor) => void} - Decorator for the class function.
+ * @param {...Error[]} errors List of error classes to register to.
+ * @returns {(any, string, PropertyDescriptor) => void} Decorator for the class function.
  */
 export function ErrorHandler(...errors: Function[]): MethodDecorator {
     return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>) => {

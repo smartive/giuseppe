@@ -2,6 +2,7 @@
  * Error that is thrown when the - if provided - validator of a parameter returns "false".
  * (Runtime error)
  *
+ * @export
  * @class ParameterValidationFailedError
  * @extends {Error}
  */

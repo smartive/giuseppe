@@ -1,0 +1,34 @@
+<section class="panel panel-default member-section {{cssClasses}}">
+    <a name="{{anchor}}" class="tsd-anchor"></a>
+    <div class="panel-heading">
+        {{#if name}}
+            <h3 class="panel-title">
+                {{#each flags}}<span class="label label-default">{{this}}</span> {{/each}}{{{wbr name}}}
+            </h3>
+        {{/if}}
+    </div>
+    <table class="table">
+        {{#if signatures}}
+            {{> member.signatures}}
+        {{else}}
+            {{#if hasGetterOrSetter}}
+                {{> member.getterSetter}}
+            {{else}}
+                {{> member.declaration}}
+            {{/if}}
+        {{/if}}
+        {{#if groups.length}}
+            {{#each groups}}
+                {{#each children}}
+                    {{#unless hasOwnDocument}}
+                        <tr>
+                            <td>
+                                {{> member}}
+                            </td>
+                        </tr>
+                    {{/unless}}
+                {{/each}}
+            {{/each}}
+        {{/if}}
+    </table>
+</section>

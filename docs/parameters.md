@@ -6,9 +6,11 @@ title: giuseppe - parameters
 
 giuseppe does support the injection of several types of parameters. If
 you decorate your route function parameters, they will be registered
-in the functions metadata and are injected at runtime. If some type of
-parameter injection is missing, feel free to open an issue or a pull
-request :wink:. If a parameter is not decorated, it will be ignored (`undefined`)
+in the functions metadata and are injected at runtime.
+
+If some type of parameter injection is missing, feel free to create a plugin to add your own parameter.
+
+If a parameter is not decorated, it will be ignored (`undefined`)
 since the order of the parameters does matter.
 
 Most parameter decorators receive a `name` and an optional `options` argument.
@@ -23,45 +25,21 @@ The configuration options are described below.
 ### General
 
 As a base for all parameter options there is the following interface:
-```typescript
-export interface ParamOptions {
-    required?: boolean;
-    validator?: Validator|Validator[];
-}
-```
 
-| Option    | Description                                                 |
-| --------- | ----------------------------------------------------------- |
-| required  | Marks the parameter as required                             |
-| validator | One or multiple validators that all must evaluate to `true` |
+| Option    | Description                                                                                 |
+| --------- | ------------------------------------------------------------------------------------------- |
+| required  | Marks the parameter as required                                                             |
+| validator | One or multiple validators that all must evaluate to `true`                                 |
+| factory   | A factory method for the type. Accepts an `any` raw value and must return the desired type. |
 {: class="table"}
 
 ### Query
 
-For the query parameter decorator, there exists special options, which are specified below:
+For the query parameter decorator, there exist special options, which are specified below:
 
 | Option    | Description                                                                                                         |
 | --------- | ------------------------------------------------------------------------------------------------------------------- |
 | alias     | One or multiple alias(es) for the given query parameter.<br>If multiple aliases are hit, the first one is returned. |
-| factory   | A factory method for the type. Accepts an `any` raw value and must return the desired type.                         |
-{: class="table"}
-
-### Body
-
-For the body parameter decorator, there exists special options, which are specified below:
-
-| Option    | Description                                                                                                         |
-| --------- | ------------------------------------------------------------------------------------------------------------------- |
-| factory   | A factory method for the type. Accepts an `any` raw value and must return the desired type.                         |
-{: class="table"}
-
-### Cookie
-
-For the cookie parameter decorator, there exists special options, which are specified below:
-
-| Option    | Description                                                                                                         |
-| --------- | ------------------------------------------------------------------------------------------------------------------- |
-| factory   | A factory method for the type. Accepts an `any` raw value and must return the desired type.                         |
 {: class="table"}
 
 ## Decorators
@@ -110,39 +88,6 @@ class Foobar {
 public getDemo(@Query('limit') limit: Foobar): Demo {
 }
 ```
-
-### Request
-
-```typescript
-/* ... */
-
-@Get()
-public getDemo(@Req() request: Request): void {
-}
-
-/* ... */
-```
-
-Injects the express `Request` object.
-
-No options possible.
-
-### Response
-
-```typescript
-/* ... */
-
-@Get()
-public getDemo(@Res() response: Response): void {
-}
-
-/* ... */
-```
-
-Injects the express `Response` object. May be used to set own status codes
-or send a file or other custom stuff.
-
-No options possible
 
 ### Query
 

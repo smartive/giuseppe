@@ -6,7 +6,7 @@ import { Giuseppe } from '../src';
 import { ControllerDefinition } from '../src/controller/ControllerDefinition';
 import { Controller } from '../src/core/controller/GiuseppeApiController';
 import { Get } from '../src/core/routes/Get';
-import { GiuseppeRegistrar } from '../src/Giuseppe';
+import { GiuseppeRegistrar } from '../src/GiuseppeRegistrar';
 import { ParameterDefinition } from '../src/parameter/ParameterDefinition';
 import { RouteDefinition } from '../src/routes/RouteDefinition';
 import { RouteModificator } from '../src/routes/RouteModificator';

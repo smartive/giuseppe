@@ -1,11 +1,27 @@
 import 'reflect-metadata';
+
+import { Request } from 'express';
+
 import { ParameterParseError, ParameterValidationFailedError, RequiredParameterNotProvidedError } from '../../errors';
 import { ParameterDefinition } from '../../parameter/ParameterDefinition';
 import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
-import { Request } from 'express';
 
+/**
+ * Declaration of primitive javascript types.
+ *
+ * @type {Function[]}
+ */
 const PRIMITIVE_TYPES: Function[] = [Object, String, Array, Number, Boolean];
 
+/**
+ * Giuseppe base parameter class. Is used for all core parameters (like cookie or body) to generalize
+ * some logic.
+ * 
+ * @export
+ * @abstract
+ * @class GiuseppeBaseParameter
+ * @implements {ParameterDefinition}
+ */
 export abstract class GiuseppeBaseParameter implements ParameterDefinition {
     public readonly canHandleResponse: boolean = false;
 

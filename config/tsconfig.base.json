@@ -15,7 +15,8 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "lib": [
-            "es2015"
+            "es2015",
+            "dom"
         ]
     },
     "include": [
@@ -23,7 +24,6 @@
     ],
     "exclude": [
         "../node_modules",
-        "../build",
-        "../_old"
+        "../build"
     ]
 }

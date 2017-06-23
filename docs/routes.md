@@ -7,76 +7,58 @@ title: giuseppe - routes
 The route annotations declare your controllers methods as routed methods.
 Basically the route decorator function does add itself to the
 controller metadata and is registered during `registerControllers()`.
-By now, the following http methods are supported:
-
-- Get
-- Put
-- Post
-- Delete
-- Head
+By now, all the methods that are implemented in express are supported and the complete
+list can be found in the [API documentation / HttpMethod](/api/enums/httpmethod.html)
 
 The main decorated used for a route is `@Route`. There are aliases for all
 http methods (`@Get`, `@Put`, `@Post`, `@Delete` and `@Head`) so simplify the usage.
 
 If no route string is provided, the base path of the controller and the
 base url of the registration function are used. The whole decoration
-and registration magic happens at [registerControllers](registration).
+and registration magic happens in the [giuseppe object](/giuseppe.html).
 
 ## To return or not return
 
 A special note to the return behaviour of giuseppe. To provide convenience
-a controller should be as simple as possible. There are some special
-conditions on return types of routing methods. Those are listed with a short
-description of the condition and a usecase.
+a controller should be as simple as possible. There is a default return type handler installed.
+This handler can be overwritten by a plugin (you can write a shared plugin, or implement the plugin interface
+in your codebase).
 
-### Method has no return type and has a decorated `@Res` parameter
+The default [JsonDefaultReturnType](/api/classes/jsondefaultreturntype.html) does convert everything
+to a JSON string, does set the content-type to `application/json` and returns a status of `200` if there is a
+return value or `204` if there was no content.
 
-giuseppe will return and do nothing else.
+You may implement your own return type handler, that renders a handlebar template (for example).
 
-If the return type of the method is `void 0` and the method is injected with the response object. 
-You can set your own results and return values.
+This would look like the following code:
 
-**Usage**: Very simple: `res.sendFile(..)` or `res.status(418).end()`
+```typescript
+export class HandlebarView<T> {
+    constructor(public viewname: string, public data: T){}
+}
 
-### Method has no return type and has *NO* decorated `@Res` parameter
+export class ViewReturnType implements ReturnType<HandlebarView<any>> {
+    public type: string = 'HandlebarView';
 
-giuseppe will return `res.status(httpStatus.NO_CONTENT)`
+    public getHeaders(): { [field: string]: string; } {
+        return {
+            'Content-Type': 'text/html',
+            /* and others maybe */
+        };
+    }
 
-If the method has return type `void 0` and no injected response 
-object it returns a NO_CONTENT on a successful route call.
+    public getStatus(value?: HandlebarView<any>): number {
+        if (value === undefined || value === null) {
+            return httpStatus.NOT_FOUND;
+        }
+        return httpStatus.OK;
+    }
 
-**Usage**: Create an object with a `put` but do not return anything. (e.g. [DemoController](controllers))
+    public getValue(value: HandlebarView<any>): string {
+        const hbs = /* get handlebars. */
+        return hbs.compile(value.viewname).render(value.data);
+    }
+}
+```
 
-### Method has a return type and returns the wrong type
-
-You get an error to the knee.
-
-The desired return type and the actually returned type do not match.
-
-**Usage**: Ease up your live
-
-### Method returns a primitive type (string, number, boolean)
-
-giuseppe calls `res.send(returnValue)`
-
-The method returns a simple type like a string (`hello world`) so giuseppe returns it to the client.
-
-**Usage**: Is alive route or very basic routes.
-
-### Method returns a non primitive type (string, number, boolean)
-
-giuseppe calls `res.json(returnValue)`
-
-The method returns a complex type or an object, so giuseppe returns it as a json to the client.
-
-**Usage**: Basic rest usage of your controller.
-
-### Method returns a `Promise`
-
-giuseppe awaits the promise and calls `send` or `json` depending on 
-the return type or the errorhandler when the promise rejects.
-
-The method returns a promise (e.g. `return elasticsearch.search({})`).
-giuseppe will await those promises and return appropriate to the return type.
-
-**Usage**: Use MongoDB or elastic or whatever in your route and directly return the promise instead of await things and return then.
+**Note**: this is just demo code. It should demonstrate the principle of the return type handlers.

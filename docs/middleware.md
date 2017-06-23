@@ -30,5 +30,20 @@ export class DemoController {
 }
 ```
 
+It's also possible to skip the first parameter (the `string`) and just start passing middlewares in case you don't
+have any preceeding url parts and you don't want to insert an empty string.
+
+```typescript
+/* load passportJS */
+
+@Controller(passport.authenticate('local'))
+export class DemoController {
+    @Get()
+    public getDemos(): Demo[] {
+        return [];
+    }
+}
+```
+
 So your authentication middleware will be called for all routes on the
 `DemoController`.

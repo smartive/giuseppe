@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import {
     ControllerDefinitionConstructor,
     GiuseppePlugin,
@@ -19,6 +20,13 @@ import { GiuseppeHeadRoute } from './routes/Head';
 import { GiuseppePostRoute } from './routes/Post';
 import { GiuseppePutRoute } from './routes/Put';
 
+/**
+ * Core plugin of giuseppe. Contains all the basic routes, controller and parameter.
+ * 
+ * @export
+ * @class GiuseppeCorePlugin
+ * @implements {GiuseppePlugin}
+ */
 export class GiuseppeCorePlugin implements GiuseppePlugin {
     public readonly returnTypeHandler: ReturnType<any>[] = [];
     public readonly controllerDefinitions: ControllerDefinitionConstructor[] = [];

@@ -22,7 +22,7 @@ describe('Giuseppe query parameter', () => {
 
         expect(instance.getValue(request)).toBe('value');
     });
-    
+
     it('should inject the correct multi aliased value', () => {
         const request: any = {
             query: {
@@ -41,7 +41,7 @@ describe('Giuseppe query parameter', () => {
 
         expect(instance.getValue(request)).toBe('value');
     });
-    
+
     it('should inject the correct value if no alias hits', () => {
         const request: any = {
             query: {
@@ -60,7 +60,7 @@ describe('Giuseppe query parameter', () => {
 
         expect(instance.getValue(request)).toBe('value');
     });
-    
+
     it('should inject the correct value if an alias hits and the not alias value is present', () => {
         const request: any = {
             query: {

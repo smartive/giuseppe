@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { ControllerDefinition } from './controller/ControllerDefinition';
 import { Giuseppe } from './Giuseppe';
 import { ParameterDefinition } from './parameter/ParameterDefinition';
@@ -6,9 +7,36 @@ import { ReturnType } from './routes/ReturnType';
 import { RouteDefinition } from './routes/RouteDefinition';
 import { RouteModificator } from './routes/RouteModificator';
 
+/**
+ * Type for a constructor function that creates a {@link ControllerDefinition}.
+ *
+ * @type {new (...args: any[]) => ControllerDefinition}
+ * @export
+ */
 export type ControllerDefinitionConstructor = new (...args: any[]) => ControllerDefinition;
+
+/**
+ * Type for a constructor function that creates a {@link RouteDefinition}.
+ *
+ * @type {new (...args: any[]) => RouteDefinition}
+ * @export
+ */
 export type RouteDefinitionConstructor = new (...args: any[]) => RouteDefinition;
+
+/**
+ * Type for a constructor function that creates a {@link RouteModificator}.
+ *
+ * @type {new (...args: any[]) => RouteModificator}
+ * @export
+ */
 export type RouteModificatorConstructor = new (...args: any[]) => RouteModificator;
+
+/**
+ * Type for a constructor function that creates a {@link ParameterDefinition}.
+ *
+ * @type {new (...args: any[]) => ParameterDefinition}
+ * @export
+ */
 export type ParameterDefinitionConstructor = new (...args: any[]) => ParameterDefinition;
 
 /**
@@ -23,7 +51,7 @@ export interface GiuseppePlugin {
      * The name of the plugin. Used to register a plugin to the giuseppe core.
      * 
      * @type {string}
-     * @memberOf GiuseppePlugin
+     * @memberof GiuseppePlugin
      */
     readonly name: string;
 
@@ -32,7 +60,7 @@ export interface GiuseppePlugin {
      * This property is accessed by giuseppe after the initialize method is called on each plugin.
      * 
      * @type {(ReturnTypeHandler[] | null)}
-     * @memberOf GiuseppePlugin
+     * @memberof GiuseppePlugin
      */
     readonly returnTypeHandler: ReturnType<any>[] | null;
 
@@ -41,7 +69,7 @@ export interface GiuseppePlugin {
      * This property is accessed by giuseppe after the initialize method is called on each plugin.
      * 
      * @type {(ControllerDecorator[] | null)}
-     * @memberOf GiuseppePlugin
+     * @memberof GiuseppePlugin
      */
     readonly controllerDefinitions: ControllerDefinitionConstructor[] | null;
 
@@ -50,7 +78,7 @@ export interface GiuseppePlugin {
      * This property is accessed by giuseppe after the initialize method is called on each plugin.
      * 
      * @type {(RouteDecorator[] | null)}
-     * @memberOf GiuseppePlugin
+     * @memberof GiuseppePlugin
      */
     readonly routeDefinitions: RouteDefinitionConstructor[] | null;
 
@@ -59,7 +87,7 @@ export interface GiuseppePlugin {
      * This property is accessed by giuseppe after the initialize method is called on each plugin.
      * 
      * @type {(RouteModificator[] | null)}
-     * @memberOf GiuseppePlugin
+     * @memberof GiuseppePlugin
      */
     readonly routeModificators: RouteModificatorConstructor[] | null;
 
@@ -68,7 +96,7 @@ export interface GiuseppePlugin {
      * This property is accessed by giuseppe after the initialize method is called on each plugin.
      * 
      * @type {(ParameterDecorator[] | null)}
-     * @memberOf GiuseppePlugin
+     * @memberof GiuseppePlugin
      */
     readonly parameterDefinitions: ParameterDefinitionConstructor[] | null;
 
@@ -78,8 +106,7 @@ export interface GiuseppePlugin {
      * register all plugins first, before you load some controllers.
      * 
      * @param {Giuseppe} giuseppeInstance 
-     * 
-     * @memberOf GiuseppePlugin
+     * @memberof GiuseppePlugin
      */
     initialize(giuseppeInstance: Giuseppe): void;
 }

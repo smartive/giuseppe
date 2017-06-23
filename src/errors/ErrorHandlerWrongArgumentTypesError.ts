@@ -2,8 +2,9 @@
  * Error that is thrown when an error handler accepts the wrong argument types.
  * (Error will happen at startup)
  *
+ * @export
  * @class ErrorHandlerWrongArgumentTypesError
- * @extends {DesigntimeError}
+ * @extends {Error}
  */
 export class ErrorHandlerWrongArgumentTypesError extends Error {
     constructor() {

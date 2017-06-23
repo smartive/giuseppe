@@ -1,0 +1,20 @@
+{{#if isInPath}}
+    <div class="panel panel-default">
+        <div class="panel-heading {{cssClasses}}">
+            <h3 class="panel-title tsd-kind-icon">{{{wbr title}}}</h3>
+        </div>
+        <div class="panel-body">
+            <ul class="list children-list">
+                {{#each children}}
+                    <li class="children-item {{cssClasses}}">
+                        <a href="{{relativeURL url}}" class="tsd-kind-icon">{{{wbr title}}}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+{{else}}
+    <li class="children-item {{cssClasses}}">
+        <a href="{{relativeURL url}}" class="tsd-kind-icon">{{{wbr title}}}</a>
+    </li>
+{{/if}}

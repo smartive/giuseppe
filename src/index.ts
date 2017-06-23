@@ -1,10 +1,9 @@
 import 'reflect-metadata';
 
 // Basic types and interfaces for giuseppe
-export { Giuseppe } from './Giuseppe';
+export * from './Giuseppe';
 export * from './GiuseppePlugin';
 export * from './controller/ControllerDefinition';
-export * from './controller/LoadingOptions';
 export { ErrorHandler, ErrorHandlerFunction } from './errors';
 export { ParameterDefinition } from './parameter/ParameterDefinition';
 export { GiuseppeRoute } from './routes/GiuseppeRoute';

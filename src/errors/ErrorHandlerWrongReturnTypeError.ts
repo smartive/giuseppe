@@ -2,8 +2,9 @@
  * Error that is thrown when an error handler has a non void return type.
  * (Error will happen at startup)
  *
+ * @export
  * @class ErrorHandlerWrongReturnTypeError
- * @extends {DesigntimeError}
+ * @extends {Error}
  */
 export class ErrorHandlerWrongReturnTypeError extends Error {
     constructor() {

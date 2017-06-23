@@ -7,6 +7,25 @@ import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { GiuseppeBaseParameter } from './GiuseppeBaseParameter';
 import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
 
+/**
+ * @typedef QueryConfigObject
+ 
+ * @property {string | string[]} [alias]
+ * @property {boolean} [required]
+ * @property {ParameterValidator} [validator]
+ * @property {ParameterFactory<any>} [factory]
+ */
+
+/**
+ * Parameter decorator. Creates a parameter definition that injects a query parameter value from the request.
+ * Can contain validators and a factory if the value is complex. If an alias is defined, the alias(es)
+ * will be used to determine a value other than the given name.
+ * 
+ * @export
+ * @param {string} name 
+ * @param {QueryConfigObject} [{alias, required, validator, factory}={}]
+ * @returns {ParameterDecorator} 
+ */
 export function Query(
     name: string,
     {
@@ -38,6 +57,14 @@ export function Query(
         );
 }
 
+/**
+ * Default core query parameter of giuseppe. Does inject a query parameter from the request into the route.
+ * Can contain an alias that the query parameter can be named with.
+ * 
+ * @export
+ * @class GiuseppeQueryParameter
+ * @extends {GiuseppeBaseParameter}
+ */
 export class GiuseppeQueryParameter extends GiuseppeBaseParameter {
 
     constructor(

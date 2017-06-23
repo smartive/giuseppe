@@ -2,6 +2,7 @@
  * Error that is thrown when a required parameter is not provided. Url parameters are always required.
  * (Runtime error)
  *
+ * @export
  * @class RequiredParameterNotProvidedError
  * @extends {Error}
  */
