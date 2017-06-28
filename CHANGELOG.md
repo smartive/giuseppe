@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.0.0]
 - Big refactoring of giuseppe
 - Implemented plugin system, so giuseppe is pluggable with custom controllers, routes, etc
 - Better code documentations
@@ -121,7 +123,8 @@ No news :-)
 
 
 
-[Unreleased]: https://github.com/smartive/giuseppe/compare/v1.2.1...master
+[Unreleased]: https://github.com/smartive/giuseppe/compare/v2.0.0...master
+[2.0.0]: https://github.com/smartive/giuseppe/compare/v1.2.1...v2.0.0
 [1.2.1]: https://github.com/smartive/giuseppe/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/smartive/giuseppe/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/smartive/giuseppe/compare/v1.1.0...v1.1.1
