@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Use jest for testing
 - @Version, @Req and @Res are a plugin now
 - Upgraded to TS 2.4
+- Fixing (as a matter of fact for TS2.4) the generic errors in `Validator` and `MethodDecorator`
 
 ### Breaking Changes:
 - @Version, @Req and @Res are in a plugin
