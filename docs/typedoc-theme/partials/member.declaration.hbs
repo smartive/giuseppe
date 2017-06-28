@@ -1,0 +1,28 @@
+<tr>
+    <td class="{{cssClasses}}">
+        <div class="declaration-item tsd-kind-icon">
+        {{#compact}}
+            {{{wbr name}}}<span class="tsd-signature-symbol">{{#if isOptional}}?{{/if}}:</span>&nbsp;{{#with type}}{{>type}}{{/with}}
+            {{#if defaultValue}}
+                <span class="tsd-signature-symbol">
+                &nbsp;=&nbsp;
+                {{defaultValue}}
+                </span>
+            {{/if}}
+        {{/compact}}
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        {{> member.sources}}
+
+        {{> comment}}
+
+        {{#if type.declaration}}
+            {{#with type.declaration}}
+                {{> parameter withHeader=true}}
+            {{/with}}
+        {{/if}}
+    </td>
+</tr>

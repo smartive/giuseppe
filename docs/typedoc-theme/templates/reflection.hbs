@@ -1,0 +1,120 @@
+<h1>
+    {{#compact}}
+        {{model.kindString}}&nbsp;
+        {{model.name}}
+        {{#if model.typeParameters}}
+            &lt;
+            {{#each model.typeParameters}}
+                {{#if @index}},&nbsp;{{/if}}
+                {{name}}
+            {{/each}}
+            &gt;
+        {{/if}}
+    {{/compact}}
+</h1>
+
+{{#with model}}
+    {{#if hasComment}}
+        <section class="panel panel-default tsd-comment">
+            <div class="panel-body">
+                {{> comment}}
+            </div>
+        </section>
+    {{/if}}
+{{/with}}
+
+{{#if model.typeParameters}}
+    <section class="panel panel-default tsd-type-parameters">
+        <div class="panel-heading">
+            <h3 class="panel-title">Type parameters</h3>
+        </div>
+        <div class="panel-body">
+            {{#with model}}{{> typeParameters}}{{/with}}
+        </div>
+    </section>
+{{/if}}
+
+{{#if model.typeHierarchy}}
+    <section class="panel panel-default tsd-hierarchy">
+        <div class="panel-heading">
+            <h3 class="panel-title">Hierarchy</h3>
+        </div>
+        <div class="panel-body">
+            {{#with model.typeHierarchy}}{{> hierarchy}}{{/with}}
+        </div>
+    </section>
+{{/if}}
+
+{{#if model.implementedTypes}}
+    <section class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Implements</h3>
+        </div>
+        <div class="panel-body">
+            <ul class="tsd-hierarchy">
+                {{#each model.implementedTypes}}
+                    <li>{{> type}}</li>
+                {{/each}}
+            </ul>
+        </div>
+    </section>
+{{/if}}
+
+{{#if model.implementedBy}}
+    <section class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Implemented by</h3>
+        </div>
+        <div class="panel-body">
+            <ul class="tsd-hierarchy">
+                {{#each model.implementedBy}}
+                    <li>{{> type}}</li>
+                {{/each}}
+            </ul>
+        </div>
+    </section>
+{{/if}}
+
+{{#if model.signatures}}
+    <section class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Callable</h3>
+        </div>
+        <div class="panel-body">
+            {{#with model}}{{> member.signatures}}{{/with}}
+        </div>
+    </section>
+{{/if}}
+
+{{#if model.indexSignature}}
+    <section class="panel panel-default {{model.cssClasses}}">
+        <div class="panel-heading">
+            <h3 class="panel-title">Indexable</h3>
+        </div>
+        <div class="panel-body">
+            <div class="tsd-signature tsd-kind-icon">{{#compact}}
+                <span class="tsd-signature-symbol">[</span>
+                {{#each model.indexSignature.parameters}}
+                    {{name}}:&nbsp;{{#with type}}{{>type}}{{/with}}
+                {{/each}}
+                <span class="tsd-signature-symbol">]:&nbsp;</span>
+                {{#with model.indexSignature.type}}{{>type}}{{/with}}
+            {{/compact}}</div>
+
+            {{#with model.indexSignature}}
+                {{> comment}}
+            {{/with}}
+
+            {{#if model.indexSignature.type.declaration}}
+                {{#with model.indexSignature.type.declaration}}
+                    {{> parameter}}
+                {{/with}}
+            {{/if}}
+        </div>
+    </section>
+{{/if}}
+
+{{#with model}}
+    {{> index}}
+    {{> members}}
+{{/with}}

@@ -1,21 +1,7 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "removeComments": false,
-    "outDir": "./build",
-    "declaration": true,
-    "sourceMap": false,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "lib": [
-      "es2015"
-    ]
-  },
-  "exclude": [
-    "node_modules",
-    "build",
-    "examples"
-  ]
+    "extends": "./config/tsconfig.base.json",
+    "compilerOptions": {
+        "watch": true,
+        "sourceMap": true
+    }
 }

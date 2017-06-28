@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Giuseppe Core configureRouter() should order the urls correctly (all cases) 1`] = `
+Array [
+  Array [
+    "/url/with/many/segments/there",
+    [Function],
+  ],
+  Array [
+    "/url/with/:many/segments/there",
+    [Function],
+  ],
+  Array [
+    "/url/with/*/segments/there",
+    [Function],
+  ],
+  Array [
+    "/url/foo/bar",
+    [Function],
+  ],
+  Array [
+    "/url/foo/:param",
+    [Function],
+  ],
+  Array [
+    "/url/:one/param",
+    [Function],
+  ],
+  Array [
+    "/url/:two/:params",
+    [Function],
+  ],
+  Array [
+    "/url/*/param",
+    [Function],
+  ],
+  Array [
+    "/url/*/:param",
+    [Function],
+  ],
+  Array [
+    "/url/:two/*",
+    [Function],
+  ],
+  Array [
+    "/url/*/*",
+    [Function],
+  ],
+  Array [
+    "/*",
+    [Function],
+  ],
+]
+`;
+
+exports[`Giuseppe Core configureRouter() should throw on a duplicate route 1`] = `"A route with the ID 'get_getFunc' (method name: 'func2', url: 'baseUrl/getFunc') is already registered."`;

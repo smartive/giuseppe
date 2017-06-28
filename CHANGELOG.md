@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+- Big refactoring of giuseppe
+- Implemented plugin system, so giuseppe is pluggable with custom controllers, routes, etc
+- Better code documentations
+- Use jest for testing
+- @Version, @Req and @Res are a plugin now
+
+### Breaking Changes:
+- @Version, @Req and @Res are in a plugin
+- The startup of giuseppe is not a function, it's a class now
+- Giuseppe contains the express app now, so it's easier to access that or start a clean instance
 
 ## [1.2.1]
 ### Fixed

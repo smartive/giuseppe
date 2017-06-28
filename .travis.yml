@@ -1,14 +1,16 @@
 language: node_js
 node_js:
-- '6.11'
+- '7'
+- '8'
 
-script: npm run citest
+script:
+- npm test
 
-after_script: npm install coveralls@^2.11.9 && cat ./coverage/lcov-mapped.info | coveralls
+after_script: npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
 
 before_deploy:
-- npm run bootstrap
-- tsc --outDir .
+- npm install
+- npm run build
 
 deploy:
   provider: npm

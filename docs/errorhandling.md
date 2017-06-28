@@ -18,18 +18,13 @@ When you load a decorated class (i.e. `import {...} from ...;`), this decoration
 executed. giuseppe prevents some horrible random situations by throwing error objects 
 during the design time (e.g. on duplicate routes, express just uses the first one).
 
-All errors are documented with JSDoc in the [Errors.ts](https://github.com/smartive/giuseppe/blob/master/errors/Errors.ts) file. A brief overview is given:
+All errors are documented with JSDoc in the [API documentation](/api/) file. A brief overview is given:
 
-- `HttpVerbNotSupportedError`: However you did it, you managed to get 
-   a value inside the `RouteRegistration` that is not part of the enum `RouteMethod`.
 - `DuplicateRouteDeclarationError`: A specific route is registered twice. 
    (`PUT` and `POST` to `/api/test` are two different routes).
-- `HeadHasWrongReturnTypeError`: A head-route has not the return type boolean.
 - `ErrorHandlerWrongArgumentsError`: A registered `@ErrorHandler` has the wrong arguments count.
 - `ErrorHandlerWrongArgumentTypesError`: A registered `@ErrorHandler` has the wrong argument types.
 - `ErrorHandlerWrongReturnTypeError`: An `@ErrorHandler` should always return `void`.
-- `ParameterConstructorArgumentsError`: A constructor for a parameter (e.g. `MyOwnClass`) should
-   always receive at least 1 argument.
 
 ### Runtime errors
 
@@ -50,14 +45,7 @@ and handle the runtime errors. But more on that later, first a brief list of run
    provided by the client.
 - `ParameterParseError`: The parameter parsing process threw an error (e.g. `throw new Error();`
    in the constructor of your custom class :wink:).
-- `WrongReturnTypeError`: Your route function did not return the type it was supposed to (e.g. 
-   `(15 as string)` instead of `number`).
 - `ParamValidationFailedError`: The provided validator for a parameter did return false.
-- `RouteError`: A pretty random error occured (e.g. an exception during the route function,
-   or maybe somebody called conole.log instead of console.log?). Actually the route error
-   has a field `innerException` that delivers the exception thrown. It could be an elasticsearch
-   error, that is returned by a rejected Promise. Basically every error that is not catched
-   by giuseppe and happend during a route method.
 
 ## Error handling
 

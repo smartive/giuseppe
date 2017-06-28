@@ -1,0 +1,19 @@
+<tr>
+    <td>
+        <ul class="list signature-list {{cssClasses}}">
+            {{#each signatures}}
+                <li class="signature-item tsd-kind-icon">
+                    {{> member.signature.title }}
+                </li>
+            {{/each}}
+        </ul>
+        
+        <ul class="list signature-body-list">
+            {{#each signatures}}
+                <li class="signature-body-item">
+                    {{> member.signature.body }}
+                </li>
+            {{/each}}
+        </ul>
+    </td>
+</tr>

@@ -7,7 +7,9 @@ but not a great piece of musical history! We compose routes for you. giuseppe is
 
 ##### A bunch of badges
 
-[![Build Status](https://travis-ci.org/smartive/giuseppe.svg)](https://travis-ci.org/smartive/giuseppe) [![npm](https://img.shields.io/npm/v/giuseppe.svg?maxAge=3600)](https://www.npmjs.com/package/giuseppe) [![Coverage status](https://img.shields.io/coveralls/smartive/giuseppe.svg?maxAge=3600)](https://coveralls.io/github/smartive/giuseppe)
+[![Build Status](https://travis-ci.org/smartive/giuseppe.svg)](https://travis-ci.org/smartive/giuseppe)
+[![npm](https://img.shields.io/npm/v/giuseppe.svg?maxAge=3600)](https://www.npmjs.com/package/giuseppe)
+[![Coverage status](https://img.shields.io/coveralls/smartive/giuseppe.svg?maxAge=3600)](https://coveralls.io/github/smartive/giuseppe)
 
 ## Installation
 
@@ -16,6 +18,8 @@ To install this package, simply run
 [![NPM](https://nodei.co/npm/giuseppe.png?downloads=true&stars=true)](https://nodei.co/npm/giuseppe/)
 
 Or use the yeoman generator which we created @ [generator-giuseppe](http://giuseppe-generator.smartive.ch/).
+If you want to create a plugin for giuseppe, use the other yeoman generator @ 
+[generator-giuseppe-plugin](http://giuseppe-plugin-generator.smartive.ch/)
 
 ## Documentation and examples
 

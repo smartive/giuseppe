@@ -1,0 +1,21 @@
+{{#if groups}}
+<section class="index">
+    <h2>Index</h2>
+    {{#each groups}}
+        <section class="panel panel-default index-section {{cssClasses}}">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{title}}</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list index-list">
+                    {{#each children}}
+                    <li class="{{cssClasses}} col-xs-12 col-sm-6">
+                        <a href="{{relativeURL url}}" class="tsd-kind-icon">{{#if name}}{{{wbr name}}}{{else}}<em>{{{wbr kindString}}}</em>{{/if}}</a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </section>
+    {{/each}}
+</section>
+{{/if}}
