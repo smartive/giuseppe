@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Better code documentations
 - Use jest for testing
 - @Version, @Req and @Res are a plugin now
+- Upgraded to TS 2.4
 
 ### Breaking Changes:
 - @Version, @Req and @Res are in a plugin
