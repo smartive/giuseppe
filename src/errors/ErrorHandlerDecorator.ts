@@ -18,6 +18,16 @@ const ARGUMENT_COUNT = 3;
 export const ERRORHANDLER_KEY = 'giuseppe:errorHandler';
 
 /**
+ * Type for giuseppes error handler decorators.
+ * Does generically restrain the MethodDecorator to error handler functions only.
+ */
+export type ErrorHandlerMethodDecorator = (
+    target: Object,
+    _: string | symbol,
+    descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>,
+) => void;
+
+/**
  * Errorhandler decorator; decorates the given function as an error handler for the current controller.
  * You can specify various errors in the open parameter list. The handler is registered for the given error types,
  * and is only called if the thrown error matches the registered type. If errors are omitted, the handler will be
@@ -26,7 +36,7 @@ export const ERRORHANDLER_KEY = 'giuseppe:errorHandler';
  * @param {...Error[]} errors List of error classes to register to.
  * @returns {(any, string, PropertyDescriptor) => void} Decorator for the class function.
  */
-export function ErrorHandler(...errors: Function[]): MethodDecorator {
+export function ErrorHandler(...errors: Function[]): ErrorHandlerMethodDecorator {
     return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>) => {
         if (!descriptor.value) {
             throw new TypeError(`Errorhandler is undefined`);
