@@ -9,6 +9,16 @@ import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { UrlHelper } from '../../utilities/UrlHelper';
 
 /**
+ * Type for giuseppes route decorators.
+ * Does generically restrain the MethodDecorator to Functions only.
+ */
+export type FunctionMethodDecorator = (
+    target: Object,
+    _: string | symbol,
+    descriptor: TypedPropertyDescriptor<Function>,
+) => void;
+
+/**
  * Route decorator. Creates a route definition that reacts to a specified request. The method needs to be specified.
  * Can define one or multiple middlewares that are registered for that route. Also, a route name can be specified
  * that creates the url for express.
@@ -18,13 +28,13 @@ import { UrlHelper } from '../../utilities/UrlHelper';
  * @param {(string | RequestHandler)} [routeOrMiddleware] Either a string that represents the url for this route, or
  *                                                        an optional middleware if no specific route is needed.
  * @param {...RequestHandler[]} middlewares Other middlewares that are used for this route.
- * @returns {MethodDecorator} 
+ * @returns {FunctionMethodDecorator} 
  */
 export function Route(
     method: HttpMethod,
     routeOrMiddleware?: string | RequestHandler,
     ...middlewares: RequestHandler[],
-): MethodDecorator {
+): FunctionMethodDecorator {
     const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
     if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
         middlewares.unshift(routeOrMiddleware);

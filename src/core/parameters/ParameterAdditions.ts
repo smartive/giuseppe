@@ -18,7 +18,7 @@ export type ParameterValidator = Validator | Validator[];
  * @param {any} value - The parsed value of the parameter.
  * @returns {boolean} - True when the validation was successful, otherwise false.
  */
-export type Validator = <T>(value: T) => boolean;
+export type Validator = (value: any) => boolean;
 
 /**
  * Function that creates a string validator with some properties.

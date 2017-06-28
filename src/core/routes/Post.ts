@@ -4,7 +4,7 @@ import { RequestHandler } from 'express';
 
 import { Giuseppe } from '../..';
 import { HttpMethod } from '../../routes/RouteDefinition';
-import { GiuseppeBaseRoute } from './GiuseppeBaseRoute';
+import { FunctionMethodDecorator, GiuseppeBaseRoute } from './GiuseppeBaseRoute';
 
 /**
  * Route decorator. Creates a route definition that reacts to a post request.
@@ -15,9 +15,12 @@ import { GiuseppeBaseRoute } from './GiuseppeBaseRoute';
  * @param {(string | RequestHandler)} [routeOrMiddleware] Either a string that represents the url for this route, or
  *                                                        an optional middleware if no specific route is needed.
  * @param {...RequestHandler[]} middlewares Other middlewares that are used for this route.
- * @returns {MethodDecorator} 
+ * @returns {FunctionMethodDecorator} 
  */
-export function Post(routeOrMiddleware?: string | RequestHandler, ...middlewares: RequestHandler[]): MethodDecorator {
+export function Post(
+    routeOrMiddleware?: string | RequestHandler,
+    ...middlewares: RequestHandler[],
+): FunctionMethodDecorator {
     const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
     if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
         middlewares.unshift(routeOrMiddleware);
