@@ -19,7 +19,7 @@ import { FunctionMethodDecorator, GiuseppeBaseRoute } from './GiuseppeBaseRoute'
  */
 export function Post(
     routeOrMiddleware?: string | RequestHandler,
-    ...middlewares: RequestHandler[]
+    ...middlewares: RequestHandler[],
 ): FunctionMethodDecorator {
     const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
     if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
