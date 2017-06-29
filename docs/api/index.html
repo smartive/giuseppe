@@ -35,14 +35,15 @@
 			<nav>
 				<ul>
 					<li class="nav-link"><a href="/">Home</a></li>
-					<li class="nav-link"><a href="/registration">Registration of controllers</a></li>
+					<li class="nav-link"><a href="/giuseppe">Giuseppe</a></li>
 					<li class="nav-link"><a href="/controllers">Controllers</a></li>
 					<li class="nav-link"><a href="/routes">Routes</a></li>
 					<li class="nav-link"><a href="/middleware">Middleware</a></li>
 					<li class="nav-link"><a href="/parameters">Parameters</a></li>
 					<li class="nav-link"><a href="/validators">Validators</a></li>
-					<li class="nav-link"><a href="/versioning">Versioning</a></li>
 					<li class="nav-link"><a href="/errorhandling">Errorhandling</a></li>
+					<li class="nav-link"><a href="/migration">Migration Guide</a></li>
+					<li class="nav-link"><a href="/plugins">Plugins</a></li>
 					<li class="nav-link active"><a href="/api">API</a></li>
 				</ul>
 			</nav>
@@ -217,6 +218,12 @@
 										<a href="index.html#errorhandlerfunction" class="tsd-kind-icon">Error<wbr>Handler<wbr>Function</a>
 									</li>
 									<li class="tsd-kind-type-alias col-xs-12 col-sm-6">
+										<a href="index.html#errorhandlermethoddecorator" class="tsd-kind-icon">Error<wbr>Handler<wbr>Method<wbr>Decorator</a>
+									</li>
+									<li class="tsd-kind-type-alias col-xs-12 col-sm-6">
+										<a href="index.html#functionmethoddecorator" class="tsd-kind-icon">Function<wbr>Method<wbr>Decorator</a>
+									</li>
+									<li class="tsd-kind-type-alias col-xs-12 col-sm-6">
 										<a href="index.html#parameterdefinitionconstructor" class="tsd-kind-icon">Parameter<wbr>Definition<wbr>Constructor</a>
 									</li>
 									<li class="tsd-kind-type-alias col-xs-12 col-sm-6">
@@ -363,7 +370,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/GiuseppePlugin.ts#L16">GiuseppePlugin.ts:16</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/GiuseppePlugin.ts#L16">GiuseppePlugin.ts:16</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -402,7 +409,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/errors/ControllerErrorHandler.ts#L28">errors/ControllerErrorHandler.ts:28</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/errors/ControllerErrorHandler.ts#L28">errors/ControllerErrorHandler.ts:28</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -458,6 +465,122 @@
 							</table>
 						</section>
 						<section class="panel panel-default member-section tsd-kind-type-alias">
+							<a name="errorhandlermethoddecorator" class="tsd-anchor"></a>
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									Error<wbr>Handler<wbr>Method<wbr>Decorator
+								</h3>
+							</div>
+							<table class="table">
+								<tr>
+									<td class="tsd-kind-type-alias">
+										<div class="declaration-item tsd-kind-icon">
+										Error<wbr>Handler<wbr>Method<wbr>Decorator<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span>        </div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/errors/ErrorHandlerDecorator.ts#L24">errors/ErrorHandlerDecorator.ts:24</a></li>
+											</ul>
+										</aside>
+										<div class="tsd-comment">
+											<p>
+												<p>Type for giuseppes error handler decorators.
+												Does generically restrain the MethodDecorator to error handler functions only.</p>
+											</p>
+										</div>
+										<div class="tsd-type-declaration">
+											<h4>Type declaration</h4>
+											<ul class="tsd-parameters">
+												<li class="tsd-parameter-siganture">
+													<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+														<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span>, _<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, descriptor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TypedPropertyDescriptor</span><span class="tsd-signature-symbol">&lt;</span><a href="index.html#errorhandlerfunction" class="tsd-signature-type">ErrorHandlerFunction</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+													</ul>
+													<ul class="tsd-descriptions">
+														<li class="tsd-description">
+															<h4 class="tsd-parameters-title">Parameters</h4>
+															<ul class="tsd-parameters">
+																<li>
+																	<h5>target: <span class="tsd-signature-type">Object</span></h5>
+																</li>
+																<li>
+																	<h5>_: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span></h5>
+																</li>
+																<li>
+																	<h5>descriptor: <span class="tsd-signature-type">TypedPropertyDescriptor</span><span class="tsd-signature-symbol">&lt;</span><a href="index.html#errorhandlerfunction" class="tsd-signature-type">ErrorHandlerFunction</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+																</li>
+															</ul>
+															<h4>Returns <code><span class="tsd-signature-type">void</span></code></h4>
+														</li>
+													</ul>
+												</li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</section>
+						<section class="panel panel-default member-section tsd-kind-type-alias">
+							<a name="functionmethoddecorator" class="tsd-anchor"></a>
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									Function<wbr>Method<wbr>Decorator
+								</h3>
+							</div>
+							<table class="table">
+								<tr>
+									<td class="tsd-kind-type-alias">
+										<div class="declaration-item tsd-kind-icon">
+										Function<wbr>Method<wbr>Decorator<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span>        </div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/routes/GiuseppeBaseRoute.ts#L15">core/routes/GiuseppeBaseRoute.ts:15</a></li>
+											</ul>
+										</aside>
+										<div class="tsd-comment">
+											<p>
+												<p>Type for giuseppes route decorators.
+												Does generically restrain the MethodDecorator to Functions only.</p>
+											</p>
+										</div>
+										<div class="tsd-type-declaration">
+											<h4>Type declaration</h4>
+											<ul class="tsd-parameters">
+												<li class="tsd-parameter-siganture">
+													<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+														<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span>, _<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, descriptor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TypedPropertyDescriptor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+													</ul>
+													<ul class="tsd-descriptions">
+														<li class="tsd-description">
+															<h4 class="tsd-parameters-title">Parameters</h4>
+															<ul class="tsd-parameters">
+																<li>
+																	<h5>target: <span class="tsd-signature-type">Object</span></h5>
+																</li>
+																<li>
+																	<h5>_: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span></h5>
+																</li>
+																<li>
+																	<h5>descriptor: <span class="tsd-signature-type">TypedPropertyDescriptor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">&gt;</span></h5>
+																</li>
+															</ul>
+															<h4>Returns <code><span class="tsd-signature-type">void</span></code></h4>
+														</li>
+													</ul>
+												</li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</section>
+						<section class="panel panel-default member-section tsd-kind-type-alias">
 							<a name="parameterdefinitionconstructor" class="tsd-anchor"></a>
 							<div class="panel-heading">
 								<h3 class="panel-title">
@@ -475,7 +598,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/GiuseppePlugin.ts#L40">GiuseppePlugin.ts:40</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/GiuseppePlugin.ts#L40">GiuseppePlugin.ts:40</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -514,7 +637,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/ParameterAdditions.ts#L8">core/parameters/ParameterAdditions.ts:8</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/ParameterAdditions.ts#L8">core/parameters/ParameterAdditions.ts:8</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -565,7 +688,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/ParameterAdditions.ts#L13">core/parameters/ParameterAdditions.ts:13</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/ParameterAdditions.ts#L13">core/parameters/ParameterAdditions.ts:13</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -595,7 +718,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/GiuseppePlugin.ts#L24">GiuseppePlugin.ts:24</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/GiuseppePlugin.ts#L24">GiuseppePlugin.ts:24</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -634,7 +757,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/GiuseppePlugin.ts#L32">GiuseppePlugin.ts:32</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/GiuseppePlugin.ts#L32">GiuseppePlugin.ts:32</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -673,7 +796,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/ParameterAdditions.ts#L21">core/parameters/ParameterAdditions.ts:21</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/ParameterAdditions.ts#L21">core/parameters/ParameterAdditions.ts:21</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -695,21 +818,15 @@
 											<h4>Type declaration</h4>
 											<ul class="tsd-parameters">
 												<li class="tsd-parameter-siganture">
-													<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-has-type-parameter tsd-is-not-exported">
-														<li class="tsd-signature tsd-kind-icon">&lt;T&gt;<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+													<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+														<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 													</ul>
 													<ul class="tsd-descriptions">
 														<li class="tsd-description">
-															<h4>Type parameters</h4>
-															<ul class="tsd-type-parameters">
-																<li>
-																	<h4>T</h4>
-																</li>
-															</ul>
 															<h4 class="tsd-parameters-title">Parameters</h4>
 															<ul class="tsd-parameters">
 																<li>
-																	<h5>value: <span class="tsd-signature-type">T</span></h5>
+																	<h5>value: <span class="tsd-signature-type">any</span></h5>
 																</li>
 															</ul>
 															<h4>Returns <code><span class="tsd-signature-type">boolean</span></code></h4>
@@ -743,7 +860,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/errors/ErrorHandlerDecorator.ts#L12">errors/ErrorHandlerDecorator.ts:12</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/errors/ErrorHandlerDecorator.ts#L12">errors/ErrorHandlerDecorator.ts:12</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -773,7 +890,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/errors/ErrorHandlerDecorator.ts#L18">errors/ErrorHandlerDecorator.ts:18</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/errors/ErrorHandlerDecorator.ts#L18">errors/ErrorHandlerDecorator.ts:18</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -808,7 +925,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/parameter/ParameterDefinition.ts#L8">parameter/ParameterDefinition.ts:8</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/parameter/ParameterDefinition.ts#L8">parameter/ParameterDefinition.ts:8</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -843,7 +960,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/GiuseppeBaseParameter.ts#L14">core/parameters/GiuseppeBaseParameter.ts:14</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/GiuseppeBaseParameter.ts#L14">core/parameters/GiuseppeBaseParameter.ts:14</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -878,7 +995,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/routes/RouteDefinition.ts#L11">routes/RouteDefinition.ts:11</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/routes/RouteDefinition.ts#L11">routes/RouteDefinition.ts:11</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -913,7 +1030,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/routes/RouteModificator.ts#L8">routes/RouteModificator.ts:8</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/routes/RouteModificator.ts#L8">routes/RouteModificator.ts:8</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -951,7 +1068,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/Body.ts#L18">core/parameters/Body.ts:18</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/Body.ts#L18">core/parameters/Body.ts:18</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -971,6 +1088,9 @@
 														<ul class="tsd-parameters">
 															<li class="tsd-parameter">
 																<h5>factory<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span></h5>
+															</li>
+															<li class="tsd-parameter">
+																<h5>required<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></h5>
 															</li>
 															<li class="tsd-parameter">
 																<h5>validator<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">[]</span></h5>
@@ -1003,7 +1123,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/controller/GiuseppeApiController.ts#L36">core/controller/GiuseppeApiController.ts:36</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/controller/GiuseppeApiController.ts#L36">core/controller/GiuseppeApiController.ts:36</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1073,7 +1193,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/Cookie.ts#L39">core/parameters/Cookie.ts:39</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/Cookie.ts#L39">core/parameters/Cookie.ts:39</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1134,7 +1254,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/errors/ControllerErrorHandler.ts#L15">errors/ControllerErrorHandler.ts:15</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/errors/ControllerErrorHandler.ts#L15">errors/ControllerErrorHandler.ts:15</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1189,13 +1309,13 @@
 									<td>
 										<ul class="list signature-list tsd-kind-function">
 											<li class="signature-item tsd-kind-icon">
-											Delete<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MethodDecorator</span>                </li>
+											Delete<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a>                </li>
 										</ul>
 										<ul class="list signature-body-list">
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/routes/Delete.ts#L20">core/routes/Delete.ts:20</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/routes/Delete.ts#L20">core/routes/Delete.ts:20</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1221,7 +1341,7 @@
 														</div>
 													</li>
 												</ul>
-												<h4>Returns <code><span class="tsd-signature-type">MethodDecorator</span></code></h4>
+												<h4>Returns <code><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a></code></h4>
 											</li>
 										</ul>
 									</td>
@@ -1240,13 +1360,13 @@
 									<td>
 										<ul class="list signature-list tsd-kind-function">
 											<li class="signature-item tsd-kind-icon">
-											Error<wbr>Handler<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>errors<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MethodDecorator</span>                </li>
+											Error<wbr>Handler<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>errors<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#errorhandlermethoddecorator" class="tsd-signature-type">ErrorHandlerMethodDecorator</a>                </li>
 										</ul>
 										<ul class="list signature-body-list">
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/errors/ErrorHandlerDecorator.ts#L29">errors/ErrorHandlerDecorator.ts:29</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/errors/ErrorHandlerDecorator.ts#L39">errors/ErrorHandlerDecorator.ts:39</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1266,7 +1386,7 @@
 														</div>
 													</li>
 												</ul>
-												<h4>Returns <code><span class="tsd-signature-type">MethodDecorator</span></code></h4>
+												<h4>Returns <code><a href="index.html#errorhandlermethoddecorator" class="tsd-signature-type">ErrorHandlerMethodDecorator</a></code></h4>
 												<p>Decorator for the class function.</p>
 											</li>
 										</ul>
@@ -1286,13 +1406,13 @@
 									<td>
 										<ul class="list signature-list tsd-kind-function">
 											<li class="signature-item tsd-kind-icon">
-											Get<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MethodDecorator</span>                </li>
+											Get<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a>                </li>
 										</ul>
 										<ul class="list signature-body-list">
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/routes/Get.ts#L20">core/routes/Get.ts:20</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/routes/Get.ts#L20">core/routes/Get.ts:20</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1318,7 +1438,7 @@
 														</div>
 													</li>
 												</ul>
-												<h4>Returns <code><span class="tsd-signature-type">MethodDecorator</span></code></h4>
+												<h4>Returns <code><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a></code></h4>
 											</li>
 										</ul>
 									</td>
@@ -1337,13 +1457,13 @@
 									<td>
 										<ul class="list signature-list tsd-kind-function">
 											<li class="signature-item tsd-kind-icon">
-											Head<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MethodDecorator</span>                </li>
+											Head<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a>                </li>
 										</ul>
 										<ul class="list signature-body-list">
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/routes/Head.ts#L20">core/routes/Head.ts:20</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/routes/Head.ts#L20">core/routes/Head.ts:20</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1369,7 +1489,7 @@
 														</div>
 													</li>
 												</ul>
-												<h4>Returns <code><span class="tsd-signature-type">MethodDecorator</span></code></h4>
+												<h4>Returns <code><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a></code></h4>
 											</li>
 										</ul>
 									</td>
@@ -1394,7 +1514,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/Header.ts#L23">core/parameters/Header.ts:23</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/Header.ts#L23">core/parameters/Header.ts:23</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1446,13 +1566,13 @@
 									<td>
 										<ul class="list signature-list tsd-kind-function">
 											<li class="signature-item tsd-kind-icon">
-											Post<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MethodDecorator</span>                </li>
+											Post<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a>                </li>
 										</ul>
 										<ul class="list signature-body-list">
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/routes/Post.ts#L20">core/routes/Post.ts:20</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/routes/Post.ts#L20">core/routes/Post.ts:20</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1478,7 +1598,7 @@
 														</div>
 													</li>
 												</ul>
-												<h4>Returns <code><span class="tsd-signature-type">MethodDecorator</span></code></h4>
+												<h4>Returns <code><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a></code></h4>
 											</li>
 										</ul>
 									</td>
@@ -1497,13 +1617,13 @@
 									<td>
 										<ul class="list signature-list tsd-kind-function">
 											<li class="signature-item tsd-kind-icon">
-											Put<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MethodDecorator</span>                </li>
+											Put<span class="tsd-signature-symbol">(</span>routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a>                </li>
 										</ul>
 										<ul class="list signature-body-list">
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/routes/Put.ts#L20">core/routes/Put.ts:20</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/routes/Put.ts#L20">core/routes/Put.ts:20</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1529,7 +1649,7 @@
 														</div>
 													</li>
 												</ul>
-												<h4>Returns <code><span class="tsd-signature-type">MethodDecorator</span></code></h4>
+												<h4>Returns <code><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a></code></h4>
 											</li>
 										</ul>
 									</td>
@@ -1554,7 +1674,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/Query.ts#L29">core/parameters/Query.ts:29</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/Query.ts#L29">core/parameters/Query.ts:29</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1610,13 +1730,13 @@
 									<td>
 										<ul class="list signature-list tsd-kind-function">
 											<li class="signature-item tsd-kind-icon">
-											Route<span class="tsd-signature-symbol">(</span>method<span class="tsd-signature-symbol">: </span><a href="enums/httpmethod.html" class="tsd-signature-type">HttpMethod</a>, routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MethodDecorator</span>                </li>
+											Route<span class="tsd-signature-symbol">(</span>method<span class="tsd-signature-symbol">: </span><a href="enums/httpmethod.html" class="tsd-signature-type">HttpMethod</a>, routeOrMiddleware<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span>, <span class="tsd-signature-symbol">...</span>middlewares<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a>                </li>
 										</ul>
 										<ul class="list signature-body-list">
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/routes/GiuseppeBaseRoute.ts#L23">core/routes/GiuseppeBaseRoute.ts:23</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/routes/GiuseppeBaseRoute.ts#L33">core/routes/GiuseppeBaseRoute.ts:33</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1648,7 +1768,7 @@
 														</div>
 													</li>
 												</ul>
-												<h4>Returns <code><span class="tsd-signature-type">MethodDecorator</span></code></h4>
+												<h4>Returns <code><a href="index.html#functionmethoddecorator" class="tsd-signature-type">FunctionMethodDecorator</a></code></h4>
 											</li>
 										</ul>
 									</td>
@@ -1673,7 +1793,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/UrlParam.ts#L22">core/parameters/UrlParam.ts:22</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/UrlParam.ts#L22">core/parameters/UrlParam.ts:22</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1728,7 +1848,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/ParameterAdditions.ts#L87">core/parameters/ParameterAdditions.ts:87</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/ParameterAdditions.ts#L87">core/parameters/ParameterAdditions.ts:87</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1784,7 +1904,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/ParameterAdditions.ts#L1">core/parameters/ParameterAdditions.ts:1</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/ParameterAdditions.ts#L1">core/parameters/ParameterAdditions.ts:1</a></li>
 													</ul>
 												</aside>
 												<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1818,7 +1938,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/ParameterAdditions.ts#L59">core/parameters/ParameterAdditions.ts:59</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/ParameterAdditions.ts#L59">core/parameters/ParameterAdditions.ts:59</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1871,7 +1991,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/parameters/ParameterAdditions.ts#L31">core/parameters/ParameterAdditions.ts:31</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/parameters/ParameterAdditions.ts#L31">core/parameters/ParameterAdditions.ts:31</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1924,7 +2044,7 @@
 											<li class="signature-body-item">
 												<aside class="tsd-sources">
 													<ul>
-														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/Giuseppe.ts#L32">Giuseppe.ts:32</a></li>
+														<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/Giuseppe.ts#L32">Giuseppe.ts:32</a></li>
 													</ul>
 												</aside>
 												<div class="tsd-comment">
@@ -1971,7 +2091,7 @@
 									<td>
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/returnTypes/JsonDefaultReturnType.ts#L10">core/returnTypes/JsonDefaultReturnType.ts:10</a></li>
+												<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/returnTypes/JsonDefaultReturnType.ts#L10">core/returnTypes/JsonDefaultReturnType.ts:10</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment">
@@ -2001,7 +2121,7 @@
 													<td>
 														<aside class="tsd-sources">
 															<ul>
-																<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/cfe890f/src/core/returnTypes/JsonDefaultReturnType.ts#L11">core/returnTypes/JsonDefaultReturnType.ts:11</a></li>
+																<li>Defined in <a href="https://github.com/smartive/giuseppe/blob/9b38f07/src/core/returnTypes/JsonDefaultReturnType.ts#L11">core/returnTypes/JsonDefaultReturnType.ts:11</a></li>
 															</ul>
 														</aside>
 													</td>
@@ -2149,6 +2269,12 @@
 								</li>
 								<li class="children-item tsd-kind-type-alias">
 									<a href="index.html#errorhandlerfunction" class="tsd-kind-icon">Error<wbr>Handler<wbr>Function</a>
+								</li>
+								<li class="children-item tsd-kind-type-alias">
+									<a href="index.html#errorhandlermethoddecorator" class="tsd-kind-icon">Error<wbr>Handler<wbr>Method<wbr>Decorator</a>
+								</li>
+								<li class="children-item tsd-kind-type-alias">
+									<a href="index.html#functionmethoddecorator" class="tsd-kind-icon">Function<wbr>Method<wbr>Decorator</a>
 								</li>
 								<li class="children-item tsd-kind-type-alias">
 									<a href="index.html#parameterdefinitionconstructor" class="tsd-kind-icon">Parameter<wbr>Definition<wbr>Constructor</a>
