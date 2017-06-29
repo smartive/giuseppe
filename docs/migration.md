@@ -24,12 +24,12 @@ import express = require('express');
 
 @Controller()
 class PingPongController {
-    
+
     @Get('ping')
     public ping(): any {
         return {ping: 'pong'};
     }
-    
+
 }
 
 let app = express();
@@ -45,16 +45,15 @@ You now want to write:
 
 ```typescript
 import { Controller, Get, Giuseppe } from 'giuseppe';
-import express = require('express');
 
 @Controller()
 class PingPongController {
-    
+
     @Get('ping')
     public ping(): any {
         return {ping: 'pong'};
     }
-    
+
 }
 
 const app = new Giuseppe();
