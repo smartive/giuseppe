@@ -11,7 +11,7 @@ release a plugin for giuseppe. The core features of giuseppe are designed as a p
 
 ## Create a plugin
 
-To create a plugin, we suggest you use the [yeoman generator](http://giuseppe-plugin-generator.smartive.ch/) to bootstrap your plugin project.
+To create a plugin, we suggest you use the [yeoman generator](https://github.com/smartive/generator-giuseppe-plugin) to bootstrap your plugin project.
 If you want to do that by yourself, install giuseppe as a dependency and start coding.
 
 You'll need [GiuseppePlugin](/api/interfaces/giuseppeplugin.html) for that.
