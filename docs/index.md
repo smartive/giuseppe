@@ -27,7 +27,7 @@ To install this package, simply run
 [![NPM](https://nodei.co/npm/giuseppe.png?downloads=true&stars=true)](https://nodei.co/npm/giuseppe/)
 
 The suggested method would actually be: use the yeoman generator which we created @ 
-[generator-giuseppe](http://giuseppe-generator.smartive.ch/).
+[generator-giuseppe](https://github.com/smartive/generator-giuseppe).
 It installs all dependencies and libraries that you need.
 
 When you use the manual way npm should install all typing dependencies.
@@ -44,7 +44,7 @@ If you are migrating from the 1.x version (or any other version for the future) 
 
 ### tsconfig.json
 
-If you don't use the [yeoman generator](http://giuseppe-generator.smartive.ch/) to scaffold your application, you need
+If you don't use the [yeoman generator](https://github.com/smartive/generator-giuseppe) to scaffold your application, you need
 to provide the typescript compiler with the correct parameters to ensure, your application
 is compiled in the correct way.
 
@@ -71,7 +71,7 @@ The code above is an example, but you can copy and paste it to your project. The
 only thing you need to adjust is the `ES VERSION` part.
 
 Despite the fact, that this configs are listed here, we strongly suggest
-that you use the [generator-giuseppe](http://giuseppe-generator.smartive.ch/) for yeoman.
+that you use the [generator-giuseppe](https://github.com/smartive/generator-giuseppe) for yeoman.
 
 ## Basic usage
 
@@ -164,7 +164,7 @@ open pull requests, issues or use any other form of contribution. Maybe we'll
 set up a `CONTRIBUTING.md` file in the future. soon(tm).
 
 If you want to create a plugin for giuseppe, use the other yeoman generator @ 
-[generator-giuseppe-plugin](http://giuseppe-plugin-generator.smartive.ch/)
+[generator-giuseppe-plugin](https://github.com/smartive/generator-giuseppe-plugin)
 
 [Full list of contributors](https://github.com/smartive/giuseppe/graphs/contributors)
 

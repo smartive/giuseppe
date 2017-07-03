@@ -17,9 +17,9 @@ To install this package, simply run
 
 [![NPM](https://nodei.co/npm/giuseppe.png?downloads=true&stars=true)](https://nodei.co/npm/giuseppe/)
 
-Or use the yeoman generator which we created @ [generator-giuseppe](http://giuseppe-generator.smartive.ch/).
+Or use the yeoman generator which we created @ [generator-giuseppe](https://github.com/smartive/generator-giuseppe).
 If you want to create a plugin for giuseppe, use the other yeoman generator @ 
-[generator-giuseppe-plugin](http://giuseppe-plugin-generator.smartive.ch/)
+[generator-giuseppe-plugin](https://github.com/smartive/generator-giuseppe-plugin)
 
 ## Documentation and examples
 
