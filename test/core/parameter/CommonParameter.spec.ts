@@ -179,6 +179,30 @@ describe('Giuseppe parameter common', () => {
 
                     expect(instance.getValue(param.getRequestMock())).toBeUndefined();
                 });
+
+                it('should not throw on a non required parameter, if it is undefined', () => {
+                    const instance = param.getInstance('name', String, 0, false);
+
+                    const fn = () => instance.getValue(param.getRequestMock(undefined));
+
+                    expect(fn).not.toThrow();
+                });
+
+                it('should not throw on a non required parameter, if it is undefined and has a validator', () => {
+                    const instance = param.getInstance('name', String, 0, false, isString());
+
+                    const fn = () => instance.getValue(param.getRequestMock(undefined));
+
+                    expect(fn).not.toThrow();
+                });
+
+                it('should not throw on a non required parameter, if it is undefined and has multiple validators', () => {
+                    const instance = param.getInstance('name', String, 0, false, [isString(), isNumber()]);
+
+                    const fn = () => instance.getValue(param.getRequestMock(undefined));
+
+                    expect(fn).not.toThrow();
+                });
             }
 
             it('should correctly parse a custom type', () => {
