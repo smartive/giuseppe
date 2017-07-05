@@ -35,3 +35,4 @@ export { Route } from './core/routes/GiuseppeBaseRoute';
 export { Head } from './core/routes/Head';
 export { Post } from './core/routes/Post';
 export { Put } from './core/routes/Put';
+
