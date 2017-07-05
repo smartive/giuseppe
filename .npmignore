@@ -30,9 +30,7 @@ _test
 *.spec.d.ts
 *.spec.js.map
 
-prepare-release.js
 jest.json
-package-lock.json
 .travis.yml
 tsconfig.json
 tslint.json

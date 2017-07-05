@@ -1,28 +1,25 @@
 language: node_js
-node_js:
-- '7'
-- '8'
 
-script:
-- npm test
-
-after_script: npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
-
-before_deploy:
-- npm install
-- npm run build
-
-deploy:
-  provider: npm
-  email: christoph.buehler@bluewin.ch
-  api_key:
-    secure: Wf261yduxABD9qbUJVVWfXpXK3+RwSrkt16iEmxQRNRtY8SMGyOBWymZSDfTUyyDPzjR3wCgUbk0xNVUEClBxojPPjNsROeeLnggObZU6KDEOySyCdB6hNXryNAeemOlxHEP9ktujl857Ok1e+EaB08pAvwPhkx+wCNv4ILLLERWJMRAcwT0cU8TeQBwwLJTGEo8JKTfQPezKIZLu0JfBDSVg2tnMPfwFjb/3HijsBDdVkmWNrOyiEaS3PG3puvGYPQrnPH1XwFZgEJYmRDEJdA/LMQxRDRj7Tn+VzL1mOIDx9193+Md8f9+vX6Fo1wI/H/hThVF5TAankJbr3p5I6JclN0y7yYgQBceNTsBupzBrZqqMhhtDeV6v793InrghrD+FOpnV51rf1z8Y7Eiyz/fKAEDsFw9TE8WKzPmzwhVVvn+BHe8LAo7D4QvH5JhneAnpCLG15l6dfCDFFuJ/cdP11d3N/ueeuYdiPmtCUfqyE7mgj4uX5Q1urTIQtY7Cs8RDOa+H1IwZIhRRiOe0Q8KAu2Bdpvuru67TSmx3XBtFyvsuN71DNACFnlvtbDce/xGoDN0icNG0jSEdCvsXKs2kRfCJ9eoHPgvqbjsPxgWyr9k2CSD/ZrkJo9dphBvt+Y2rDeFVAVfAKX0qXj+z7G839ToWtZQaTjF3UYRXPo=
-  on:
-    tags: true
-    repo: smartive/giuseppe
+cache:
+  directories:
+    - node_modules
 
 notifications:
   email: false
-  slack:
-    rooms:
-      secure: fwddM+2N2Z8tgMobufMrOVafvdITMrzVbY9g2/7hxRopC2DiVHJXuxTrvO8H8PvNKHL1tWaFV/R6Dae3EaT58Kugu+5cHUgceP1qh3ZKDAk4dqWqJhELRGa7H5qMi1Pn4Qbso87oF1u6m15jWsZybtcncBJwF6OC2rJID7/0OiP+oJLIvrAQu5tFbyvA42IdK8ifsD+B5s2iodCXDTNvB6eeA3CfJ0S5TKrGRWWGH8ky9omcxYmUNCgRl/fg0OoV66Fu3IT1ZheWsxkW2YTqw5vP8jxcHcuZOkyellD7FqOEGw8WjFw+GTWgrS0V00uRgZ0SycwTN/8lXU1j4j5KcI+s5yzFnP3lDlgEZ6C2oKw/eAG2t55ObZVbNOOgoeZ7208yQMIwjun97JRKCNZuKA9v5SkcMRxNb4d52/STW5bUCsEMC2XptAWUM9Hgb2snrfI3NyNAVZfZ4eoWC8EeBmaE+CyO4yMv5HIjxlimEL0ObR6toYRIdMuVx+GCcDAmU0x6udjfxeAhK3EBlHtoZWCfM4D3/Y2nk+EW11G+bxcREC2rcTolO3P/yj/lKmt+Go7FRglEdPWVR3Ck+SKXfYs1pclbYY2loGwa9PU315bd4G6TDNgZNkxQPnH+Ar2s2KPPMVrAp7XrpBiHGfpNCBXYn1RDCwuIrZ4pH6jqzAc=
+
+node_js:
+  - '8'
+  - '7'
+
+before_script:
+  - npm prune
+
+after_success:
+  - npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
+  - npm install
+  - npm run build
+  - npm run semantic-release
+
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
