@@ -7,7 +7,10 @@
  * @extends {Error}
  */
 export class ParameterValidationFailedError extends Error {
-    constructor(name: string) {
+    constructor(name: string, public innerException?: Error) {
         super(`The validator for the parameter "${name}" was not valid.`);
+        if (this.innerException) {
+            this.message += `\nThe validator threw an error: ${this.innerException.toString()}`;
+        }
     }
 }
