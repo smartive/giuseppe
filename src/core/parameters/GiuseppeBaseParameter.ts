@@ -74,7 +74,7 @@ export abstract class GiuseppeBaseParameter implements ParameterDefinition {
             throw new RequiredParameterNotProvidedError(this.name);
         }
 
-        if (!this.validator) {
+        if (!this.validator || (!this.required && (parsed === undefined || parsed === null))) {
             return;
         }
         const isValid = value => {
