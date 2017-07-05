@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Giuseppe parameter common GiuseppeBodyParameter class should throw a validator failed error (with inner exception) if the validator throws a non error 1`] = `
+"The validator for the parameter \\"body\\" was not valid.
+The validator threw an error: Error: non normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeBodyParameter class should throw a validator failed error (with inner exception) when the validator throws an error 1`] = `
+"The validator for the parameter \\"body\\" was not valid.
+The validator threw an error: Error: normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeBodyParameter class should throw a validator failed error (without inner exception) when the validator throws a validator failed error 1`] = `"The validator for the parameter \\"Body\\" was not valid."`;
+
+exports[`Giuseppe parameter common GiuseppeCookieParameter class should throw a validator failed error (with inner exception) if the validator throws a non error 1`] = `
+"The validator for the parameter \\"name\\" was not valid.
+The validator threw an error: Error: non normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeCookieParameter class should throw a validator failed error (with inner exception) when the validator throws an error 1`] = `
+"The validator for the parameter \\"name\\" was not valid.
+The validator threw an error: Error: normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeCookieParameter class should throw a validator failed error (without inner exception) when the validator throws a validator failed error 1`] = `"The validator for the parameter \\"Cookie\\" was not valid."`;
+
+exports[`Giuseppe parameter common GiuseppeHeaderParameter class should throw a validator failed error (with inner exception) if the validator throws a non error 1`] = `
+"The validator for the parameter \\"name\\" was not valid.
+The validator threw an error: Error: non normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeHeaderParameter class should throw a validator failed error (with inner exception) when the validator throws an error 1`] = `
+"The validator for the parameter \\"name\\" was not valid.
+The validator threw an error: Error: normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeHeaderParameter class should throw a validator failed error (without inner exception) when the validator throws a validator failed error 1`] = `"The validator for the parameter \\"Header\\" was not valid."`;
+
+exports[`Giuseppe parameter common GiuseppeQueryParameter class should throw a validator failed error (with inner exception) if the validator throws a non error 1`] = `
+"The validator for the parameter \\"name\\" was not valid.
+The validator threw an error: Error: non normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeQueryParameter class should throw a validator failed error (with inner exception) when the validator throws an error 1`] = `
+"The validator for the parameter \\"name\\" was not valid.
+The validator threw an error: Error: normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeQueryParameter class should throw a validator failed error (without inner exception) when the validator throws a validator failed error 1`] = `"The validator for the parameter \\"Query\\" was not valid."`;
+
+exports[`Giuseppe parameter common GiuseppeUrlParamParameter class should throw a validator failed error (with inner exception) if the validator throws a non error 1`] = `
+"The validator for the parameter \\"name\\" was not valid.
+The validator threw an error: Error: non normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeUrlParamParameter class should throw a validator failed error (with inner exception) when the validator throws an error 1`] = `
+"The validator for the parameter \\"name\\" was not valid.
+The validator threw an error: Error: normal error"
+`;
+
+exports[`Giuseppe parameter common GiuseppeUrlParamParameter class should throw a validator failed error (without inner exception) when the validator throws a validator failed error 1`] = `"The validator for the parameter \\"UrlParam\\" was not valid."`;

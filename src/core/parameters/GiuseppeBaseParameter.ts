@@ -87,8 +87,21 @@ export abstract class GiuseppeBaseParameter implements ParameterDefinition {
             return predicates!(value);
         };
 
-        if (!isValid(parsed)) {
-            throw new ParameterValidationFailedError(this.name);
+        try {
+            if (!isValid(parsed)) {
+                throw new ParameterValidationFailedError(this.name);
+            }
+        } catch (e) {
+            if (e instanceof ParameterValidationFailedError) {
+                throw e;
+            }
+            let error: Error;
+            if (!(e instanceof Error)) {
+                error = new Error(e);
+            } else {
+                error = e;
+            }
+            throw new ParameterValidationFailedError(this.name, error);
         }
     }
 }
