@@ -16,5 +16,3 @@ node_modules
 typings
 build
 coverage
-
-package-lock.json
