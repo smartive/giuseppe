@@ -4,7 +4,13 @@ import { Body, GiuseppeBodyParameter } from '../../../src/core/parameters/Body';
 import { Cookie, GiuseppeCookieParameter } from '../../../src/core/parameters/Cookie';
 import { GiuseppeBaseParameter } from '../../../src/core/parameters/GiuseppeBaseParameter';
 import { GiuseppeHeaderParameter, Header } from '../../../src/core/parameters/Header';
-import { isNumber, isString, ParameterFactory, ParameterValidator } from '../../../src/core/parameters/ParameterAdditions';
+import {
+    isNumber,
+    isString,
+    ParameterFactory,
+    ParameterValidator,
+    Validator,
+} from '../../../src/core/parameters/ParameterAdditions';
 import { GiuseppeQueryParameter, Query } from '../../../src/core/parameters/Query';
 import { GiuseppeUrlParameter, UrlParam } from '../../../src/core/parameters/UrlParam';
 import { ParameterParseError, ParameterValidationFailedError, RequiredParameterNotProvidedError } from '../../../src/errors';
@@ -296,6 +302,34 @@ describe('Giuseppe parameter common', () => {
                 const fn = () => instance.getValue(param.getRequestMock('1337'));
 
                 expect(fn).toThrow(ParameterValidationFailedError);
+            });
+
+            it('should throw a validator failed error (with inner exception) when the validator throws an error', () => {
+                const validator: Validator = (value: any) => { throw new Error('normal error'); };
+                const instance = param.getInstance('name', Number, 0, false, validator);
+                const fn = () => instance.getValue(param.getRequestMock(1337));
+
+                expect(fn).toThrowErrorMatchingSnapshot();
+            });
+
+            it(
+                'should throw a validator failed error (without inner exception) ' +
+                'when the validator throws a validator failed error',
+                () => {
+                    const validator: Validator = (value: any) => { throw new ParameterValidationFailedError(param.name); };
+                    const instance = param.getInstance('name', Number, 0, false, validator);
+                    const fn = () => instance.getValue(param.getRequestMock(1337));
+
+                    expect(fn).toThrowErrorMatchingSnapshot();
+                },
+            );
+
+            it('should throw a validator failed error (with inner exception) if the validator throws a non error', () => {
+                const validator: Validator = (value: any) => { throw 'non normal error'; };
+                const instance = param.getInstance('name', Number, 0, false, validator);
+                const fn = () => instance.getValue(param.getRequestMock(1337));
+
+                expect(fn).toThrowErrorMatchingSnapshot();
             });
 
         });
