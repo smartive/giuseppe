@@ -26,8 +26,8 @@ import { ControllerMetadata } from './utilities/ControllerMetadata';
 /**
  * Score sort function for route register information. Calculates the sorting score based on segments, url params
  * and wildcards.
- * 
- * @param {RouteRegisterInformation} route 
+ *
+ * @param {RouteRegisterInformation} route
  */
 const routeScore = (route: RouteRegisterInformation) =>
     route.segments * 1000 - route.urlParams * 0.001 - route.wildcards;
@@ -49,7 +49,7 @@ export interface RouteRegisterInformation {
 /**
  * Main entry class for giuseppe. Does contain the necessary methods to get the application running.
  * Does export the configuration and plugin system.
- * 
+ *
  * @export
  * @class Giuseppe
  */
@@ -57,7 +57,7 @@ export class Giuseppe {
     /**
      * Giuseppes item registrar. Is used to register controllers, routes, parameters and all other things that
      * giuseppe contains. Can be used even when giuseppe is not instantiated yet.
-     * 
+     *
      * @static
      * @type {GiuseppeRegistrar}
      * @memberof Giuseppe
@@ -66,7 +66,7 @@ export class Giuseppe {
 
     /**
      * The actual server instance of express once the application has started.
-     * 
+     *
      * @readonly
      * @type {(Server | undefined)}
      * @memberof Giuseppe
@@ -79,7 +79,7 @@ export class Giuseppe {
      * The express application behind this instance of giuseppe. Someone might want to change the used express instance
      * before calling [start()]{@link Giuseppe#start()}. Also, on this propert you can add other things like
      * compression or body-parser.
-     * 
+     *
      * @type {express.Express}
      * @memberof Giuseppe
      */
@@ -88,7 +88,7 @@ export class Giuseppe {
     /**
      * The router instance that is used for this instance of giuseppe. Access it to add additional routes or even
      * switch the whole router.
-     * 
+     *
      * @type {express.Router}
      * @memberof Giuseppe
      */
@@ -106,7 +106,7 @@ export class Giuseppe {
 
     /**
      * List of registered {@link ReturnType}.
-     * 
+     *
      * @readonly
      * @protected
      * @type {ReturnType<any>[]}
@@ -123,7 +123,7 @@ export class Giuseppe {
 
     /**
      * List of registered {@link ControllerDefinitionConstructor}.
-     * 
+     *
      * @readonly
      * @protected
      * @type {ControllerDefinitionConstructor[]}
@@ -140,7 +140,7 @@ export class Giuseppe {
 
     /**
      * List of registered {@link RouteDefinitionConstructor}.
-     * 
+     *
      * @readonly
      * @protected
      * @type {RouteDefinitionConstructor[]}
@@ -157,7 +157,7 @@ export class Giuseppe {
 
     /**
      * List of registered {@link RouteModificatorConstructor}.
-     * 
+     *
      * @readonly
      * @protected
      * @type {RouteModificatorConstructor[]}
@@ -174,7 +174,7 @@ export class Giuseppe {
 
     /**
      * List of registered {@link ParameterDefinitionConstructor}.
-     * 
+     *
      * @readonly
      * @protected
      * @type {ParameterDefinitionConstructor[]}
@@ -196,9 +196,9 @@ export class Giuseppe {
     /**
      * Registers a given plugin into this giuseppe instance. Clears the internal caches when it does so.
      * Calls the initialize method on a plugin.
-     * 
-     * @param {GiuseppePlugin} plugin 
-     * @returns {this} 
+     *
+     * @param {GiuseppePlugin} plugin
+     * @returns {this}
      * @memberof Giuseppe
      */
     public registerPlugin(plugin: GiuseppePlugin): this {
@@ -221,7 +221,7 @@ export class Giuseppe {
      * Fires up the express application within giuseppe. Gathers all registered controllers and routes and registers
      * them on the given [router]{@link Giuseppe#router}. After the router is configured, fires up the express
      * application with the given parameter.
-     * 
+     *
      * @param {number} [port=8080] The port of the web application (express.listen argument).
      * @param {string} [baseUrl=''] Base url that is preceeding all urls in the system.
      * @param {string} [hostname] Hostname that is passed to express.
@@ -236,7 +236,7 @@ export class Giuseppe {
 
     /**
      * Closes the server of the application.
-     * 
+     *
      * @param {Function} [callback] Callback that is passed to the server.
      * @memberof Giuseppe
      */
@@ -253,9 +253,9 @@ export class Giuseppe {
      * More information here: [glob]{@link https://www.npmjs.com/package/glob#glob-primer}.
      *
      * Can be used when you don't want to load all controllers by hand.
-     * 
-     * @param {string} globPattern 
-     * @returns {Promise<void>} 
+     *
+     * @param {string} globPattern
+     * @returns {Promise<void>}
      * @memberof Giuseppe
      *
      * @example
@@ -292,7 +292,7 @@ export class Giuseppe {
     /**
      * Configures the actual instance of the express router. Creates the registered routes for the controllers in giuseppe
      * as the first step. After that, registers each route to the router and returns the router.
-     * 
+     *
      * @param {string} [baseUrl=''] Base url, that is preceeding all routes.
      * @returns {express.Router} The configured router.
      * @memberof Giuseppe
@@ -314,9 +314,9 @@ export class Giuseppe {
      *     - If there are any, throw the routes at the modificators (can be multiple)
      *     - Add routes to the list
      *  4. Create {@link RouteRegisterInformation} for each route
-     * 
+     *
      * @protected
-     * @param {string} baseUrl 
+     * @param {string} baseUrl
      * @memberof Giuseppe
      */
     protected createRoutes(baseUrl: string): void {
@@ -375,10 +375,10 @@ export class Giuseppe {
      * ensures the right `this` context, does parse the actual param values and handles errors.
      *
      * The resulting function is then passed to the express router.
-     * 
+     *
      * @protected
-     * @param {RouteRegisterInformation} routeInfo 
-     * @returns {express.RequestHandler} 
+     * @param {RouteRegisterInformation} routeInfo
+     * @returns {express.RequestHandler}
      * @memberof Giuseppe
      */
     protected createRouteWrapper(routeInfo: RouteRegisterInformation): express.RequestHandler {
@@ -397,12 +397,12 @@ export class Giuseppe {
 
                 let result = routeInfo.route.function.apply(ctrlInstance, paramValues);
 
-                if (params.some(p => p.canHandleResponse)) {
-                    return;
-                }
-
                 if (result instanceof Promise) {
                     result = await result;
+                }
+
+                if (params.some(p => p.canHandleResponse)) {
+                    return;
                 }
 
                 returnTypeHandler.handleValue(result, res);
@@ -415,11 +415,11 @@ export class Giuseppe {
     /**
      * Check if a given controller, the routes of the controller, the modificators and parameters of the route are
      * registered within a plugin in giuseppe. If not, throw an exception.
-     * 
+     *
      * @protected
-     * @throws {DefinitionNotRegisteredError} 
-     * @param {ControllerDefinition} controller 
-     * @returns {boolean} 
+     * @throws {DefinitionNotRegisteredError}
+     * @param {ControllerDefinition} controller
+     * @returns {boolean}
      * @memberof Giuseppe
      */
     protected checkPluginRegistration(controller: ControllerDefinition): boolean {
