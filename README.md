@@ -12,6 +12,8 @@ but not a great piece of musical history! We compose routes for you. giuseppe is
 
 ## Installation
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/smartive/giuseppe.svg)](https://greenkeeper.io/)
+
 To install this package, simply run
 
 [![NPM](https://nodei.co/npm/giuseppe.png?downloads=true&stars=true)](https://nodei.co/npm/giuseppe/)
