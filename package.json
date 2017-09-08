@@ -60,8 +60,8 @@
   "devDependencies": {
     "@types/jest": "^20.0.2",
     "del-cli": "^1.1.0",
-    "jest": "^21.0.0",
-    "ts-jest": "^20.0.6",
+    "jest": "^21.0.1",
+    "ts-jest": "^21.0.0",
     "tslint": "^5.4.3",
     "tslint-config-airbnb": "^5.2.0",
     "tsutils": "^2.4.0",
