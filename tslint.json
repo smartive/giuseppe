@@ -36,6 +36,8 @@
             true,
             "as-needed"
         ],
+        "no-boolean-literal-compare": false,
+        "strict-boolean-expressions": false,
         "ter-indent": [
             true,
             4,
