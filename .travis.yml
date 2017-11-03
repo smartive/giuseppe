@@ -22,7 +22,8 @@ jobs:
     - stage: deploy
       node_js: '8'
       before_script: npm run build
-      script: npm run semantic-release
+      script: echo "Deploy with semantic release"
+      after_success: npm run semantic-release
     - stage: deploy
       node_js: '8'
       script: npm run typedoc
