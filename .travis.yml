@@ -7,10 +7,6 @@ stages:
   # - name: deploy
   #   if: branch = master
 
-cache:
-  directories:
-    - node_modules
-
 notifications:
   email: false
 
@@ -24,4 +20,3 @@ jobs:
         - npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
     - stage: deploy
       node_js: '8'
-
