@@ -12,7 +12,7 @@
     "test": "npm run lint && npm run clean && jest -c ./jest.json",
     "test:watch": "npm run clean && jest -c ./jest.json --watch",
     "typedoc": "del-cli ./docs/api && typedoc --ignoreCompilerErrors --out ./docs/api --mode file --tsconfig ./config/tsconfig.build.json --theme ./docs/typedoc-theme --readme none ./src/",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release"
   },
   "engines": {
     "node": ">=7",
@@ -47,26 +47,26 @@
   },
   "homepage": "https://github.com/smartive/giuseppe#readme",
   "dependencies": {
-    "@types/express": "^4.0.36",
-    "@types/glob": "^5.0.30",
-    "@types/http-status": "^0.2.29",
-    "@types/node": "^8.0.4",
-    "express": "^4.15.3",
+    "@types/express": "^4.0.39",
+    "@types/glob": "^5.0.33",
+    "@types/http-status": "^0.2.30",
+    "@types/node": "^8.0.47",
+    "express": "^4.16.2",
     "glob": "^7.1.2",
     "http-status": "^1.0.1",
     "reflect-metadata": "^0.1.10",
-    "tslib": "^1.7.1"
+    "tslib": "^1.8.0"
   },
   "devDependencies": {
-    "@types/jest": "^21.1.0",
+    "@types/jest": "^21.1.5",
     "del-cli": "^1.1.0",
-    "jest": "^21.0.1",
-    "ts-jest": "^21.0.0",
-    "tslint": "^5.4.3",
-    "tslint-config-airbnb": "^5.2.0",
-    "tsutils": "^2.4.0",
+    "jest": "^21.2.1",
+    "ts-jest": "^21.1.4",
+    "tslint": "^5.8.0",
+    "tslint-config-airbnb": "^5.3.0",
+    "tsutils": "^2.12.2",
     "typedoc": "^0.9.0",
-    "typescript": "^2.4.1",
-    "semantic-release": "^8.0.0"
+    "typescript": "^2.6.1",
+    "semantic-release": "^9.0.0"
   }
 }
