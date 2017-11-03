@@ -1,28 +1,33 @@
 language: node_js
 
-cache:
-  directories:
-    - node_modules
+stages:
+  - name: test
+    if: tag IS blank
+  - name: deploy
+    if: branch = master
 
 notifications:
   email: false
 
-node_js:
-  - '8'
-  - '7'
-
-install:
-  - npm install
-
-before_script:
-  - npm prune
-
-after_success:
-  - npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
-  - npm install
-  - npm run build
-  - npm run semantic-release
-
-branches:
-  except:
-    - /^v\d+\.\d+\.\d+$/
+jobs:
+  include:
+    - stage: test
+      node_js: '8'
+      after_success:
+        - npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
+    - stage: test
+      node_js: '7'
+      after_success:
+        - npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
+    - stage: deploy
+      node_js: '8'
+      before_script: npm run build
+      script: npm run semantic-release
+    - stage: deploy
+      node_js: '8'
+      script: npm run typedoc
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GH_TOKEN
+        local_dir: ./docs
