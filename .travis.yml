@@ -9,6 +9,9 @@ stages:
 notifications:
   email: false
 
+env:
+  - BUILD_LEADER_ID=4
+
 jobs:
   include:
     - stage: test
@@ -21,14 +24,14 @@ jobs:
         - npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
     - stage: deploy
       node_js: '8'
-      before_script: npm run build
-      script: echo "Deploy with semantic release"
-      after_success: npm run semantic-release
-    - stage: deploy
-      node_js: '8'
       script: npm run typedoc
       deploy:
         provider: pages
         skip_cleanup: true
         github_token: $GH_TOKEN
         local_dir: ./docs
+    - stage: deploy
+      node_js: '8'
+      before_script: npm run build
+      script: echo "Deploy with semantic release"
+      after_success: npm run semantic-release
