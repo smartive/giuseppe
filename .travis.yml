@@ -1,5 +1,12 @@
 language: node_js
 
+stages:
+  - name: test
+    if: tag IS blank
+  - deploy
+  # - name: deploy
+  #   if: branch = master
+
 cache:
   directories:
     - node_modules
@@ -7,22 +14,14 @@ cache:
 notifications:
   email: false
 
-node_js:
-  - '8'
-  - '7'
+jobs:
+  include:
+    - stage: test
+      node_js:
+        - '8'
+        - '7'
+      after_success:
+        - npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
+    - stage: deploy
+      node_js: '8'
 
-install:
-  - npm install
-
-before_script:
-  - npm prune
-
-after_success:
-  - npm install coveralls@^2.11.9 && cat ./coverage/lcov.info | coveralls
-  - npm install
-  - npm run build
-  - npm run semantic-release
-
-branches:
-  except:
-    - /^v\d+\.\d+\.\d+$/
