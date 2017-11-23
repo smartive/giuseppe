@@ -4,7 +4,7 @@ stages:
   - name: test
     if: tag IS blank
   - name: deploy
-    if: branch = master
+    if: branch = master AND type != pull_request
 
 notifications:
   email: false
