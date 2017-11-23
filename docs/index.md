@@ -2,12 +2,13 @@
 layout: default
 title: giuseppe - by smartive AG
 ---
-giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](http://expressjs.com/) using [TypeScript](https://www.typescriptlang.org/) 
-decorators and annotations named after the great Italian componist Giuseppe Verdi. Like Verdi, 
+giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](http://expressjs.com/) using [TypeScript](https://www.typescriptlang.org/)
+decorators and annotations named after the great Italian componist Giuseppe Verdi. Like Verdi,
 it composes things, but not a great piece of musical history! We compose routes for you. giuseppe is dedicated to
 [Express](http://expressjs.com/) and depends on it. We were tired of writing all the route registrations by ourselves.
 
 [![Build Status](https://travis-ci.org/smartive/giuseppe.svg)](https://travis-ci.org/smartive/giuseppe)
+[![Build Status](https://ci.appveyor.com/api/projects/status/7m14ruqjaopwbfn4?svg=true)](https://ci.appveyor.com/project/buehler/giuseppe)
 [![npm](https://img.shields.io/npm/v/giuseppe.svg?maxAge=3600)](https://www.npmjs.com/package/giuseppe)
 [![Coverage status](https://img.shields.io/coveralls/smartive/giuseppe.svg?maxAge=3600)](https://coveralls.io/github/smartive/giuseppe)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
@@ -27,7 +28,7 @@ To install this package, simply run
 
 [![NPM](https://nodei.co/npm/giuseppe.png?downloads=true&stars=true)](https://nodei.co/npm/giuseppe/)
 
-The suggested method would actually be: use the yeoman generator which we created @ 
+The suggested method would actually be: use the yeoman generator which we created @
 [generator-giuseppe](https://github.com/smartive/generator-giuseppe).
 It installs all dependencies and libraries that you need.
 
@@ -35,7 +36,7 @@ When you use the manual way npm should install all typing dependencies.
 They are listed in the `package.json` with the `@types` prefix.
 
 This package installs the transpiled `*.js` files instead of `*.ts` files, since the compiler tries
-to compile them everytime. The declaration files with the JSDocs are provided aswell so your 
+to compile them everytime. The declaration files with the JSDocs are provided aswell so your
 autocomplete does work as it should.
 
 ## Migrate to new major versions
@@ -83,12 +84,12 @@ import { Controller, Get, Giuseppe } from 'giuseppe';
 
 @Controller()
 class PingPongController {
-    
+
     @Get('ping')
     public ping(): any {
         return {ping: 'pong'};
     }
-    
+
 }
 
 const giusi = new Giuseppe();
@@ -110,22 +111,22 @@ import { Controller, Get, Query } from 'giuseppe';
 
 @Controller()
 export class PingPongController {
-    
+
     @Get('ping')
     public ping(): any {
         return {ping: 'pong'};
     }
-    
+
 }
 
 @Controller('echo')
 export class EchoController {
-    
+
     @Get()
     public ping(@Query('data') data: string): string {
         return 'you gave me: ' + data;
     }
-    
+
 }
 ```
 
@@ -164,7 +165,7 @@ We're happy if you have any contributions! Every participation counts. Feel free
 open pull requests, issues or use any other form of contribution. Maybe we'll
 set up a `CONTRIBUTING.md` file in the future. soon(tm).
 
-If you want to create a plugin for giuseppe, use the other yeoman generator @ 
+If you want to create a plugin for giuseppe, use the other yeoman generator @
 [generator-giuseppe-plugin](https://github.com/smartive/generator-giuseppe-plugin)
 
 [Full list of contributors](https://github.com/smartive/giuseppe/graphs/contributors)
