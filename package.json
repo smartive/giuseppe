@@ -58,7 +58,7 @@
     "tslib": "^1.8.0"
   },
   "devDependencies": {
-    "@types/jest": "^21.1.8",
+    "@types/jest": "^22.0.0",
     "del-cli": "^1.1.0",
     "jest": "^21.2.1",
     "ts-jest": "^22.0.0",
