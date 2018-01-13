@@ -67,6 +67,6 @@
     "tsutils": "^2.12.2",
     "typedoc": "^0.9.0",
     "typescript": "^2.6.1",
-    "semantic-release": "^9.0.0"
+    "semantic-release": "^12.2.2"
   }
 }
