@@ -1,62 +1,17 @@
 {
-    "extends": "tslint-config-airbnb",
+    "extends": "@smartive/tslint-config",
     "rules": {
         "function-name": false,
-        "max-line-length": [
-            true,
-            125
-        ],
-        "member-ordering": [
-            true,
-            {
-                "order": [
-                    "public-static-field",
-                    "protected-static-field",
-                    "private-static-field",
-                    "public-instance-field",
-                    "protected-instance-field",
-                    "private-instance-field",
-                    "constructor",
-                    "public-static-method",
-                    "protected-static-method",
-                    "private-static-method",
-                    "public-instance-method",
-                    "protected-instance-method",
-                    "private-instance-method"
-                ]
-            }
-        ],
-        "no-increment-decrement": false,
-        "no-trailing-whitespace": [
-            true,
-            "ignore-jsdoc",
-            "ignore-template-strings"
-        ],
         "ter-arrow-parens": [
             true,
             "as-needed"
         ],
-        "no-boolean-literal-compare": false,
-        "strict-boolean-expressions": false,
         "ter-indent": [
             true,
             4,
             {
                 "SwitchCase": 1
             }
-        ],
-        "typedef": [
-            true,
-            "call-signature",
-            "parameter",
-            "property-declaration",
-            "member-variable-declaration"
-        ],
-        "variable-name": [
-            true,
-            "check-format",
-            "ban-keywords",
-            "allow-leading-underscore"
         ]
     }
 }
