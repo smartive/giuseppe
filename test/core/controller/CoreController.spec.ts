@@ -106,7 +106,7 @@ describe('Core controller', () => {
 
             const ctrl = Giuseppe.registrar.controller[0];
             const route = ctrl.createRoutes('')[0];
-            expect(route.id).toBe('get_');
+            expect(route.id).toBe('get__');
             expect(route.name).toBe('get');
         });
 
@@ -127,15 +127,15 @@ describe('Core controller', () => {
             const routes = ctrl.createRoutes('');
 
             let route = routes[0];
-            expect(route.id).toBe('get_foobar');
+            expect(route.id).toBe('get_api_foobar');
             expect(route.url).toBe('api/foobar');
 
             route = routes[1];
-            expect(route.id).toBe('get_/barfoo');
+            expect(route.id).toBe('get_api_/barfoo');
             expect(route.url).toBe('api/barfoo');
 
             route = routes[2];
-            expect(route.id).toBe('get_/rootfoo');
+            expect(route.id).toBe('get_api_/rootfoo');
             expect(route.url).toBe('api/rootfoo');
         });
 
