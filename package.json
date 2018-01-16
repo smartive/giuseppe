@@ -15,7 +15,7 @@
     "semantic-release": "semantic-release"
   },
   "engines": {
-    "node": ">=7",
+    "node": ">=8",
     "npm": "*"
   },
   "repository": {
@@ -47,26 +47,27 @@
   },
   "homepage": "https://github.com/smartive/giuseppe#readme",
   "dependencies": {
-    "@types/express": "^4.0.39",
-    "@types/glob": "^5.0.33",
+    "@types/express": "^4.11.0",
+    "@types/glob": "^5.0.34",
     "@types/http-status": "^0.2.30",
-    "@types/node": "^8.0.47",
+    "@types/node": "^9.3.0",
     "express": "^4.16.2",
     "glob": "^7.1.2",
     "http-status": "^1.0.1",
     "reflect-metadata": "^0.1.10",
-    "tslib": "^1.8.0"
+    "tslib": "^1.8.1"
   },
   "devDependencies": {
-    "@types/jest": "^21.1.5",
+    "@smartive/tslint-config": "^2.0.0",
+    "@types/jest": "^22.0.1",
     "del-cli": "^1.1.0",
-    "jest": "^21.2.1",
-    "ts-jest": "^21.1.4",
-    "tslint": "^5.8.0",
-    "tslint-config-airbnb": "^5.3.0",
-    "tsutils": "^2.12.2",
+    "jest": "^22.1.1",
+    "semantic-release": "^12.2.2",
+    "ts-jest": "^22.0.1",
+    "tslint": "^5.9.1",
+    "tslint-config-airbnb": "^5.4.2",
+    "tsutils": "^2.18.0",
     "typedoc": "^0.9.0",
-    "typescript": "^2.6.1",
-    "semantic-release": "^9.0.0"
+    "typescript": "^2.6.2"
   }
 }

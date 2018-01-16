@@ -16,7 +16,7 @@ const PRIMITIVE_TYPES: Function[] = [Object, String, Array, Number, Boolean];
 /**
  * Giuseppe base parameter class. Is used for all core parameters (like cookie or body) to generalize
  * some logic.
- * 
+ *
  * @export
  * @abstract
  * @class GiuseppeBaseParameter
@@ -56,9 +56,8 @@ export abstract class GiuseppeBaseParameter implements ParameterDefinition {
                 const ctor = this.type as any;
                 if (rawValue.constructor === ctor) {
                     return rawValue;
-                } else {
-                    return PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(rawValue) : new ctor(rawValue);
                 }
+                return PRIMITIVE_TYPES.indexOf(ctor) !== -1 ? ctor(rawValue) : new ctor(rawValue);
             };
         }
 

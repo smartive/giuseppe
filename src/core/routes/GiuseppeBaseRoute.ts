@@ -22,13 +22,13 @@ export type FunctionMethodDecorator = (
  * Route decorator. Creates a route definition that reacts to a specified request. The method needs to be specified.
  * Can define one or multiple middlewares that are registered for that route. Also, a route name can be specified
  * that creates the url for express.
- * 
+ *
  * @export
  * @param {HttpMethod} method The http method to use.
  * @param {(string | RequestHandler)} [routeOrMiddleware] Either a string that represents the url for this route, or
  *                                                        an optional middleware if no specific route is needed.
  * @param {...RequestHandler[]} middlewares Other middlewares that are used for this route.
- * @returns {FunctionMethodDecorator} 
+ * @returns {FunctionMethodDecorator}
  */
 export function Route(
     method: HttpMethod,
@@ -50,7 +50,7 @@ export function Route(
 /**
  * Default core base route of giuseppe. Is configurable with all defined http methods of express (from the source).
  * Specifies it's http method via the enum {@link HttpMethod}.
- * 
+ *
  * @export
  * @class GiuseppeBaseRoute
  * @implements {RouteDefinition}
@@ -74,7 +74,7 @@ export class GiuseppeBaseRoute implements RouteDefinition {
     ): GiuseppeRoute[] {
         return [
             {
-                id: `${HttpMethod[this.httpMethod]}_${this.route}`,
+                id: `${HttpMethod[this.httpMethod]}_${baseUrl}_${this.route}`,
                 name: this.name,
                 method: this.httpMethod,
                 url: UrlHelper.buildUrl(baseUrl, this.route),

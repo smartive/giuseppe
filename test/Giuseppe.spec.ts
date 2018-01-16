@@ -385,6 +385,24 @@ describe('Giuseppe', () => {
                 expect(fn).toThrowErrorMatchingSnapshot();
             });
 
+            it('should not throw on a similar route in a different controller', () => {
+                @Controller('a')
+                class CtrlA {
+                    @Get('getFunc')
+                    public func(): void { }
+                }
+
+                @Controller('b')
+                class CtrlB {
+                    @Get('getFunc')
+                    public func(): void { }
+                }
+
+                const fn = () => giuseppe.configureRouter('baseUrl');
+
+                expect(fn).not.toThrow();
+            });
+
             it('should order the urls correctly (all cases)', () => {
                 @Controller()
                 class Ctrl {
