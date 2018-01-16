@@ -53,4 +53,4 @@ Array [
 ]
 `;
 
-exports[`Giuseppe Core configureRouter() should throw on a duplicate route 1`] = `"A route with the ID 'get_baseUrl_getFunc' (method name: 'func2', url: 'baseUrl/getFunc') is already registered."`;
+exports[`Giuseppe Core configureRouter() should throw on a duplicate route 1`] = `"A route with the ID 'get_baseUrl/getFunc' (method name: 'func2', url: 'baseUrl/getFunc') is already registered."`;

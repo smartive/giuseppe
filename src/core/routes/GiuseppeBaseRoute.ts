@@ -74,7 +74,7 @@ export class GiuseppeBaseRoute implements RouteDefinition {
     ): GiuseppeRoute[] {
         return [
             {
-                id: `${HttpMethod[this.httpMethod]}_${baseUrl}_${this.route}`,
+                id: `${HttpMethod[this.httpMethod]}_${UrlHelper.buildUrl(baseUrl, this.route)}`,
                 name: this.name,
                 method: this.httpMethod,
                 url: UrlHelper.buildUrl(baseUrl, this.route),

@@ -211,7 +211,7 @@ describe('Core routes', () => {
                     const route = meta.routes()[0];
                     const generated = route.createRoutes(meta, '', [])[0];
 
-                    expect(generated.id).toBe(`${run.name}__TheUrl`);
+                    expect(generated.id).toBe(`${run.name}_TheUrl`);
                 });
 
                 it('should use the correct name', () => {
