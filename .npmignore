@@ -25,10 +25,7 @@ _test
 *.ts
 !*.d.ts
 *.js.map
-*.spec.js
-*.spec.ts
-*.spec.d.ts
-*.spec.js.map
+test
 
 jest.json
 .travis.yml

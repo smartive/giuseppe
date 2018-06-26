@@ -13,6 +13,5 @@ node_modules
 .node_repl_history
 
 # Typescript stuff
-typings
 build
 coverage
