@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import { IRouterMatcher, Router } from 'express';
 
-import { Giuseppe } from '../src';
+import { Giuseppe, Post, RouteRegisterInformation } from '../src';
 import { ControllerDefinition } from '../src/controller/ControllerDefinition';
 import { Controller } from '../src/core/controller/GiuseppeApiController';
 import { Get } from '../src/core/routes/Get';
@@ -461,6 +461,37 @@ describe('Giuseppe', () => {
 
                 expect(spy.mock.calls).toMatchSnapshot();
             });
+        });
+
+    });
+
+    describe('createRouteWrapper()', () => {
+
+        it('should use the same controller instance for routes', () => {
+            const giusi = new Giuseppe();
+            const original = (giusi as any).createRouteWrapper as Function;
+            const spy = jest.fn((routeInfo: RouteRegisterInformation) => original.apply(giusi, [routeInfo]));
+            (giusi as any).createRouteWrapper = spy;
+
+            @Controller('foo')
+            class Ctrl {
+                @Get('bar')
+                public func1(): void { }
+
+                @Post('baz')
+                public async func2(p1: string): Promise<void> { }
+            }
+
+            @Controller('bar')
+            class Ctrl2 {
+                @Get('bar')
+                public func1(): void { }
+            }
+
+            giusi.configureRouter();
+
+            expect(spy.mock.calls[0][0].instance).toBe(spy.mock.calls[1][0].instance);
+            expect(spy.mock.calls[0][0].instance).not.toBe(spy.mock.calls[2][0].instance);
         });
 
     });
