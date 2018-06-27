@@ -47,27 +47,26 @@
   },
   "homepage": "https://github.com/smartive/giuseppe#readme",
   "dependencies": {
-    "@types/express": "^4.11.0",
-    "@types/glob": "^5.0.34",
+    "@types/express": "^4.16.0",
+    "@types/glob": "^5.0.35",
     "@types/http-status": "^0.2.30",
-    "@types/node": "^9.3.0",
-    "express": "^4.16.2",
+    "@types/node": "^10.3.6",
+    "express": "^4.16.3",
     "glob": "^7.1.2",
-    "http-status": "^1.0.1",
-    "reflect-metadata": "^0.1.10",
-    "tslib": "^1.8.1"
+    "http-status": "^1.2.0",
+    "reflect-metadata": "^0.1.12",
+    "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@smartive/tslint-config": "^2.0.0",
-    "@types/jest": "^22.0.1",
+    "@smartive/tslint-config": "^3.0.1",
+    "@types/jest": "^23.1.2",
     "del-cli": "^1.1.0",
-    "jest": "^22.1.1",
-    "semantic-release": "^12.2.2",
-    "ts-jest": "^22.0.1",
-    "tslint": "^5.9.1",
-    "tslint-config-airbnb": "^5.4.2",
-    "tsutils": "^2.18.0",
-    "typedoc": "^0.10.0",
-    "typescript": "^2.8.0"
+    "jest": "^23.2.0",
+    "semantic-release": "^15.6.0",
+    "ts-jest": "^22.4.6",
+    "tslint": "^5.10.0",
+    "tsutils": "^2.27.1",
+    "typedoc": "^0.11.1",
+    "typescript": "^2.9.2"
   }
 }
