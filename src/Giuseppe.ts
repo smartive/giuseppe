@@ -22,6 +22,7 @@ import { GiuseppeRoute } from './routes/GiuseppeRoute';
 import { ReturnType } from './routes/ReturnType';
 import { HttpMethod } from './routes/RouteDefinition';
 import { ControllerMetadata } from './utilities/ControllerMetadata';
+import { getRandomPort } from './utilities/RandomPort';
 
 /**
  * Score sort function for route register information. Calculates the sorting score based on segments, url params
@@ -41,6 +42,7 @@ const routeScore = (route: RouteRegisterInformation) =>
 export interface RouteRegisterInformation {
     route: GiuseppeRoute;
     ctrl: Function;
+    instance: object;
     segments: number;
     wildcards: number;
     urlParams: number;
@@ -76,6 +78,18 @@ export class Giuseppe {
     }
 
     /**
+     * Gets the used port of giuseppe (and the given express app). Returns undefined if the app
+     * is not started yet.
+     *
+     * @readonly
+     * @type {(number | undefined)}
+     * @memberof Giuseppe
+     */
+    public get port(): number | undefined {
+        return this._port;
+    }
+
+    /**
      * The express application behind this instance of giuseppe. Someone might want to change the used express instance
      * before calling [start()]{@link Giuseppe#start()}. Also, on this propert you can add other things like
      * compression or body-parser.
@@ -98,11 +112,13 @@ export class Giuseppe {
     protected routes: { [id: string]: RouteRegisterInformation } = {};
     protected _server: Server | undefined;
 
-    protected _returnTypes: ReturnType<any>[] | null;
-    protected _pluginController: ControllerDefinitionConstructor[] | null;
-    protected _pluginRoutes: RouteDefinitionConstructor[] | null;
-    protected _pluginRouteModificators: RouteModificatorConstructor[] | null;
-    protected _pluginParameters: ParameterDefinitionConstructor[] | null;
+    protected _returnTypes: ReturnType<any>[] | null = null;
+    protected _pluginController: ControllerDefinitionConstructor[] | null = null;
+    protected _pluginRoutes: RouteDefinitionConstructor[] | null = null;
+    protected _pluginRouteModificators: RouteModificatorConstructor[] | null = null;
+    protected _pluginParameters: ParameterDefinitionConstructor[] | null = null;
+
+    private _port: number | undefined;
 
     /**
      * List of registered {@link ReturnType}.
@@ -222,29 +238,36 @@ export class Giuseppe {
      * them on the given [router]{@link Giuseppe#router}. After the router is configured, fires up the express
      * application with the given parameter.
      *
-     * @param {number} [port=8080] The port of the web application (express.listen argument).
+     * @param {number} [port] The port of the web application (express.listen argument). If no port is provided
+     *                        a random one is used.
      * @param {string} [baseUrl=''] Base url that is preceeding all urls in the system.
-     * @param {string} [hostname] Hostname that is passed to express.
-     * @param {Function} [callback] Callback that is used in express when the system is listening and ready.
      * @memberof Giuseppe
      */
-    public start(port: number = 8080, baseUrl: string = '', hostname?: string, callback?: Function): void {
+    public async start(port?: number, baseUrl: string = ''): Promise<void> {
+        const expressPort = port || await getRandomPort();
         const router = this.configureRouter(baseUrl);
         this.expressApp.use(router);
-        this._server = this.expressApp.listen.apply(this.expressApp, [port, hostname, callback].filter(Boolean));
+        this._server = await this.startup(expressPort);
+        this._port = expressPort;
     }
 
     /**
      * Closes the server of the application.
      *
-     * @param {Function} [callback] Callback that is passed to the server.
      * @memberof Giuseppe
      */
-    public stop(callback?: Function): void {
-        if (this._server) {
-            this._server.close(callback);
-            delete this._server;
-        }
+    public stop(): Promise<void> {
+        return new Promise(resolve => {
+            if (this._server) {
+                this._server.close(() => {
+                    delete this._server;
+                    delete this._port;
+                    resolve();
+                });
+                return;
+            }
+            resolve();
+        });
     }
 
     /**
@@ -344,6 +367,8 @@ export class Giuseppe {
                 ctrlRoutes = ctrlRoutes.concat(modifiedRoutes);
             }
 
+            const ctrlInstance = new (ctrl.ctrlTarget as { new(...args: any[]): any; })();
+
             for (const route of ctrlRoutes) {
                 if (this.routes[route.id]) {
                     throw new DuplicateRouteError(route);
@@ -354,6 +379,7 @@ export class Giuseppe {
                     wildcards: route.url.split('*').length - 1,
                     urlParams: route.url.split('/').filter(s => s.indexOf(':') >= 0).length,
                     ctrl: ctrl.ctrlTarget,
+                    instance: ctrlInstance,
                 };
             }
         }
@@ -363,7 +389,7 @@ export class Giuseppe {
         Object.keys(this.routes)
             .map(k => this.routes[k])
             .sort((a, b) => routeScore(b) - routeScore(a))
-            .forEach(r => this.router[HttpMethod[r.route.method]](
+            .forEach(r => (this.router as any)[HttpMethod[r.route.method]](
                 `/${r.route.url}`,
                 ...r.route.middlewares,
                 this.createRouteWrapper(r),
@@ -385,7 +411,6 @@ export class Giuseppe {
         const meta = new ControllerMetadata(routeInfo.ctrl.prototype);
         const params = meta.parameters(routeInfo.route.name);
         const returnTypeHandler = new ReturnTypeHandler(this.returnTypes);
-        const ctrlInstance = new (routeInfo as any).ctrl();
 
         return async (req: express.Request, res: express.Response) => {
             const paramValues: any[] = [];
@@ -395,7 +420,7 @@ export class Giuseppe {
                     paramValues[param.index] = param.getValue(req, res);
                 }
 
-                let result = routeInfo.route.function.apply(ctrlInstance, paramValues);
+                let result = routeInfo.route.function.apply(routeInfo.instance, paramValues);
 
                 if (result instanceof Promise) {
                     result = await result;
@@ -407,7 +432,7 @@ export class Giuseppe {
 
                 returnTypeHandler.handleValue(result, res);
             } catch (e) {
-                meta.errorHandler().handleError(ctrlInstance, req, res, e);
+                meta.errorHandler().handleError(routeInfo.instance, req, res, e);
             }
         };
     }
@@ -448,5 +473,13 @@ export class Giuseppe {
         }
 
         return true;
+    }
+
+    private startup(port: number): Promise<Server> {
+        return new Promise(resolve => {
+            const server = this.expressApp.listen(port, () => {
+                resolve(server);
+            });
+        });
     }
 }

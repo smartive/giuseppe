@@ -10,15 +10,15 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
 /**
  * Parameter decorator. Creates a parameter definition that injects a specific header value from the request.
  * Can contain validators and a factory if the value is complex.
- * 
+ *
  * @export
- * @param {string} name 
+ * @param {string} name
  * @param {{ required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> }} [{
  *         required,
  *         validator,
  *         factory,
- *     }={}] 
- * @returns {ParameterDecorator} 
+ *     }={}]
+ * @returns {ParameterDecorator}
  */
 export function Header(
     name: string,
@@ -28,13 +28,13 @@ export function Header(
         factory,
     }: { required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string, parameterIndex: number) =>
+    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
-            propertyKey,
+            propertyKey.toString(),
             new GiuseppeHeaderParameter(
                 name,
-                new ControllerMetadata(target).parameterTypes(propertyKey)[parameterIndex],
+                new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
                 parameterIndex,
                 required,
                 validator,
@@ -45,7 +45,7 @@ export function Header(
 
 /**
  * Default core header parameter of giuseppe. Injects a specific header value into the route.
- * 
+ *
  * @export
  * @class GiuseppeHeaderParameter
  * @extends {GiuseppeBaseParameter}

@@ -10,14 +10,14 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
 /**
  * Parameter decorator. Creates a parameter definition that injects a url parameter value from the request.
  * Can contain validators and a factory if the value is complex.
- * 
+ *
  * @export
- * @param {string} name 
+ * @param {string} name
  * @param {{ validator?: ParameterValidator, factory?: ParameterFactory<any> }} [{
  *         validator,
  *         factory,
- *     }={}] 
- * @returns {ParameterDecorator} 
+ *     }={}]
+ * @returns {ParameterDecorator}
  */
 export function UrlParam(
     name: string,
@@ -26,13 +26,13 @@ export function UrlParam(
         factory,
     }: { validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string, parameterIndex: number) =>
+    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
-            propertyKey,
+            propertyKey.toString(),
             new GiuseppeUrlParameter(
                 name,
-                new ControllerMetadata(target).parameterTypes(propertyKey)[parameterIndex],
+                new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
                 parameterIndex,
                 validator,
                 factory,
@@ -42,7 +42,7 @@ export function UrlParam(
 
 /**
  * Default core url parameter of giuseppe. Injects a given url parameter for a route.
- * 
+ *
  * @export
  * @class GiuseppeUrlParameter
  * @extends {GiuseppeBaseParameter}

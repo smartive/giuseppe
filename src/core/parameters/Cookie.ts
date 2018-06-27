@@ -9,7 +9,7 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
 
 /**
  * Class that splits cookie values into their specific parts.
- * 
+ *
  * @class CookieHelper
  */
 class CookieHelper {
@@ -26,7 +26,7 @@ class CookieHelper {
 /**
  * Parameter decorator. Creates a parameter definition that injects a specific cookie from the request.
  * Can contain validators and a factory if the value is complex.
- * 
+ *
  * @export
  * @param {string} name Name of the cookie.
  * @param {{ required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> }} [{
@@ -34,7 +34,7 @@ class CookieHelper {
  *         validator,
  *         factory,
  *     }={}] Configuration object for the cookie parameter.
- * @returns {ParameterDecorator} 
+ * @returns {ParameterDecorator}
  */
 export function Cookie(
     name: string,
@@ -44,13 +44,13 @@ export function Cookie(
         factory,
     }: { required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string, parameterIndex: number) =>
+    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
-            propertyKey,
+            propertyKey.toString(),
             new GiuseppeCookieParameter(
                 name,
-                new ControllerMetadata(target).parameterTypes(propertyKey)[parameterIndex],
+                new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
                 parameterIndex,
                 required,
                 validator,
@@ -61,7 +61,7 @@ export function Cookie(
 
 /**
  * Default core cookie parameter of giuseppe. Injects the value of a specific cookie from the request.
- * 
+ *
  * @export
  * @class GiuseppeCookieParameter
  * @extends {GiuseppeBaseParameter}

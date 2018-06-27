@@ -4,6 +4,7 @@ skip_branch_with_pr: true
 
 environment:
   matrix:
+    - nodejs_version: "10"
     - nodejs_version: "9"
     - nodejs_version: "8"
 
@@ -13,5 +14,7 @@ install:
 
 test_script:
   - npm test
+  - npm i -g codecov
+  - codecov
 
 build: off

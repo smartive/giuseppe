@@ -12,7 +12,7 @@ import httpStatus = require('http-status');
  * @param {Response} res express response object
  * @param {Error} err error that happend
  */
-export const DEFAULT_ERROR_HANDLER = (_, res, err) => {
+export const DEFAULT_ERROR_HANDLER = (_: Request, res: Response, err: Error) => {
     console.error(err);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).end();
 };
@@ -35,7 +35,7 @@ export type ErrorHandlerFunction<T extends Error> = (request: Request, response:
  * @class
  */
 export class ControllerErrorHandler {
-    private handlers: { [id: string]: ErrorHandlerFunction<Error> } = { Error: DEFAULT_ERROR_HANDLER };
+    private handlers: { [id: string]: ErrorHandlerFunction<any> } = { Error: DEFAULT_ERROR_HANDLER };
 
     /**
      * Adds an error handler for the current controller with the given errorType. If the errorType is omitted,

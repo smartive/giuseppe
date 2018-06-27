@@ -11,7 +11,7 @@ import { UrlHelper } from '../../utilities/UrlHelper';
 /**
  * Controller decorator. Creates a {@link GiuseppeApiController} that is registered within {@link Giuseppe}.
  * All controllers are later used to generate their routes.
- * 
+ *
  * @export
  * @param {(string | RequestHandler)} [routePrefixOrMiddleware] It's either a middleware (if no route prefix is used) or a
  *                                                              string that contains the routeprefix for this controller.
@@ -35,7 +35,7 @@ import { UrlHelper } from '../../utilities/UrlHelper';
  */
 export function Controller(
     routePrefixOrMiddleware?: string | RequestHandler,
-    ...middlewares: RequestHandler[],
+    ...middlewares: RequestHandler[]
 ): ClassDecorator {
     const routePrefix = routePrefixOrMiddleware && typeof routePrefixOrMiddleware === 'string' ?
         routePrefixOrMiddleware :
@@ -50,7 +50,7 @@ export function Controller(
 
 /**
  * Default core controller of giuseppe. Contains the routes and generates them on "configureRouter()" of giuseppe.
- * 
+ *
  * @export
  * @class GiuseppeApiController
  * @implements {ControllerDefinition}

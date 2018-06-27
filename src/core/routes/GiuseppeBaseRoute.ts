@@ -9,13 +9,18 @@ import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { UrlHelper } from '../../utilities/UrlHelper';
 
 /**
+ * Type for all methods.
+ */
+export type Callable = (...args: any[]) => any;
+
+/**
  * Type for giuseppes route decorators.
  * Does generically restrain the MethodDecorator to Functions only.
  */
 export type FunctionMethodDecorator = (
     target: Object,
     _: string | symbol,
-    descriptor: TypedPropertyDescriptor<Function>,
+    descriptor: TypedPropertyDescriptor<Callable>,
 ) => void;
 
 /**
@@ -33,13 +38,13 @@ export type FunctionMethodDecorator = (
 export function Route(
     method: HttpMethod,
     routeOrMiddleware?: string | RequestHandler,
-    ...middlewares: RequestHandler[],
+    ...middlewares: RequestHandler[]
 ): FunctionMethodDecorator {
     const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
     if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
         middlewares.unshift(routeOrMiddleware);
     }
-    return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Function>) => {
+    return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Callable>) => {
         if (!descriptor.value) {
             throw new TypeError(`Function is undefined in route ${route}`);
         }
