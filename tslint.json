@@ -19,7 +19,7 @@
                 "multiline": "always",
                 "singleline": "never",
                 "esSpecCompliant": true
-            },
+            }
         ]
     }
 }
