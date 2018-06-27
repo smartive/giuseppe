@@ -98,11 +98,11 @@ export class Giuseppe {
     protected routes: { [id: string]: RouteRegisterInformation } = {};
     protected _server: Server | undefined;
 
-    protected _returnTypes: ReturnType<any>[] | null;
-    protected _pluginController: ControllerDefinitionConstructor[] | null;
-    protected _pluginRoutes: RouteDefinitionConstructor[] | null;
-    protected _pluginRouteModificators: RouteModificatorConstructor[] | null;
-    protected _pluginParameters: ParameterDefinitionConstructor[] | null;
+    protected _returnTypes: ReturnType<any>[] | null = null;
+    protected _pluginController: ControllerDefinitionConstructor[] | null = null;
+    protected _pluginRoutes: RouteDefinitionConstructor[] | null = null;
+    protected _pluginRouteModificators: RouteModificatorConstructor[] | null = null;
+    protected _pluginParameters: ParameterDefinitionConstructor[] | null = null;
 
     /**
      * List of registered {@link ReturnType}.
@@ -363,7 +363,7 @@ export class Giuseppe {
         Object.keys(this.routes)
             .map(k => this.routes[k])
             .sort((a, b) => routeScore(b) - routeScore(a))
-            .forEach(r => this.router[HttpMethod[r.route.method]](
+            .forEach(r => (this.router as any)[HttpMethod[r.route.method]](
                 `/${r.route.url}`,
                 ...r.route.middlewares,
                 this.createRouteWrapper(r),
