@@ -41,6 +41,7 @@ const routeScore = (route: RouteRegisterInformation) =>
 export interface RouteRegisterInformation {
     route: GiuseppeRoute;
     ctrl: Function;
+    instance: object;
     segments: number;
     wildcards: number;
     urlParams: number;
@@ -344,6 +345,8 @@ export class Giuseppe {
                 ctrlRoutes = ctrlRoutes.concat(modifiedRoutes);
             }
 
+            const ctrlInstance = new (ctrl.ctrlTarget as { new(...args: any[]): any; })();
+
             for (const route of ctrlRoutes) {
                 if (this.routes[route.id]) {
                     throw new DuplicateRouteError(route);
@@ -354,6 +357,7 @@ export class Giuseppe {
                     wildcards: route.url.split('*').length - 1,
                     urlParams: route.url.split('/').filter(s => s.indexOf(':') >= 0).length,
                     ctrl: ctrl.ctrlTarget,
+                    instance: ctrlInstance,
                 };
             }
         }
@@ -385,7 +389,6 @@ export class Giuseppe {
         const meta = new ControllerMetadata(routeInfo.ctrl.prototype);
         const params = meta.parameters(routeInfo.route.name);
         const returnTypeHandler = new ReturnTypeHandler(this.returnTypes);
-        const ctrlInstance = new (routeInfo as any).ctrl();
 
         return async (req: express.Request, res: express.Response) => {
             const paramValues: any[] = [];
@@ -395,7 +398,7 @@ export class Giuseppe {
                     paramValues[param.index] = param.getValue(req, res);
                 }
 
-                let result = routeInfo.route.function.apply(ctrlInstance, paramValues);
+                let result = routeInfo.route.function.apply(routeInfo.instance, paramValues);
 
                 if (result instanceof Promise) {
                     result = await result;
@@ -407,7 +410,7 @@ export class Giuseppe {
 
                 returnTypeHandler.handleValue(result, res);
             } catch (e) {
-                meta.errorHandler().handleError(ctrlInstance, req, res, e);
+                meta.errorHandler().handleError(routeInfo.instance, req, res, e);
             }
         };
     }
