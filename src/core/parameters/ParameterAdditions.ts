@@ -62,15 +62,15 @@ export function isNumber({ min, max, multipleOf }: { min?: number, max?: number,
             return false;
         }
 
-        if (!isNullOrUndefined(min) && value < min) {
+        if (!isNullOrUndefined(min) && value < min!) {
             return false;
         }
 
-        if (!isNullOrUndefined(max) && value > max) {
+        if (!isNullOrUndefined(max) && value > max!) {
             return false;
         }
 
-        return !(!isNullOrUndefined(multipleOf) && value % multipleOf !== 0);
+        return !(!isNullOrUndefined(multipleOf) && value % multipleOf! !== 0);
     };
 }
 
@@ -93,11 +93,11 @@ export function isArray(
             return false;
         }
 
-        if (!isNullOrUndefined(min) && value.length < min) {
+        if (!isNullOrUndefined(min) && value.length < min!) {
             return false;
         }
 
-        if (!isNullOrUndefined(max) && value.length > max) {
+        if (!isNullOrUndefined(max) && value.length > max!) {
             return false;
         }
 

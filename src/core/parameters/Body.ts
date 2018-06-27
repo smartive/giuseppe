@@ -10,10 +10,10 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
 /**
  * Parameter decorator. Creates a parameter decorator that is registered on that route. Can
  * contain a type factory and multiple validators.
- * 
+ *
  * @export
- * @param {{ validator?: ParameterValidator, factory?: ParameterFactory<any> }} [{ validator, factory } = {}] 
- * @returns {ParameterDecorator} 
+ * @param {{ validator?: ParameterValidator, factory?: ParameterFactory<any> }} [{ validator, factory } = {}]
+ * @returns {ParameterDecorator}
  */
 export function Body(
     {
@@ -22,12 +22,12 @@ export function Body(
         factory,
     }: { required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string, parameterIndex: number) =>
+    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
-            propertyKey,
+            propertyKey.toString(),
             new GiuseppeBodyParameter(
-                new ControllerMetadata(target).parameterTypes(propertyKey)[parameterIndex],
+                new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
                 parameterIndex,
                 required,
                 validator,
@@ -38,7 +38,7 @@ export function Body(
 
 /**
  * Default core body parameter of giuseppe. Injects Request.body into the route.
- * 
+ *
  * @export
  * @class GiuseppeBodyParameter
  * @extends {GiuseppeBaseParameter}

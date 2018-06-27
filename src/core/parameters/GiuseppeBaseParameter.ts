@@ -52,7 +52,7 @@ export abstract class GiuseppeBaseParameter implements ParameterDefinition {
         if (this.factory) {
             factory = this.factory;
         } else {
-            factory = rawValue => {
+            factory = (rawValue: any) => {
                 const ctor = this.type as any;
                 if (rawValue.constructor === ctor) {
                     return rawValue;
@@ -76,7 +76,7 @@ export abstract class GiuseppeBaseParameter implements ParameterDefinition {
         if (!this.validator || (!this.required && (parsed === undefined || parsed === null))) {
             return;
         }
-        const isValid = value => {
+        const isValid = (value: any) => {
             const predicates = this.validator;
 
             if (Array.isArray(predicates)) {

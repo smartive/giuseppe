@@ -9,7 +9,7 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
 
 /**
  * @typedef QueryConfigObject
- 
+
  * @property {string | string[]} [alias]
  * @property {boolean} [required]
  * @property {ParameterValidator} [validator]
@@ -20,11 +20,11 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
  * Parameter decorator. Creates a parameter definition that injects a query parameter value from the request.
  * Can contain validators and a factory if the value is complex. If an alias is defined, the alias(es)
  * will be used to determine a value other than the given name.
- * 
+ *
  * @export
- * @param {string} name 
+ * @param {string} name
  * @param {QueryConfigObject} [{alias, required, validator, factory}={}]
- * @returns {ParameterDecorator} 
+ * @returns {ParameterDecorator}
  */
 export function Query(
     name: string,
@@ -41,13 +41,13 @@ export function Query(
             factory?: ParameterFactory<any>,
         } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string, parameterIndex: number) =>
+    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
-            propertyKey,
+            propertyKey.toString(),
             new GiuseppeQueryParameter(
                 name,
-                new ControllerMetadata(target).parameterTypes(propertyKey)[parameterIndex],
+                new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
                 parameterIndex,
                 required,
                 validator,
@@ -60,7 +60,7 @@ export function Query(
 /**
  * Default core query parameter of giuseppe. Does inject a query parameter from the request into the route.
  * Can contain an alias that the query parameter can be named with.
- * 
+ *
  * @export
  * @class GiuseppeQueryParameter
  * @extends {GiuseppeBaseParameter}

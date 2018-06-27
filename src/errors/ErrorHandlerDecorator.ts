@@ -37,7 +37,11 @@ export type ErrorHandlerMethodDecorator = (
  * @returns {(any, string, PropertyDescriptor) => void} Decorator for the class function.
  */
 export function ErrorHandler(...errors: Function[]): ErrorHandlerMethodDecorator {
-    return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>) => {
+    return (
+        target: Object,
+        propertyKey: string | symbol,
+        descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>,
+    ) => {
         if (!descriptor.value) {
             throw new TypeError(`Errorhandler is undefined`);
         }
