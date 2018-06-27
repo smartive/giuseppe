@@ -15,7 +15,7 @@
     "semantic-release": "semantic-release"
   },
   "engines": {
-    "node": ">=8",
+    "node": ">=9",
     "npm": "*"
   },
   "repository": {
