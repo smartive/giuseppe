@@ -4,7 +4,7 @@ import { RequestHandler } from 'express';
 
 import { Giuseppe } from '../..';
 import { HttpMethod } from '../../routes/RouteDefinition';
-import { FunctionMethodDecorator, GiuseppeBaseRoute } from './GiuseppeBaseRoute';
+import { Callable, FunctionMethodDecorator, GiuseppeBaseRoute } from './GiuseppeBaseRoute';
 
 /**
  * Route decorator. Creates a route definition that reacts to a delete request.
@@ -25,7 +25,7 @@ export function Delete(
     if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
         middlewares.unshift(routeOrMiddleware);
     }
-    return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Function>) => {
+    return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Callable>) => {
         if (!descriptor.value) {
             throw new TypeError(`Function is undefined in route ${route}`);
         }
