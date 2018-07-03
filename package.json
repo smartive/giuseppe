@@ -58,7 +58,7 @@
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@smartive/tslint-config": "^3.0.1",
+    "@smartive/tslint-config": "^4.0.0",
     "@types/jest": "^23.1.2",
     "del-cli": "^1.1.0",
     "jest": "^23.2.0",
