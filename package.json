@@ -65,7 +65,7 @@
     "semantic-release": "^15.6.0",
     "ts-jest": "^23.0.0",
     "tslint": "^5.10.0",
-    "tsutils": "^2.27.1",
+    "tsutils": "^3.0.0",
     "typedoc": "^0.11.1",
     "typescript": "^2.9.2"
   }
