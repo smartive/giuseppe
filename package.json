@@ -50,7 +50,7 @@
     "@types/express": "^4.16.0",
     "@types/glob": "^5.0.35",
     "@types/http-status": "^0.2.30",
-    "@types/node": "^10.3.6",
+    "@types/node": "^11.9.0",
     "express": "^4.16.3",
     "glob": "^7.1.2",
     "http-status": "^1.2.0",
