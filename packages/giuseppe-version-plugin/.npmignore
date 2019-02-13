@@ -1,0 +1,34 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directory
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Typescript stuff
+build/
+coverage/
+config/
+tsconfig.json
+tslint.json
+
+# Typescript files (but not the definitions)
+*.ts
+!*.d.ts
+*.js.map
+
+# Testfiles
+jest.json
+test/
+
+
+# Documentation
+docs/
+

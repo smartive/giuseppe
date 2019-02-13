@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GiuseppeRouteVersion should call the express router with the correct parameters for 1 version 1`] = `
+Array [
+  "/c67016a0bbdf05403d1c6c4e2911352dce7323363db6535ac673293df299a4b6",
+  [Function],
+]
+`;
+
+exports[`GiuseppeRouteVersion should call the express router with the correct parameters for 1 version 2`] = `
+Array [
+  "/",
+  [Function],
+  [Function],
+]
+`;
+
+exports[`GiuseppeRouteVersion should call the express router with the correct parameters for 2 versions 1`] = `
+Array [
+  Array [
+    "/981a98c8e401c54d9180a0b5da9b54b8a0d1e865ba46d1eff177353b85efa653",
+    [Function],
+  ],
+  Array [
+    "/",
+    [Function],
+    [Function],
+  ],
+  Array [
+    "/7d4ef28f8c3e32744cbf398f705bf6fa0edcb4e22d8c8519833164f01bea6e15",
+    [Function],
+  ],
+]
+`;
+
+exports[`GiuseppeRouteVersion should call the express router with the correct parameters for mixed controllers 1`] = `
+Array [
+  Array [
+    "/981a98c8e401c54d9180a0b5da9b54b8a0d1e865ba46d1eff177353b85efa653",
+    [Function],
+  ],
+  Array [
+    "/",
+    [Function],
+    [Function],
+  ],
+  Array [
+    "/a988557082297ec9f11f917568a6f10d7d82f921e025073680758824a6087068",
+    [Function],
+  ],
+  Array [
+    "/foo",
+    [Function],
+  ],
+]
+`;
+
+exports[`GiuseppeRouteVersion should call the express router with the correct parameters for various versions 1`] = `
+Array [
+  Array [
+    "/981a98c8e401c54d9180a0b5da9b54b8a0d1e865ba46d1eff177353b85efa653",
+    [Function],
+  ],
+  Array [
+    "/",
+    [Function],
+    [Function],
+  ],
+  Array [
+    "/a988557082297ec9f11f917568a6f10d7d82f921e025073680758824a6087068",
+    [Function],
+  ],
+  Array [
+    "/348c59f12a484893f75d8114819494ec7cb0c8ea45584dd485967a83454ed511",
+    [Function],
+  ],
+]
+`;
+
+exports[`GiuseppeRouteVersion should create a router for a route that has a version 1`] = `
+Array [
+  VersionedRoute {
+    "from": 1,
+    "function": [Function],
+    "id": "417c77d24dc33804d10a220e8a501026fb17ba3400ffcd3d2714f627d83eb0c3",
+    "method": 0,
+    "middlewares": Array [],
+    "name": "func",
+    "originalUrl": "url",
+    "until": Infinity,
+    "url": "417c77d24dc33804d10a220e8a501026fb17ba3400ffcd3d2714f627d83eb0c3",
+    "versionId": "get_url",
+  },
+  Object {
+    "__type": "router",
+    "function": [Function],
+    "id": "get_url",
+    "method": 0,
+    "middlewares": Array [
+      [Function],
+    ],
+    "name": "func",
+    "url": "url",
+  },
+]
+`;
+
+exports[`GiuseppeRouteVersion should register a route modificator 1`] = `
+Array [
+  GiuseppeRouteVersion {
+    "from": 1,
+    "headerName": "Accept-Version",
+    "target": Ctrl {},
+    "until": 2,
+  },
+]
+`;
