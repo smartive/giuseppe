@@ -1,0 +1,39 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directory
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Examples
+examples
+
+# Typescript stuff
+typings
+build
+docs
+coverage
+_test
+
+*.ts
+!*.d.ts
+*.js.map
+*.spec.js
+*.spec.ts
+*.spec.d.ts
+*.spec.js.map
+
+prepare-release.js
+jest.json
+package-lock.json
+.travis.yml
+tsconfig.json
+tslint.json
+config/
