@@ -1,0 +1,26 @@
+include:
+  - 'https://gitlab.com/smartive/open-source/gitlab-ci-templates/raw/master/templates.yml'
+
+stages:
+  - test
+  - release
+
+test:
+  extends: .base
+  stage: test
+  image: node:10
+  before_script:
+    - npm ci
+    - npx lerna bootstrap
+  script:
+    - npm test
+
+release:
+  extends: .create-release
+  stage: release
+  before_script:
+    - npm ci
+    - npx lerna bootstrap
+    - npm run build
+  only:
+    - master

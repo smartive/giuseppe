@@ -1,9 +1,17 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "build": "lerna run build",
+    "test": "lerna run test"
+  },
   "devDependencies": {
     "@smartive/semantic-release-lerna": "^1.0.0",
     "lerna": "^3.11.1",
     "semantic-release": "^15.13.3"
+  },
+  "release": {
+    "extends": "@smartive/semantic-release-lerna/config",
+    "repositoryUrl": "https://github.com/smartive/giuseppe.git"
   }
 }
