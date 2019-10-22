@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@smartive/semantic-release-lerna": "^1.0.0",
-    "lerna": "^3.11.1",
+    "lerna": "^3.18.3",
     "semantic-release": "^15.13.3"
   },
   "release": {
