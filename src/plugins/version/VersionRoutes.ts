@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
-import { GiuseppeRoute, HttpMethod } from 'giuseppe';
-
+import { GiuseppeRoute } from '../../routes/GiuseppeRoute';
+import { HttpMethod } from '../../routes/RouteDefinition';
 import { getVersionHash } from './versionHelpers';
 
 /**

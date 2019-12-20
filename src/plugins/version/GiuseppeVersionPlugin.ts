@@ -2,11 +2,9 @@ import {
   ControllerDefinitionConstructor,
   GiuseppePlugin,
   ParameterDefinitionConstructor,
-  ReturnType,
   RouteDefinitionConstructor,
   RouteModificatorConstructor,
-} from 'giuseppe';
-
+} from '../../GiuseppePlugin';
 import { GiuseppeRouteVersion } from './GiuseppeRouteVersion';
 
 /**

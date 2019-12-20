@@ -1,10 +1,7 @@
-import 'reflect-metadata';
-
 import * as express from 'express';
-import glob = require('glob');
 import { Server } from 'http';
 import { join } from 'path';
-
+import 'reflect-metadata';
 import { ControllerDefinition } from './controller/ControllerDefinition';
 import { GiuseppeCorePlugin } from './core/GiuseppeCorePlugin';
 import { DefinitionNotRegisteredError, DuplicatePluginError } from './errors';
@@ -23,6 +20,8 @@ import { ReturnType } from './routes/ReturnType';
 import { HttpMethod } from './routes/RouteDefinition';
 import { ControllerMetadata } from './utilities/ControllerMetadata';
 import { getRandomPort } from './utilities/RandomPort';
+
+import glob = require('glob');
 
 /**
  * Score sort function for route register information. Calculates the sorting score based on segments, url params

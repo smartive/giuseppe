@@ -27,6 +27,8 @@ export { ErrorHandler, ErrorHandlerFunction } from './errors';
 export * from './Giuseppe';
 export * from './GiuseppePlugin';
 export { ParameterDefinition } from './parameter/ParameterDefinition';
+// Plugins
+export * from './plugins';
 export { GiuseppeRoute } from './routes/GiuseppeRoute';
 export { ReturnType } from './routes/ReturnType';
 export { HttpMethod, RouteDefinition } from './routes/RouteDefinition';

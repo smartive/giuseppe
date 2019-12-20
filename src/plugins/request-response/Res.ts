@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { Giuseppe, ParameterDefinition } from 'giuseppe';
+import { Giuseppe } from '../../Giuseppe';
+import { ParameterDefinition } from '../../parameter/ParameterDefinition';
 
 /**
  * Parameter decorator. Creates a parameter definition that injects the express js response object.

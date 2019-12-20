@@ -1,6 +1,5 @@
 import { createHash } from 'crypto';
-import { GiuseppeRoute } from 'giuseppe';
-
+import { GiuseppeRoute } from '../../routes/GiuseppeRoute';
 import { VersionedRoute, VersionRouter } from './VersionRoutes';
 
 /**
@@ -24,7 +23,8 @@ export function isVersionRouter(route: GiuseppeRoute): route is VersionRouter {
  * @returns {route is VersionedRoute}
  */
 export function isVersionedRoute(route: GiuseppeRoute): route is VersionedRoute {
-  return route['from'] || route['until'];
+  const versioned = route as VersionedRoute;
+  return !!versioned['from'] || !!versioned['until'];
 }
 
 /**

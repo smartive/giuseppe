@@ -1,3 +1,3 @@
 export * from './GiuseppeReqResPlugin';
-export * from './Req';
-export * from './Res';
+export { Req } from './Req';
+export { Res } from './Res';

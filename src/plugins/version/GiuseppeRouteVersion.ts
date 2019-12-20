@@ -1,6 +1,8 @@
-import { Giuseppe, GiuseppeRoute, RouteModificator } from 'giuseppe';
-import { FunctionMethodDecorator } from 'giuseppe/core/routes/GiuseppeBaseRoute';
 import 'reflect-metadata';
+import { Callable, FunctionMethodDecorator } from '../../core/routes/GiuseppeBaseRoute';
+import { Giuseppe } from '../../Giuseppe';
+import { GiuseppeRoute } from '../../routes/GiuseppeRoute';
+import { RouteModificator } from '../../routes/RouteModificator';
 import { doRouteVersionsOverlap, isInvalid, isVersionedRoute, isVersionRouter } from './versionHelpers';
 import { VersionInformationInvalidError } from './VersionInformationInvalidError';
 import { VersionInformationMissingError } from './VersionInformationMissingError';
@@ -39,13 +41,13 @@ type VersionedRoutes = {
 export function Version(
   versionInformation: { from?: number; until?: number; headerName?: string } = {},
 ): FunctionMethodDecorator {
-  return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<Function>) => {
+  return (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<Callable>) => {
     if (!descriptor.value) {
       throw new TypeError('Function is undefined in the modificator');
     }
     Giuseppe.registrar.registerRouteModificator(
       target,
-      propertyKey,
+      propertyKey.toString(),
       GiuseppeRouteVersion.create(target, versionInformation.from, versionInformation.until, versionInformation.headerName),
     );
   };
@@ -87,25 +89,28 @@ export class GiuseppeRouteVersion implements RouteModificator {
     headerName: string = 'Accept-Version',
   ): GiuseppeRouteVersion {
     if (!(from !== undefined || until !== undefined)) {
-      throw new VersionInformationMissingError(name);
+      throw new VersionInformationMissingError(GiuseppeRouteVersion.name);
     }
 
     if (isInvalid(from)) {
       throw new VersionInformationInvalidError(
-        name,
+        GiuseppeRouteVersion.name,
         `The from value (${from}) is either not a number, a floating point number or less than 1`,
       );
     }
 
     if (isInvalid(until)) {
       throw new VersionInformationInvalidError(
-        name,
+        GiuseppeRouteVersion.name,
         `The until value (${until}) is either not a number, a floating point number or less than 1`,
       );
     }
 
     if (from !== undefined && until !== undefined && from > until) {
-      throw new VersionInformationInvalidError(name, `The from value (${from}) is greater than the until (${until})`);
+      throw new VersionInformationInvalidError(
+        GiuseppeRouteVersion.name,
+        `The from value (${from}) is greater than the until (${until})`,
+      );
     }
 
     return new GiuseppeRouteVersion(target, headerName, from || -Infinity, until || Infinity);
