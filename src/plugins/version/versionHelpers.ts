@@ -11,7 +11,8 @@ import { VersionedRoute, VersionRouter } from './VersionRoutes';
  * @returns {route is VersionRouter}
  */
 export function isVersionRouter(route: GiuseppeRoute): route is VersionRouter {
-  return route['__type'] === 'router';
+  const router = route as VersionRouter;
+  return router.__type === 'router';
 }
 
 /**
