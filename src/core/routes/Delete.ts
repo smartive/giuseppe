@@ -18,19 +18,19 @@ import { Callable, FunctionMethodDecorator, GiuseppeBaseRoute } from './Giuseppe
  * @returns {FunctionMethodDecorator}
  */
 export function Delete(
-    routeOrMiddleware?: string | RequestHandler,
-    ...middlewares: RequestHandler[]
+  routeOrMiddleware?: string | RequestHandler,
+  ...middlewares: RequestHandler[]
 ): FunctionMethodDecorator {
   const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
   if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
-      middlewares.unshift(routeOrMiddleware);
-    }
+    middlewares.unshift(routeOrMiddleware);
+  }
   return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Callable>) => {
-      if (!descriptor.value) {
-          throw new TypeError(`Function is undefined in route ${route}`);
-        }
-      Giuseppe.registrar.registerRoute(target, new GiuseppeDeleteRoute(descriptor.value, route, middlewares));
-    };
+    if (!descriptor.value) {
+      throw new TypeError(`Function is undefined in route ${route}`);
+    }
+    Giuseppe.registrar.registerRoute(target, new GiuseppeDeleteRoute(descriptor.value, route, middlewares));
+  };
 }
 
 /**
@@ -41,11 +41,7 @@ export function Delete(
  * @extends {GiuseppeBaseRoute}
  */
 export class GiuseppeDeleteRoute extends GiuseppeBaseRoute {
-  constructor(
-        routeFunction: Function,
-        route: string = '',
-        middlewares: RequestHandler[] = [],
-    ) {
-      super(HttpMethod.delete, routeFunction, route, middlewares);
-    }
+  constructor(routeFunction: Function, route: string = '', middlewares: RequestHandler[] = []) {
+    super(HttpMethod.delete, routeFunction, route, middlewares);
+  }
 }

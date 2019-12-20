@@ -8,6 +8,6 @@
  */
 export class RequiredParameterNotProvidedError extends Error {
   constructor(name: string) {
-      super(`The required parameter "${name}" was not provided`);
-    }
+    super(`The required parameter "${name}" was not provided`);
+  }
 }

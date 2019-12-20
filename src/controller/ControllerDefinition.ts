@@ -10,29 +10,29 @@ import { GiuseppeRoute } from '../routes/GiuseppeRoute';
  * @interface ControllerDefinition
  */
 export interface ControllerDefinition {
-    /**
-     * The target class that is decorated with the controller decorator.
-     *
-     * @type {Function}
-     * @memberof ControllerDefinition
-     */
+  /**
+   * The target class that is decorated with the controller decorator.
+   *
+   * @type {Function}
+   * @memberof ControllerDefinition
+   */
   readonly ctrlTarget: Function;
 
-    /**
-     * A collection of middlewares that is contained in the given controller.
-     * Middleware priority is: Controller -> Route (they are concatenated).
-     *
-     * @type {RequestHandler[]}
-     * @memberof ControllerDefinition
-     */
+  /**
+   * A collection of middlewares that is contained in the given controller.
+   * Middleware priority is: Controller -> Route (they are concatenated).
+   *
+   * @type {RequestHandler[]}
+   * @memberof ControllerDefinition
+   */
   readonly middlewares: RequestHandler[];
 
-    /**
-     * A function that creates the routes for a given controller. Those routes are then modificated and registered.
-     *
-     * @param {string} baseUrl
-     * @returns {GiuseppeRoute[]}
-     * @memberof ControllerDefinition
-     */
+  /**
+   * A function that creates the routes for a given controller. Those routes are then modificated and registered.
+   *
+   * @param {string} baseUrl
+   * @returns {GiuseppeRoute[]}
+   * @memberof ControllerDefinition
+   */
   createRoutes(baseUrl: string): GiuseppeRoute[];
 }

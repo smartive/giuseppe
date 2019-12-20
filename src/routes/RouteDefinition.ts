@@ -18,43 +18,43 @@ export const ROUTE_DEFINITION_KEY = 'giuseppe:RouteDefintion';
  * @enum {number}
  */
 export enum HttpMethod {
-    // Normal http methods
-    get,
-    put,
-    post,
-    delete,
-    head,
+  // Normal http methods
+  get,
+  put,
+  post,
+  delete,
+  head,
 
-    // Pathological
-    connect,
-    options,
-    trace,
+  // Pathological
+  connect,
+  options,
+  trace,
 
-    // Webdav
-    copy,
-    lock,
-    mkcol,
-    move,
-    propfind,
-    proppatch,
-    search,
-    unlock,
+  // Webdav
+  copy,
+  lock,
+  mkcol,
+  move,
+  propfind,
+  proppatch,
+  search,
+  unlock,
 
-    // Subversion
-    report,
-    mkactivity,
-    checkout,
-    merge,
+  // Subversion
+  report,
+  mkactivity,
+  checkout,
+  merge,
 
-    // UPnP
-    msearch,
-    notify,
-    subscribe,
-    unsubscribe,
+  // UPnP
+  msearch,
+  notify,
+  subscribe,
+  unsubscribe,
 
-    // RFC-5789
-    patch,
-    purge,
+  // RFC-5789
+  patch,
+  purge,
 }
 
 /**
@@ -66,56 +66,56 @@ export enum HttpMethod {
  * @interface RouteDefinition
  */
 export interface RouteDefinition {
-    /**
-     * Route url. Is sanitized, concatenated with controller and base prefixes and later registered in express.
-     *
-     * @type {string}
-     * @memberof RouteDefinition
-     */
+  /**
+   * Route url. Is sanitized, concatenated with controller and base prefixes and later registered in express.
+   *
+   * @type {string}
+   * @memberof RouteDefinition
+   */
   readonly route: string;
 
-    /**
-     * Used {@link HttpMethod} for this route.
-     *
-     * @type {HttpMethod}
-     * @memberof RouteDefinition
-     */
+  /**
+   * Used {@link HttpMethod} for this route.
+   *
+   * @type {HttpMethod}
+   * @memberof RouteDefinition
+   */
   readonly httpMethod: HttpMethod;
 
-    /**
-     * Function that is associated with this route.
-     *
-     * @type {Function}
-     * @memberof RouteDefinition
-     */
+  /**
+   * Function that is associated with this route.
+   *
+   * @type {Function}
+   * @memberof RouteDefinition
+   */
   readonly routeFunction: Function;
 
-    /**
-     * Name for the route.
-     *
-     * @type {string}
-     * @memberof RouteDefinition
-     */
+  /**
+   * Name for the route.
+   *
+   * @type {string}
+   * @memberof RouteDefinition
+   */
   readonly name: string;
 
-    /**
-     * A list of middlewares that preceed this route. Those middlewares are concatenated with the ones of
-     * the containing controller.
-     *
-     * @type {RequestHandler[]}
-     * @memberof RouteDefinition
-     */
+  /**
+   * A list of middlewares that preceed this route. Those middlewares are concatenated with the ones of
+   * the containing controller.
+   *
+   * @type {RequestHandler[]}
+   * @memberof RouteDefinition
+   */
   readonly middlewares: RequestHandler[];
 
-    /**
-     * Create a list of routes out of this definition. A route can create multiple giuseppe routes. The same rules
-     * apply to all created routes: no duplicate IDs.
-     *
-     * @param {ControllerMetadata} meta
-     * @param {string} baseUrl
-     * @param {RequestHandler[]} middlewares
-     * @returns {GiuseppeRoute[]}
-     * @memberof RouteDefinition
-     */
+  /**
+   * Create a list of routes out of this definition. A route can create multiple giuseppe routes. The same rules
+   * apply to all created routes: no duplicate IDs.
+   *
+   * @param {ControllerMetadata} meta
+   * @param {string} baseUrl
+   * @param {RequestHandler[]} middlewares
+   * @returns {GiuseppeRoute[]}
+   * @memberof RouteDefinition
+   */
   createRoutes(meta: ControllerMetadata, baseUrl: string, middlewares: RequestHandler[]): GiuseppeRoute[];
 }

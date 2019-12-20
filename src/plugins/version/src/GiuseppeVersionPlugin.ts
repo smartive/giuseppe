@@ -1,10 +1,10 @@
 import {
-    ControllerDefinitionConstructor,
-    GiuseppePlugin,
-    ParameterDefinitionConstructor,
-    ReturnType,
-    RouteDefinitionConstructor,
-    RouteModificatorConstructor,
+  ControllerDefinitionConstructor,
+  GiuseppePlugin,
+  ParameterDefinitionConstructor,
+  ReturnType,
+  RouteDefinitionConstructor,
+  RouteModificatorConstructor,
 } from 'giuseppe';
 
 import { GiuseppeRouteVersion } from './GiuseppeRouteVersion';
@@ -17,17 +17,17 @@ import { GiuseppeRouteVersion } from './GiuseppeRouteVersion';
  * @implements {GiuseppePlugin}
  */
 export class GiuseppeVersionPlugin implements GiuseppePlugin {
-    public returnTypeHandler: ReturnType<any>[] | null = null;
-    public controllerDefinitions: ControllerDefinitionConstructor[] | null = null;
-    public routeDefinitions: RouteDefinitionConstructor[] | null = null;
-    public routeModificators: RouteModificatorConstructor[] = [];
-    public parameterDefinitions: ParameterDefinitionConstructor[] | null = null;
+  public returnTypeHandler: ReturnType<any>[] | null = null;
+  public controllerDefinitions: ControllerDefinitionConstructor[] | null = null;
+  public routeDefinitions: RouteDefinitionConstructor[] | null = null;
+  public routeModificators: RouteModificatorConstructor[] = [];
+  public parameterDefinitions: ParameterDefinitionConstructor[] | null = null;
 
-    public get name(): string {
-        return this.constructor.name;
-    }
+  public get name(): string {
+    return this.constructor.name;
+  }
 
-    public initialize(): void {
-        this.routeModificators.push(GiuseppeRouteVersion);
-    }
+  public initialize(): void {
+    this.routeModificators.push(GiuseppeRouteVersion);
+  }
 }

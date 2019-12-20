@@ -8,6 +8,6 @@
  */
 export class ErrorHandlerWrongReturnTypeError extends Error {
   constructor() {
-      super('Error handler must have return type void');
-    }
+    super('Error handler must have return type void');
+  }
 }

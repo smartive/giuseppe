@@ -20,24 +20,21 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
  * @returns {ParameterDecorator}
  */
 export function UrlParam(
-    name: string,
-    {
-        validator,
-        factory,
-    }: { validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
+  name: string,
+  { validator, factory }: { validator?: ParameterValidator; factory?: ParameterFactory<any> } = {}
 ): ParameterDecorator {
   return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
-        Giuseppe.registrar.registerParameter(
-            target,
-            propertyKey.toString(),
-            new GiuseppeUrlParameter(
-                name,
-                new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
-                parameterIndex,
-                validator,
-                factory,
-            ),
-        );
+    Giuseppe.registrar.registerParameter(
+      target,
+      propertyKey.toString(),
+      new GiuseppeUrlParameter(
+        name,
+        new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
+        parameterIndex,
+        validator,
+        factory
+      )
+    );
 }
 
 /**
@@ -48,18 +45,11 @@ export function UrlParam(
  * @extends {GiuseppeBaseParameter}
  */
 export class GiuseppeUrlParameter extends GiuseppeBaseParameter {
-
-  constructor(
-        name: string,
-        type: Function,
-        index: number,
-        validator?: ParameterValidator,
-        factory?: ParameterFactory<any>,
-    ) {
-      super(name, type, index, true, validator, factory);
-    }
+  constructor(name: string, type: Function, index: number, validator?: ParameterValidator, factory?: ParameterFactory<any>) {
+    super(name, type, index, true, validator, factory);
+  }
 
   protected getRawValue(request: Request): any {
-      return request.params[this.name];
-    }
+    return request.params[this.name];
+  }
 }

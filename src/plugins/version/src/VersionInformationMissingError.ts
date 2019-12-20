@@ -7,7 +7,7 @@
  * @extends {Error}
  */
 export class VersionInformationMissingError extends Error {
-    constructor(routeName: string) {
-        super(`The controller or method "${routeName}" has neither from nor until version information.`);
-    }
+  constructor(routeName: string) {
+    super(`The controller or method "${routeName}" has neither from nor until version information.`);
+  }
 }

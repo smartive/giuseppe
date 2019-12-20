@@ -15,25 +15,23 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
  * @param {{ validator?: ParameterValidator, factory?: ParameterFactory<any> }} [{ validator, factory } = {}]
  * @returns {ParameterDecorator}
  */
-export function Body(
-    {
+export function Body({
+  required,
+  validator,
+  factory,
+}: { required?: boolean; validator?: ParameterValidator; factory?: ParameterFactory<any> } = {}): ParameterDecorator {
+  return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
+    Giuseppe.registrar.registerParameter(
+      target,
+      propertyKey.toString(),
+      new GiuseppeBodyParameter(
+        new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
+        parameterIndex,
         required,
         validator,
-        factory,
-    }: { required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
-): ParameterDecorator {
-  return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
-        Giuseppe.registrar.registerParameter(
-            target,
-            propertyKey.toString(),
-            new GiuseppeBodyParameter(
-                new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
-                parameterIndex,
-                required,
-                validator,
-                factory,
-            ),
-        );
+        factory
+      )
+    );
 }
 
 /**
@@ -44,18 +42,17 @@ export function Body(
  * @extends {GiuseppeBaseParameter}
  */
 export class GiuseppeBodyParameter extends GiuseppeBaseParameter {
-
   constructor(
-        type: Function,
-        index: number,
-        required?: boolean,
-        validator?: ParameterValidator,
-        factory?: ParameterFactory<any>,
-    ) {
-      super('body', type, index, required, validator, factory);
-    }
+    type: Function,
+    index: number,
+    required?: boolean,
+    validator?: ParameterValidator,
+    factory?: ParameterFactory<any>
+  ) {
+    super('body', type, index, required, validator, factory);
+  }
 
   protected getRawValue(request: Request): any {
-      return request.body;
-    }
+    return request.body;
+  }
 }

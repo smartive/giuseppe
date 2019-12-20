@@ -10,12 +10,8 @@ import { Giuseppe, ParameterDefinition } from 'giuseppe';
  * @returns {ParameterDecorator}
  */
 export function Res(): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
-        Giuseppe.registrar.registerParameter(
-            target,
-            propertyKey.toString(),
-            new GiuseppeResponseParameter(parameterIndex),
-        );
+  return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
+    Giuseppe.registrar.registerParameter(target, propertyKey.toString(), new GiuseppeResponseParameter(parameterIndex));
 }
 
 /**
@@ -27,15 +23,13 @@ export function Res(): ParameterDecorator {
  * @implements {ParameterDefinition}
  */
 export class GiuseppeResponseParameter implements ParameterDefinition {
-    public readonly canHandleResponse: boolean = true;
-    public readonly name: string = 'ExpressResponse';
-    public readonly type: Function = Object;
+  public readonly canHandleResponse: boolean = true;
+  public readonly name: string = 'ExpressResponse';
+  public readonly type: Function = Object;
 
-    constructor(
-        public readonly index: number,
-    ) { }
+  constructor(public readonly index: number) {}
 
-    public getValue(_request: Request, response: Response): any {
-        return response;
-    }
+  public getValue(_request: Request, response: Response): any {
+    return response;
+  }
 }

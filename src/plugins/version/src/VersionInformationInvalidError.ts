@@ -6,7 +6,7 @@
  * @extends {Error}
  */
 export class VersionInformationInvalidError extends Error {
-    constructor(routeName: string, reason: string) {
-        super(`The controller or method "${routeName}" has invalid version information.\nReason: ${reason}`);
-    }
+  constructor(routeName: string, reason: string) {
+    super(`The controller or method "${routeName}" has invalid version information.\nReason: ${reason}`);
+  }
 }

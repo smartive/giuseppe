@@ -8,6 +8,6 @@
  */
 export class ParameterParseError extends Error {
   constructor(name: string, public innerException: Error) {
-      super(`Parsing of the parameter "${name}" threw an error.\nInnerException: ${innerException}`);
-    }
+    super(`Parsing of the parameter "${name}" threw an error.\nInnerException: ${innerException}`);
+  }
 }

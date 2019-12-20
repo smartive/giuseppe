@@ -18,9 +18,9 @@ export type Callable = (...args: any[]) => any;
  * Does generically restrain the MethodDecorator to Functions only.
  */
 export type FunctionMethodDecorator = (
-    target: Object,
-    _: string | symbol,
-    descriptor: TypedPropertyDescriptor<Callable>,
+  target: Object,
+  _: string | symbol,
+  descriptor: TypedPropertyDescriptor<Callable>
 ) => void;
 
 /**
@@ -36,20 +36,20 @@ export type FunctionMethodDecorator = (
  * @returns {FunctionMethodDecorator}
  */
 export function Route(
-    method: HttpMethod,
-    routeOrMiddleware?: string | RequestHandler,
-    ...middlewares: RequestHandler[]
+  method: HttpMethod,
+  routeOrMiddleware?: string | RequestHandler,
+  ...middlewares: RequestHandler[]
 ): FunctionMethodDecorator {
   const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
   if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
-      middlewares.unshift(routeOrMiddleware);
-    }
+    middlewares.unshift(routeOrMiddleware);
+  }
   return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Callable>) => {
-      if (!descriptor.value) {
-          throw new TypeError(`Function is undefined in route ${route}`);
-        }
-      Giuseppe.registrar.registerRoute(target, new GiuseppeBaseRoute(method, descriptor.value, route, middlewares));
-    };
+    if (!descriptor.value) {
+      throw new TypeError(`Function is undefined in route ${route}`);
+    }
+    Giuseppe.registrar.registerRoute(target, new GiuseppeBaseRoute(method, descriptor.value, route, middlewares));
+  };
 }
 
 /**
@@ -62,30 +62,26 @@ export function Route(
  */
 export class GiuseppeBaseRoute implements RouteDefinition {
   public get name(): string {
-      return this.routeFunction.name;
-    }
+    return this.routeFunction.name;
+  }
 
   constructor(
-        public readonly httpMethod: HttpMethod,
-        public readonly routeFunction: Function,
-        public readonly route: string = '',
-        public readonly middlewares: RequestHandler[] = [],
-    ) { }
+    public readonly httpMethod: HttpMethod,
+    public readonly routeFunction: Function,
+    public readonly route: string = '',
+    public readonly middlewares: RequestHandler[] = []
+  ) {}
 
-  public createRoutes(
-        _: ControllerMetadata,
-        baseUrl: string,
-        controllerMiddlewares: RequestHandler[],
-    ): GiuseppeRoute[] {
-      return [
-          {
-            id: `${HttpMethod[this.httpMethod]}_${UrlHelper.buildUrl(baseUrl, this.route)}`,
-            name: this.name,
-            method: this.httpMethod,
-            url: UrlHelper.buildUrl(baseUrl, this.route),
-            middlewares: [...controllerMiddlewares, ...this.middlewares],
-            function: this.routeFunction,
-          },
-        ];
-    }
+  public createRoutes(_: ControllerMetadata, baseUrl: string, controllerMiddlewares: RequestHandler[]): GiuseppeRoute[] {
+    return [
+      {
+        id: `${HttpMethod[this.httpMethod]}_${UrlHelper.buildUrl(baseUrl, this.route)}`,
+        name: this.name,
+        method: this.httpMethod,
+        url: UrlHelper.buildUrl(baseUrl, this.route),
+        middlewares: [...controllerMiddlewares, ...this.middlewares],
+        function: this.routeFunction,
+      },
+    ];
+  }
 }

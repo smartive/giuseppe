@@ -12,7 +12,7 @@ import { VersionedRoute, VersionRouter } from './VersionRoutes';
  * @returns {route is VersionRouter}
  */
 export function isVersionRouter(route: GiuseppeRoute): route is VersionRouter {
-    return route['__type'] === 'router';
+  return route['__type'] === 'router';
 }
 
 /**
@@ -24,7 +24,7 @@ export function isVersionRouter(route: GiuseppeRoute): route is VersionRouter {
  * @returns {route is VersionedRoute}
  */
 export function isVersionedRoute(route: GiuseppeRoute): route is VersionedRoute {
-    return route['from'] || route['until'];
+  return route['from'] || route['until'];
 }
 
 /**
@@ -39,7 +39,7 @@ export function isVersionedRoute(route: GiuseppeRoute): route is VersionedRoute 
  * @returns {boolean}
  */
 export function isInvalid(value: number | undefined): boolean {
-    return value !== undefined && (value.constructor !== Number || value < 1 || value % 1 !== 0);
+  return value !== undefined && (value.constructor !== Number || value < 1 || value % 1 !== 0);
 }
 
 /**
@@ -53,7 +53,9 @@ export function isInvalid(value: number | undefined): boolean {
  * @returns {string} A sha256 hash of the route information.
  */
 export function getVersionHash(route: string, from: number, until: number): string {
-    return createHash('sha256').update(`${route}_${from}_${until}`).digest('hex');
+  return createHash('sha256')
+    .update(`${route}_${from}_${until}`)
+    .digest('hex');
 }
 
 /**
@@ -65,5 +67,5 @@ export function getVersionHash(route: string, from: number, until: number): stri
  * @returns {boolean}
  */
 export function doRouteVersionsOverlap(v1: VersionedRoute, v2: VersionedRoute): boolean {
-    return v1 === v2 || (v1.until >= v2.from && v1.from <= v2.until);
+  return v1 === v2 || (v1.until >= v2.from && v1.from <= v2.until);
 }

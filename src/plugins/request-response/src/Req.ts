@@ -8,12 +8,8 @@ import { Giuseppe, ParameterDefinition } from 'giuseppe';
  * @returns {ParameterDecorator}
  */
 export function Req(): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
-        Giuseppe.registrar.registerParameter(
-            target,
-            propertyKey.toString(),
-            new GiuseppeRequestParameter(parameterIndex),
-        );
+  return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
+    Giuseppe.registrar.registerParameter(target, propertyKey.toString(), new GiuseppeRequestParameter(parameterIndex));
 }
 
 /**
@@ -25,15 +21,13 @@ export function Req(): ParameterDecorator {
  * @implements {ParameterDefinition}
  */
 export class GiuseppeRequestParameter implements ParameterDefinition {
-    public readonly canHandleResponse: boolean = false;
-    public readonly name: string = 'ExpressRequest';
-    public readonly type: Function = Object;
+  public readonly canHandleResponse: boolean = false;
+  public readonly name: string = 'ExpressRequest';
+  public readonly type: Function = Object;
 
-    constructor(
-        public readonly index: number,
-    ) { }
+  constructor(public readonly index: number) {}
 
-    public getValue(request: Request): any {
-        return request;
-    }
+  public getValue(request: Request): any {
+    return request;
+  }
 }

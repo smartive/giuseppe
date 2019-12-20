@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 
 import {
-    ControllerDefinitionConstructor,
-    GiuseppePlugin,
-    ParameterDefinitionConstructor,
-    RouteDefinitionConstructor,
+  ControllerDefinitionConstructor,
+  GiuseppePlugin,
+  ParameterDefinitionConstructor,
+  RouteDefinitionConstructor,
 } from '../GiuseppePlugin';
 import { ReturnType } from '../routes/ReturnType';
 import { GiuseppeApiController } from './controller/GiuseppeApiController';
@@ -35,24 +35,24 @@ export class GiuseppeCorePlugin implements GiuseppePlugin {
   public readonly parameterDefinitions: ParameterDefinitionConstructor[] = [];
 
   public get name(): string {
-      return this.constructor.name;
-    }
+    return this.constructor.name;
+  }
 
   public initialize(): void {
-      this.returnTypeHandler.push(new JsonDefaultReturnType());
+    this.returnTypeHandler.push(new JsonDefaultReturnType());
 
-      this.controllerDefinitions.push(GiuseppeApiController);
+    this.controllerDefinitions.push(GiuseppeApiController);
 
-      this.routeDefinitions.push(GiuseppeGetRoute);
-      this.routeDefinitions.push(GiuseppePostRoute);
-      this.routeDefinitions.push(GiuseppePutRoute);
-      this.routeDefinitions.push(GiuseppeDeleteRoute);
-      this.routeDefinitions.push(GiuseppeHeadRoute);
+    this.routeDefinitions.push(GiuseppeGetRoute);
+    this.routeDefinitions.push(GiuseppePostRoute);
+    this.routeDefinitions.push(GiuseppePutRoute);
+    this.routeDefinitions.push(GiuseppeDeleteRoute);
+    this.routeDefinitions.push(GiuseppeHeadRoute);
 
-      this.parameterDefinitions.push(GiuseppeQueryParameter);
-      this.parameterDefinitions.push(GiuseppeUrlParameter);
-      this.parameterDefinitions.push(GiuseppeBodyParameter);
-      this.parameterDefinitions.push(GiuseppeHeaderParameter);
-      this.parameterDefinitions.push(GiuseppeCookieParameter);
-    }
+    this.parameterDefinitions.push(GiuseppeQueryParameter);
+    this.parameterDefinitions.push(GiuseppeUrlParameter);
+    this.parameterDefinitions.push(GiuseppeBodyParameter);
+    this.parameterDefinitions.push(GiuseppeHeaderParameter);
+    this.parameterDefinitions.push(GiuseppeCookieParameter);
+  }
 }

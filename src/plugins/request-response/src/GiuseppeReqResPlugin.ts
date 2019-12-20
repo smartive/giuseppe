@@ -1,10 +1,10 @@
 import {
-    ControllerDefinitionConstructor,
-    GiuseppePlugin,
-    ParameterDefinitionConstructor,
-    ReturnType,
-    RouteDefinitionConstructor,
-    RouteModificatorConstructor,
+  ControllerDefinitionConstructor,
+  GiuseppePlugin,
+  ParameterDefinitionConstructor,
+  ReturnType,
+  RouteDefinitionConstructor,
+  RouteModificatorConstructor,
 } from 'giuseppe';
 
 import { GiuseppeRequestParameter } from './Req';
@@ -19,18 +19,18 @@ import { GiuseppeResponseParameter } from './Res';
  * @implements {GiuseppePlugin}
  */
 export class GiuseppeReqResPlugin implements GiuseppePlugin {
-    public returnTypeHandler: ReturnType<any>[] | null = null;
-    public controllerDefinitions: ControllerDefinitionConstructor[] | null = null;
-    public routeDefinitions: RouteDefinitionConstructor[] | null = null;
-    public routeModificators: RouteModificatorConstructor[] | null = null;
-    public parameterDefinitions: ParameterDefinitionConstructor[] = [];
+  public returnTypeHandler: ReturnType<any>[] | null = null;
+  public controllerDefinitions: ControllerDefinitionConstructor[] | null = null;
+  public routeDefinitions: RouteDefinitionConstructor[] | null = null;
+  public routeModificators: RouteModificatorConstructor[] | null = null;
+  public parameterDefinitions: ParameterDefinitionConstructor[] = [];
 
-    public get name(): string {
-        return this.constructor.name;
-    }
+  public get name(): string {
+    return this.constructor.name;
+  }
 
-    public initialize(): void {
-        this.parameterDefinitions.push(GiuseppeRequestParameter);
-        this.parameterDefinitions.push(GiuseppeResponseParameter);
-    }
+  public initialize(): void {
+    this.parameterDefinitions.push(GiuseppeRequestParameter);
+    this.parameterDefinitions.push(GiuseppeResponseParameter);
+  }
 }

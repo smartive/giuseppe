@@ -17,10 +17,10 @@ class CookieHelper {
   public value: string;
 
   constructor(value: string) {
-      const split = value.split('=');
-      this.name = split[0];
-      this.value = split[1];
-    }
+    const split = value.split('=');
+    this.name = split[0];
+    this.value = split[1];
+  }
 }
 
 /**
@@ -37,26 +37,26 @@ class CookieHelper {
  * @returns {ParameterDecorator}
  */
 export function Cookie(
-    name: string,
-    {
-        required,
-        validator,
-        factory,
-    }: { required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
+  name: string,
+  {
+    required,
+    validator,
+    factory,
+  }: { required?: boolean; validator?: ParameterValidator; factory?: ParameterFactory<any> } = {}
 ): ParameterDecorator {
   return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
-        Giuseppe.registrar.registerParameter(
-            target,
-            propertyKey.toString(),
-            new GiuseppeCookieParameter(
-                name,
-                new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
-                parameterIndex,
-                required,
-                validator,
-                factory,
-            ),
-        );
+    Giuseppe.registrar.registerParameter(
+      target,
+      propertyKey.toString(),
+      new GiuseppeCookieParameter(
+        name,
+        new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
+        parameterIndex,
+        required,
+        validator,
+        factory
+      )
+    );
 }
 
 /**
@@ -68,14 +68,14 @@ export function Cookie(
  */
 export class GiuseppeCookieParameter extends GiuseppeBaseParameter {
   protected getRawValue(request: Request): any {
-      const cookies = request.get('cookie');
-      if (!cookies) {
-          return undefined;
-        }
-      const cookie = cookies
-            .split(';')
-            .map(o => new CookieHelper(o.trim()))
-            .filter(o => o.name === this.name)[0];
-      return cookie ? cookie.value : undefined;
+    const cookies = request.get('cookie');
+    if (!cookies) {
+      return undefined;
     }
+    const cookie = cookies
+      .split(';')
+      .map((o) => new CookieHelper(o.trim()))
+      .filter((o) => o.name === this.name)[0];
+    return cookie ? cookie.value : undefined;
+  }
 }

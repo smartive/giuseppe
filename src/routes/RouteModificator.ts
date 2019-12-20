@@ -15,12 +15,12 @@ export const ROUTE_MODIFICATOR_KEY = 'giuseppe:RouteModificator';
  * @interface RouteModificator
  */
 export interface RouteModificator {
-    /**
-     * Modify the given routes. This function can add, remove or update given routes.
-     *
-     * @param {GiuseppeRoute[]} route
-     * @returns {GiuseppeRoute[]}
-     * @memberof RouteModificator
-     */
+  /**
+   * Modify the given routes. This function can add, remove or update given routes.
+   *
+   * @param {GiuseppeRoute[]} route
+   * @returns {GiuseppeRoute[]}
+   * @memberof RouteModificator
+   */
   modifyRoute(route: GiuseppeRoute[]): GiuseppeRoute[];
 }

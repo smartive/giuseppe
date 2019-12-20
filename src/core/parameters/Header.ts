@@ -21,26 +21,26 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
  * @returns {ParameterDecorator}
  */
 export function Header(
-    name: string,
-    {
-        required,
-        validator,
-        factory,
-    }: { required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
+  name: string,
+  {
+    required,
+    validator,
+    factory,
+  }: { required?: boolean; validator?: ParameterValidator; factory?: ParameterFactory<any> } = {}
 ): ParameterDecorator {
   return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
-        Giuseppe.registrar.registerParameter(
-            target,
-            propertyKey.toString(),
-            new GiuseppeHeaderParameter(
-                name,
-                new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
-                parameterIndex,
-                required,
-                validator,
-                factory,
-            ),
-        );
+    Giuseppe.registrar.registerParameter(
+      target,
+      propertyKey.toString(),
+      new GiuseppeHeaderParameter(
+        name,
+        new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
+        parameterIndex,
+        required,
+        validator,
+        factory
+      )
+    );
 }
 
 /**
@@ -52,6 +52,6 @@ export function Header(
  */
 export class GiuseppeHeaderParameter extends GiuseppeBaseParameter {
   protected getRawValue(request: Request): any {
-      return request.get(this.name);
-    }
+    return request.get(this.name);
+  }
 }

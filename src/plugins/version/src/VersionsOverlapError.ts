@@ -5,7 +5,7 @@
  * @extends {Error}
  */
 export class VersionsOverlapError extends Error {
-    constructor(routeName: string) {
-        super(`The method "${routeName}" has overlapping version information.`);
-    }
+  constructor(routeName: string) {
+    super(`The method "${routeName}" has overlapping version information.`);
+  }
 }
