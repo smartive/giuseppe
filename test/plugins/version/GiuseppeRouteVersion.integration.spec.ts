@@ -1,7 +1,5 @@
-import { Controller, Get, Giuseppe } from 'giuseppe';
 import * as request from 'request';
-
-import { GiuseppeVersionPlugin, Version } from '../src';
+import { Controller, Get, Giuseppe, GiuseppeVersionPlugin, Version } from '../../../src';
 
 async function sendRequest(
   url: string,

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { ControllerMetadata, ParameterDefinition } from 'giuseppe';
-
-import { GiuseppeRequestParameter, Req } from '../src';
+import { ParameterDefinition } from '../../../src/parameter/ParameterDefinition';
+import { GiuseppeRequestParameter, Req } from '../../../src/plugins/request-response/Req';
+import { ControllerMetadata } from '../../../src/utilities/ControllerMetadata';
 
 describe('@Req parameter', () => {
   it('should return a param decorator', () => {

@@ -1,192 +1,182 @@
 import 'reflect-metadata';
-
 import { Giuseppe } from '../../src';
 import { Controller } from '../../src/core/controller/GiuseppeApiController';
 import { Get } from '../../src/core/routes/Get';
 import {
-    ErrorHandlerWrongArgumentsError,
-    ErrorHandlerWrongArgumentTypesError,
-    ErrorHandlerWrongReturnTypeError,
+  ErrorHandlerWrongArgumentsError,
+  ErrorHandlerWrongArgumentTypesError,
+  ErrorHandlerWrongReturnTypeError,
 } from '../../src/errors';
 import { ErrorHandler } from '../../src/errors/ErrorHandlerDecorator';
 import { ControllerMetadata } from '../../src/utilities/ControllerMetadata';
 
 class TestRouter {
-    public routes: { [id: string]: Function } = {};
+  public routes: { [id: string]: Function } = {};
 
-    public get(route: string, func: Function): void {
-        this.routes[route] = func;
-    }
+  public get(route: string, func: Function): void {
+    this.routes[route] = func;
+  }
 
-    public put(route: string, func: Function): void {
-        this.routes[route] = func;
-    }
+  public put(route: string, func: Function): void {
+    this.routes[route] = func;
+  }
 
-    public post(route: string, func: Function): void {
-        this.routes[route] = func;
-    }
+  public post(route: string, func: Function): void {
+    this.routes[route] = func;
+  }
 
-    public delete(route: string, func: Function): void {
-        this.routes[route] = func;
-    }
+  public delete(route: string, func: Function): void {
+    this.routes[route] = func;
+  }
 
-    public head(route: string, func: Function): void {
-        this.routes[route] = func;
-    }
+  public head(route: string, func: Function): void {
+    this.routes[route] = func;
+  }
 }
 
 describe('ErrorHandlerDecorators', () => {
+  let mock: jest.Mock<any>;
 
-    let mock: jest.Mock<any>;
+  beforeAll(() => {
+    mock = jest.fn();
+    console.warn = mock;
+  });
 
-    beforeAll(() => {
-        mock = jest.fn();
-        console.warn = mock;
-    });
+  afterAll(() => {
+    mock.mockClear();
+  });
 
-    afterAll(() => {
-        mock.mockClear();
-    });
+  afterEach(() => {
+    (Giuseppe.registrar as any).controller = [];
+  });
 
-    afterEach(() => {
-        (Giuseppe.registrar as any).controller = [];
-    });
+  it('should throw on wrong handler argument count', () => {
+    const fn = () => {
+      class Ctrl {
+        @ErrorHandler()
+        public func(): void {}
+      }
+    };
 
-    it('should throw on wrong handler argument count', () => {
-        const fn = () => {
-            class Ctrl {
-                @ErrorHandler()
-                public func(): void {
-                }
-            }
-        };
+    expect(fn).toThrow(ErrorHandlerWrongArgumentsError);
+  });
 
-        expect(fn).toThrow(ErrorHandlerWrongArgumentsError);
-    });
+  it('should throw on wrong handler argument types', () => {
+    const fn = () => {
+      class Ctrl {
+        @ErrorHandler()
+        public func(req: any, res: string, err: number): void {}
+      }
+    };
 
-    it('should throw on wrong handler argument types', () => {
-        const fn = () => {
-            class Ctrl {
-                @ErrorHandler()
-                public func(req: any, res: string, err: number): void {
-                }
-            }
-        };
+    expect(fn).toThrow(ErrorHandlerWrongArgumentTypesError);
+  });
 
-        expect(fn).toThrow(ErrorHandlerWrongArgumentTypesError);
-    });
-
-    it('should throw on wrong handler return type', () => {
-        const fn = () => {
-            class Ctrl {
-                @ErrorHandler()
-                public func(req: Object, res: Object, err: Error): number {
-                    return 0;
-                }
-            }
-        };
-
-        expect(fn).toThrow(ErrorHandlerWrongReturnTypeError);
-    });
-
-    it('should register a handler for the controller', () => {
-        class Ctrl {
-            @ErrorHandler()
-            public func(req: Object, res: Object, err: Error): void {
-            }
+  it('should throw on wrong handler return type', () => {
+    const fn = () => {
+      class Ctrl {
+        @ErrorHandler()
+        public func(req: Object, res: Object, err: Error): number {
+          return 0;
         }
+      }
+    };
 
-        const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
+    expect(fn).toThrow(ErrorHandlerWrongReturnTypeError);
+  });
 
-        expect(errorManager.handlers.Error).toBe(Ctrl.prototype.func);
-        expect(errorManager.handlers.Error.length).toBe(3);
-    });
+  it('should register a handler for the controller', () => {
+    class Ctrl {
+      @ErrorHandler()
+      public func(req: Object, res: Object, err: Error): void {}
+    }
 
-    it('should register a default and a specific handler for the controller', () => {
-        class Ctrl {
-            @ErrorHandler()
-            public func(req: Object, res: Object, err: Error): void {
-            }
+    const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
-            @ErrorHandler(ErrorHandlerWrongReturnTypeError, ErrorHandlerWrongArgumentsError)
-            public func2(req: Object, res: Object, err: Error): void {
-            }
-        }
+    expect(errorManager.handlers.Error).toBe(Ctrl.prototype.func);
+    expect(errorManager.handlers.Error.length).toBe(3);
+  });
 
-        const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
+  it('should register a default and a specific handler for the controller', () => {
+    class Ctrl {
+      @ErrorHandler()
+      public func(req: Object, res: Object, err: Error): void {}
 
-        expect(errorManager.handlers.Error).toBe(Ctrl.prototype.func);
-        expect(errorManager.handlers.Error.length).toBe(3);
+      @ErrorHandler(ErrorHandlerWrongReturnTypeError, ErrorHandlerWrongArgumentsError)
+      public func2(req: Object, res: Object, err: Error): void {}
+    }
 
-        expect(errorManager.handlers.ErrorHandlerWrongReturnTypeError).toBe(Ctrl.prototype.func2);
-        expect(errorManager.handlers.ErrorHandlerWrongReturnTypeError.length).toBe(3);
+    const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
-        expect(errorManager.handlers.ErrorHandlerWrongArgumentsError).toBe(Ctrl.prototype.func2);
-        expect(errorManager.handlers.ErrorHandlerWrongArgumentsError.length).toBe(3);
-    });
+    expect(errorManager.handlers.Error).toBe(Ctrl.prototype.func);
+    expect(errorManager.handlers.Error.length).toBe(3);
 
-    it('should set the correct this context', done => {
-        @Controller()
-        class Ctrl {
-            private test: string = 'foobar';
+    expect(errorManager.handlers.ErrorHandlerWrongReturnTypeError).toBe(Ctrl.prototype.func2);
+    expect(errorManager.handlers.ErrorHandlerWrongReturnTypeError.length).toBe(3);
 
-            @Get()
-            public func() {
-                throw 'Foobar.';
-            }
+    expect(errorManager.handlers.ErrorHandlerWrongArgumentsError).toBe(Ctrl.prototype.func2);
+    expect(errorManager.handlers.ErrorHandlerWrongArgumentsError.length).toBe(3);
+  });
 
-            @ErrorHandler()
-            public error(req: Object, res: Object, err: Error): void {
-                expect(this.test).toBe('foobar');
-                done();
-            }
-        }
+  it('should set the correct this context', (done) => {
+    @Controller()
+    class Ctrl {
+      private test: string = 'foobar';
 
-        const router = new TestRouter();
-        const giuseppe = new Giuseppe();
+      @Get()
+      public func() {
+        throw 'Foobar.';
+      }
 
-        giuseppe.router = router as any;
-        giuseppe.configureRouter();
+      @ErrorHandler()
+      public error(req: Object, res: Object, err: Error): void {
+        expect(this.test).toBe('foobar');
+        done();
+      }
+    }
 
-        router.routes['/'].apply(null, [{}, {}]);
-    });
+    const router = new TestRouter();
+    const giuseppe = new Giuseppe();
 
-    it('should call the most specific error handler', () => {
-        class FoobarError extends Error { }
+    giuseppe.router = router as any;
+    giuseppe.configureRouter();
 
-        @Controller()
-        class Ctrl {
-            @Get()
-            public getErr(): string {
-                throw new FoobarError();
-            }
+    router.routes['/'].apply(null, [{}, {}]);
+  });
 
-            @ErrorHandler()
-            public func(req: Object, res: Object, err: Error): void {
-            }
+  it('should call the most specific error handler', () => {
+    class FoobarError extends Error {}
 
-            @ErrorHandler(FoobarError)
-            public func2(req: Object, res: Object, err: Error): void {
-            }
-        }
+    @Controller()
+    class Ctrl {
+      @Get()
+      public getErr(): string {
+        throw new FoobarError();
+      }
 
-        const router = new TestRouter();
-        const giuseppe = new Giuseppe();
-        const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
+      @ErrorHandler()
+      public func(req: Object, res: Object, err: Error): void {}
 
-        giuseppe.router = router as any;
-        giuseppe.configureRouter();
+      @ErrorHandler(FoobarError)
+      public func2(req: Object, res: Object, err: Error): void {}
+    }
 
-        const spy = jest.fn();
-        const spy2 = jest.fn();
+    const router = new TestRouter();
+    const giuseppe = new Giuseppe();
+    const errorManager: any = new ControllerMetadata(Ctrl.prototype).errorHandler();
 
-        errorManager.addHandler(spy, Error);
-        errorManager.addHandler(spy2, FoobarError);
+    giuseppe.router = router as any;
+    giuseppe.configureRouter();
 
-        router.routes['/'].apply(this, [{}, {}]);
+    const spy = jest.fn();
+    const spy2 = jest.fn();
 
-        expect(spy.mock.calls.length).toBe(0);
-        expect(spy2.mock.calls.length).toBe(1);
-    });
+    errorManager.addHandler(spy, Error);
+    errorManager.addHandler(spy2, FoobarError);
 
+    router.routes['/'].apply(this, [{}, {}]);
+
+    expect(spy.mock.calls.length).toBe(0);
+    expect(spy2.mock.calls.length).toBe(1);
+  });
 });

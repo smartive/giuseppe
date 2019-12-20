@@ -1,4 +1,6 @@
-import { GiuseppeReqResPlugin, GiuseppeRequestParameter, GiuseppeResponseParameter } from '../src';
+import { GiuseppeReqResPlugin } from '../../../src';
+import { GiuseppeRequestParameter } from '../../../src/plugins/request-response/Req';
+import { GiuseppeResponseParameter } from '../../../src/plugins/request-response/Res';
 
 describe('GiuseppeReqResPlugin', () => {
   it('should return the constructor name', () => {

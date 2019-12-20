@@ -1,6 +1,4 @@
-import { Giuseppe } from 'giuseppe';
-
-import { GiuseppeVersionPlugin } from '../src';
+import { Giuseppe, GiuseppeVersionPlugin } from '../../../src';
 
 describe('GiuseppeVersionPlugin', () => {
   it('should return the constructor name', () => {

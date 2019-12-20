@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-
 import { ControllerDefinition } from './controller/ControllerDefinition';
 import { Giuseppe } from './Giuseppe';
 import { ParameterDefinition } from './parameter/ParameterDefinition';

@@ -1,7 +1,5 @@
-import 'reflect-metadata';
-
 import { RequestHandler } from 'express';
-
+import 'reflect-metadata';
 import { ControllerDefinition } from '../../controller/ControllerDefinition';
 import { Giuseppe } from '../../Giuseppe';
 import { GiuseppeRoute } from '../../routes/GiuseppeRoute';

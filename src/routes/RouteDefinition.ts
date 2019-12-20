@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express';
-
 import { ControllerMetadata } from '../utilities/ControllerMetadata';
 import { GiuseppeRoute } from './GiuseppeRoute';
 

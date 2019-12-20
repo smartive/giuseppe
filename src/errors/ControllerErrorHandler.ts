@@ -1,6 +1,6 @@
+import { Request, Response } from 'express';
 import 'reflect-metadata';
 
-import { Request, Response } from 'express';
 import httpStatus = require('http-status');
 
 /**

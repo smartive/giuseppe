@@ -1,7 +1,5 @@
-import 'reflect-metadata';
-
 import * as httpStatus from 'http-status';
-
+import 'reflect-metadata';
 import { ReturnType } from '../../routes/ReturnType';
 
 /**

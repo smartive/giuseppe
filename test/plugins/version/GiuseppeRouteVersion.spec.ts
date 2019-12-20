@@ -1,10 +1,8 @@
-import { Controller, ControllerMetadata, Get, Giuseppe, HttpMethod } from 'giuseppe';
-import { DuplicateRouteError } from 'giuseppe/errors';
-
-import { GiuseppeVersionPlugin, Version } from '../src';
-import { VersionInformationInvalidError } from '../src/VersionInformationInvalidError';
-import { VersionInformationMissingError } from '../src/VersionInformationMissingError';
-import { VersionsOverlapError } from '../src/VersionsOverlapError';
+import { Controller, ControllerMetadata, Get, Giuseppe, GiuseppeVersionPlugin, HttpMethod, Version } from '../../../src';
+import { DuplicateRouteError } from '../../../src/errors';
+import { VersionInformationInvalidError } from '../../../src/plugins/version/VersionInformationInvalidError';
+import { VersionInformationMissingError } from '../../../src/plugins/version/VersionInformationMissingError';
+import { VersionsOverlapError } from '../../../src/plugins/version/VersionsOverlapError';
 
 describe('GiuseppeRouteVersion', () => {
   afterEach(() => {

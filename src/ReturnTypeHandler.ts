@@ -1,7 +1,5 @@
-import 'reflect-metadata';
-
 import { Response } from 'express';
-
+import 'reflect-metadata';
 import { NoReturnValueHandlerFoundError } from './errors/NoReturnValueHandlerFoundError';
 import { ReturnType } from './routes/ReturnType';
 

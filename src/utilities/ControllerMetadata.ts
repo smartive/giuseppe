@@ -1,10 +1,9 @@
 import 'reflect-metadata';
-
 import { ControllerErrorHandler } from '../errors/ControllerErrorHandler';
 import { ERRORHANDLER_KEY } from '../errors/ErrorHandlerDecorator';
-import { PARAMETER_DEFINITION_KEY, ParameterDefinition } from '../parameter/ParameterDefinition';
-import { ROUTE_DEFINITION_KEY, RouteDefinition } from '../routes/RouteDefinition';
-import { ROUTE_MODIFICATOR_KEY, RouteModificator } from '../routes/RouteModificator';
+import { ParameterDefinition, PARAMETER_DEFINITION_KEY } from '../parameter/ParameterDefinition';
+import { RouteDefinition, ROUTE_DEFINITION_KEY } from '../routes/RouteDefinition';
+import { RouteModificator, ROUTE_MODIFICATOR_KEY } from '../routes/RouteModificator';
 
 /**
  * Helper class that manages metadata elements on a controller class.

@@ -1,7 +1,5 @@
-import 'reflect-metadata';
-
 import { Request } from 'express';
-
+import 'reflect-metadata';
 import { Giuseppe } from '../../Giuseppe';
 import { ControllerMetadata } from '../../utilities/ControllerMetadata';
 import { GiuseppeBaseParameter } from './GiuseppeBaseParameter';
