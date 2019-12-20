@@ -5,7 +5,7 @@ import { GiuseppeVersionPlugin, Version } from '../src';
 
 async function sendRequest(
   url: string,
-  headers?: request.Headers
+  headers?: request.Headers,
 ): Promise<{ response: request.RequestResponse; body: any }> {
   return new Promise<{ response: request.RequestResponse; body: any }>((resolve, reject) => {
     request.get(url, { headers }, (err, response, body) => {

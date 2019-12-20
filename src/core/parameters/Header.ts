@@ -26,7 +26,7 @@ export function Header(
     required,
     validator,
     factory,
-  }: { required?: boolean; validator?: ParameterValidator; factory?: ParameterFactory<any> } = {}
+  }: { required?: boolean; validator?: ParameterValidator; factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
   return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
     Giuseppe.registrar.registerParameter(
@@ -38,8 +38,8 @@ export function Header(
         parameterIndex,
         required,
         validator,
-        factory
-      )
+        factory,
+      ),
     );
 }
 

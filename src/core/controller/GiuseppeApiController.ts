@@ -56,7 +56,7 @@ export class GiuseppeApiController implements ControllerDefinition {
   constructor(
     public readonly ctrlTarget: Function,
     public readonly routePrefix: string = '',
-    public readonly middlewares: RequestHandler[] = []
+    public readonly middlewares: RequestHandler[] = [],
   ) {}
 
   public createRoutes(baseUrl: string): GiuseppeRoute[] {

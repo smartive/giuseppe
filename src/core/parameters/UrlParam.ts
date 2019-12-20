@@ -21,7 +21,7 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
  */
 export function UrlParam(
   name: string,
-  { validator, factory }: { validator?: ParameterValidator; factory?: ParameterFactory<any> } = {}
+  { validator, factory }: { validator?: ParameterValidator; factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
   return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
     Giuseppe.registrar.registerParameter(
@@ -32,8 +32,8 @@ export function UrlParam(
         new ControllerMetadata(target).parameterTypes(propertyKey.toString())[parameterIndex],
         parameterIndex,
         validator,
-        factory
-      )
+        factory,
+      ),
     );
 }
 

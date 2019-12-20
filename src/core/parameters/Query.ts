@@ -38,7 +38,7 @@ export function Query(
     required?: boolean;
     validator?: ParameterValidator;
     factory?: ParameterFactory<any>;
-  } = {}
+  } = {},
 ): ParameterDecorator {
   return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
     Giuseppe.registrar.registerParameter(
@@ -51,8 +51,8 @@ export function Query(
         required,
         validator,
         factory,
-        alias
-      )
+        alias,
+      ),
     );
 }
 
@@ -72,7 +72,7 @@ export class GiuseppeQueryParameter extends GiuseppeBaseParameter {
     required?: boolean,
     validator?: ParameterValidator,
     factory?: ParameterFactory<any>,
-    private readonly alias?: string | string[]
+    private readonly alias?: string | string[],
   ) {
     super(name, type, index, required, validator, factory);
   }

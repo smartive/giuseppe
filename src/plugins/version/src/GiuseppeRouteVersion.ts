@@ -1,8 +1,6 @@
-import 'reflect-metadata';
-
 import { Giuseppe, GiuseppeRoute, RouteModificator } from 'giuseppe';
 import { FunctionMethodDecorator } from 'giuseppe/core/routes/GiuseppeBaseRoute';
-
+import 'reflect-metadata';
 import { doRouteVersionsOverlap, isInvalid, isVersionedRoute, isVersionRouter } from './versionHelpers';
 import { VersionInformationInvalidError } from './VersionInformationInvalidError';
 import { VersionInformationMissingError } from './VersionInformationMissingError';
@@ -39,16 +37,16 @@ type VersionedRoutes = {
  * @returns {FunctionMethodDecorator}
  */
 export function Version(
-  versionInformation: { from?: number; until?: number; headerName?: string } = {}
+  versionInformation: { from?: number; until?: number; headerName?: string } = {},
 ): FunctionMethodDecorator {
   return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<Function>) => {
     if (!descriptor.value) {
-      throw new TypeError(`Function is undefined in the modificator`);
+      throw new TypeError('Function is undefined in the modificator');
     }
     Giuseppe.registrar.registerRouteModificator(
       target,
       propertyKey,
-      GiuseppeRouteVersion.create(target, versionInformation.from, versionInformation.until, versionInformation.headerName)
+      GiuseppeRouteVersion.create(target, versionInformation.from, versionInformation.until, versionInformation.headerName),
     );
   };
 }
@@ -65,7 +63,7 @@ export class GiuseppeRouteVersion implements RouteModificator {
     private readonly target: Object,
     private readonly headerName: string,
     private readonly from: number,
-    private readonly until: number
+    private readonly until: number,
   ) {}
 
   /**
@@ -86,7 +84,7 @@ export class GiuseppeRouteVersion implements RouteModificator {
     target: Object,
     from?: number,
     until?: number,
-    headerName: string = 'Accept-Version'
+    headerName: string = 'Accept-Version',
   ): GiuseppeRouteVersion {
     if (!(from !== undefined || until !== undefined)) {
       throw new VersionInformationMissingError(name);
@@ -95,14 +93,14 @@ export class GiuseppeRouteVersion implements RouteModificator {
     if (isInvalid(from)) {
       throw new VersionInformationInvalidError(
         name,
-        `The from value (${from}) is either not a number, a floating point number or less than 1`
+        `The from value (${from}) is either not a number, a floating point number or less than 1`,
       );
     }
 
     if (isInvalid(until)) {
       throw new VersionInformationInvalidError(
         name,
-        `The until value (${until}) is either not a number, a floating point number or less than 1`
+        `The until value (${until}) is either not a number, a floating point number or less than 1`,
       );
     }
 
@@ -127,7 +125,7 @@ export class GiuseppeRouteVersion implements RouteModificator {
     const versionedRoutes: VersionedRoutes = Reflect.getMetadata(VERSION_KEY, this.target) || {};
 
     const configuredRoutes = routes.map((route) =>
-      isVersionRouter(route) || isVersionedRoute(route) ? route : new VersionedRoute(route, this.from, this.until)
+      isVersionRouter(route) || isVersionedRoute(route) ? route : new VersionedRoute(route, this.from, this.until),
     );
 
     for (const route of configuredRoutes.filter((route) => isVersionedRoute(route))) {

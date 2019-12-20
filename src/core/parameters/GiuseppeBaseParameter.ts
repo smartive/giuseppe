@@ -31,7 +31,7 @@ export abstract class GiuseppeBaseParameter implements ParameterDefinition {
     public readonly index: number,
     protected readonly required?: boolean,
     protected readonly validator?: ParameterValidator,
-    protected readonly factory?: ParameterFactory<any>
+    protected readonly factory?: ParameterFactory<any>,
   ) {}
 
   public getValue(request: Request): any {

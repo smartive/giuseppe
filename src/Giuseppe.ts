@@ -391,8 +391,8 @@ export class Giuseppe {
         (this.router as any)[HttpMethod[r.route.method]](
           `/${r.route.url}`,
           ...r.route.middlewares,
-          this.createRouteWrapper(r)
-        )
+          this.createRouteWrapper(r),
+        ),
       );
   }
 

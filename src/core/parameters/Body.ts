@@ -29,8 +29,8 @@ export function Body({
         parameterIndex,
         required,
         validator,
-        factory
-      )
+        factory,
+      ),
     );
 }
 
@@ -47,7 +47,7 @@ export class GiuseppeBodyParameter extends GiuseppeBaseParameter {
     index: number,
     required?: boolean,
     validator?: ParameterValidator,
-    factory?: ParameterFactory<any>
+    factory?: ParameterFactory<any>,
   ) {
     super('body', type, index, required, validator, factory);
   }

@@ -24,7 +24,7 @@ export const ERRORHANDLER_KEY = 'giuseppe:errorHandler';
 export type ErrorHandlerMethodDecorator = (
   target: Object,
   _: string | symbol,
-  descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>
+  descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>,
 ) => void;
 
 /**
@@ -40,7 +40,7 @@ export function ErrorHandler(...errors: Function[]): ErrorHandlerMethodDecorator
   return (
     target: Object,
     propertyKey: string | symbol,
-    descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>
+    descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>,
   ) => {
     if (!descriptor.value) {
       throw new TypeError('Errorhandler is undefined');

@@ -42,7 +42,7 @@ export function Cookie(
     required,
     validator,
     factory,
-  }: { required?: boolean; validator?: ParameterValidator; factory?: ParameterFactory<any> } = {}
+  }: { required?: boolean; validator?: ParameterValidator; factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
   return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
     Giuseppe.registrar.registerParameter(
@@ -54,8 +54,8 @@ export function Cookie(
         parameterIndex,
         required,
         validator,
-        factory
-      )
+        factory,
+      ),
     );
 }
 

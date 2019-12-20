@@ -20,7 +20,7 @@ export type Callable = (...args: any[]) => any;
 export type FunctionMethodDecorator = (
   target: Object,
   _: string | symbol,
-  descriptor: TypedPropertyDescriptor<Callable>
+  descriptor: TypedPropertyDescriptor<Callable>,
 ) => void;
 
 /**
@@ -69,7 +69,7 @@ export class GiuseppeBaseRoute implements RouteDefinition {
     public readonly httpMethod: HttpMethod,
     public readonly routeFunction: Function,
     public readonly route: string = '',
-    public readonly middlewares: RequestHandler[] = []
+    public readonly middlewares: RequestHandler[] = [],
   ) {}
 
   public createRoutes(_: ControllerMetadata, baseUrl: string, controllerMiddlewares: RequestHandler[]): GiuseppeRoute[] {
