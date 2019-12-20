@@ -22,7 +22,7 @@ export function Body(
         factory,
     }: { required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
+  return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
             propertyKey.toString(),
@@ -45,17 +45,17 @@ export function Body(
  */
 export class GiuseppeBodyParameter extends GiuseppeBaseParameter {
 
-    constructor(
+  constructor(
         type: Function,
         index: number,
         required?: boolean,
         validator?: ParameterValidator,
         factory?: ParameterFactory<any>,
     ) {
-        super('body', type, index, required, validator, factory);
+      super('body', type, index, required, validator, factory);
     }
 
-    protected getRawValue(request: Request): any {
-        return request.body;
+  protected getRawValue(request: Request): any {
+      return request.body;
     }
 }

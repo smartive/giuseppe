@@ -16,7 +16,7 @@ export interface ReturnType<TValue, TResult = string> {
      * @type {string}
      * @memberof ReturnType
      */
-    type: string;
+  type: string;
 
     /**
      * Returns the headers for the given value. The function must return something. Even if it's an empty header hash.
@@ -25,7 +25,7 @@ export interface ReturnType<TValue, TResult = string> {
      * @returns {{ [field: string]: string }}
      * @memberof ReturnType
      */
-    getHeaders(value?: TValue): { [field: string]: string };
+  getHeaders(value?: TValue): { [field: string]: string };
 
     /**
      * Get the return http status code for the given value.
@@ -34,7 +34,7 @@ export interface ReturnType<TValue, TResult = string> {
      * @returns {number}
      * @memberof ReturnType
      */
-    getStatus(value?: TValue): number;
+  getStatus(value?: TValue): number;
 
     /**
      * Get the stringified value for a given value. This value is sent by express with the set headers and
@@ -44,5 +44,5 @@ export interface ReturnType<TValue, TResult = string> {
      * @returns {string}
      * @memberof ReturnType
      */
-    getValue(value: TValue): TResult;
+  getValue(value: TValue): TResult;
 }

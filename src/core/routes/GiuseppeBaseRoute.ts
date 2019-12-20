@@ -40,15 +40,15 @@ export function Route(
     routeOrMiddleware?: string | RequestHandler,
     ...middlewares: RequestHandler[]
 ): FunctionMethodDecorator {
-    const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
-    if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
-        middlewares.unshift(routeOrMiddleware);
+  const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
+  if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
+      middlewares.unshift(routeOrMiddleware);
     }
-    return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Callable>) => {
-        if (!descriptor.value) {
-            throw new TypeError(`Function is undefined in route ${route}`);
+  return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Callable>) => {
+      if (!descriptor.value) {
+          throw new TypeError(`Function is undefined in route ${route}`);
         }
-        Giuseppe.registrar.registerRoute(target, new GiuseppeBaseRoute(method, descriptor.value, route, middlewares));
+      Giuseppe.registrar.registerRoute(target, new GiuseppeBaseRoute(method, descriptor.value, route, middlewares));
     };
 }
 
@@ -61,31 +61,31 @@ export function Route(
  * @implements {RouteDefinition}
  */
 export class GiuseppeBaseRoute implements RouteDefinition {
-    public get name(): string {
-        return this.routeFunction.name;
+  public get name(): string {
+      return this.routeFunction.name;
     }
 
-    constructor(
+  constructor(
         public readonly httpMethod: HttpMethod,
         public readonly routeFunction: Function,
         public readonly route: string = '',
         public readonly middlewares: RequestHandler[] = [],
     ) { }
 
-    public createRoutes(
+  public createRoutes(
         _: ControllerMetadata,
         baseUrl: string,
         controllerMiddlewares: RequestHandler[],
     ): GiuseppeRoute[] {
-        return [
-            {
-                id: `${HttpMethod[this.httpMethod]}_${UrlHelper.buildUrl(baseUrl, this.route)}`,
-                name: this.name,
-                method: this.httpMethod,
-                url: UrlHelper.buildUrl(baseUrl, this.route),
-                middlewares: [...controllerMiddlewares, ...this.middlewares],
-                function: this.routeFunction,
-            },
+      return [
+          {
+            id: `${HttpMethod[this.httpMethod]}_${UrlHelper.buildUrl(baseUrl, this.route)}`,
+            name: this.name,
+            method: this.httpMethod,
+            url: UrlHelper.buildUrl(baseUrl, this.route),
+            middlewares: [...controllerMiddlewares, ...this.middlewares],
+            function: this.routeFunction,
+          },
         ];
     }
 }

@@ -7,7 +7,7 @@
  * @extends {Error}
  */
 export class RequiredParameterNotProvidedError extends Error {
-    constructor(name: string) {
-        super(`The required parameter "${name}" was not provided`);
+  constructor(name: string) {
+      super(`The required parameter "${name}" was not provided`);
     }
 }

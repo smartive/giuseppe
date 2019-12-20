@@ -16,7 +16,7 @@ export interface GiuseppeRoute {
      * @type {string}
      * @memberof GiuseppeRoute
      */
-    id: string;
+  id: string;
 
     /**
      * Url of the route.
@@ -24,7 +24,7 @@ export interface GiuseppeRoute {
      * @type {string}
      * @memberof GiuseppeRoute
      */
-    url: string;
+  url: string;
 
     /**
      * Name of the route. This should represent the name of the function inside the controller.
@@ -32,7 +32,7 @@ export interface GiuseppeRoute {
      * @type {string}
      * @memberof GiuseppeRoute
      */
-    name: string;
+  name: string;
 
     /**
      * The used http method. Can be one of the supported express js methods
@@ -41,7 +41,7 @@ export interface GiuseppeRoute {
      * @type {HttpMethod}
      * @memberof GiuseppeRoute
      */
-    method: HttpMethod;
+  method: HttpMethod;
 
     /**
      * The function that is called for the route. This function is most likely a reference to a class method.
@@ -49,7 +49,7 @@ export interface GiuseppeRoute {
      * @type {Function}
      * @memberof GiuseppeRoute
      */
-    function: Function;
+  function: Function;
 
     /**
      * A list of middlewares. All middlewares are concatenated with the ones of the controller and preceed the route
@@ -58,5 +58,5 @@ export interface GiuseppeRoute {
      * @type {RequestHandler[]}
      * @memberof GiuseppeRoute
      */
-    middlewares: RequestHandler[];
+  middlewares: RequestHandler[];
 }

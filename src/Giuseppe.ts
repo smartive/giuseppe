@@ -40,12 +40,12 @@ const routeScore = (route: RouteRegisterInformation) =>
  * @interface RouteRegisterInformation
  */
 export interface RouteRegisterInformation {
-    route: GiuseppeRoute;
-    ctrl: Function;
-    instance: object;
-    segments: number;
-    wildcards: number;
-    urlParams: number;
+  route: GiuseppeRoute;
+  ctrl: Function;
+  instance: object;
+  segments: number;
+  wildcards: number;
+  urlParams: number;
 }
 
 /**
@@ -64,7 +64,7 @@ export class Giuseppe {
      * @type {GiuseppeRegistrar}
      * @memberof Giuseppe
      */
-    public static readonly registrar: GiuseppeRegistrar = new GiuseppeRegistrar();
+  public static readonly registrar: GiuseppeRegistrar = new GiuseppeRegistrar();
 
     /**
      * The actual server instance of express once the application has started.
@@ -73,8 +73,8 @@ export class Giuseppe {
      * @type {(Server | undefined)}
      * @memberof Giuseppe
      */
-    public get server(): Server | undefined {
-        return this._server;
+  public get server(): Server | undefined {
+      return this._server;
     }
 
     /**
@@ -85,8 +85,8 @@ export class Giuseppe {
      * @type {(number | undefined)}
      * @memberof Giuseppe
      */
-    public get port(): number | undefined {
-        return this._port;
+  public get port(): number | undefined {
+      return this._port;
     }
 
     /**
@@ -97,7 +97,7 @@ export class Giuseppe {
      * @type {express.Express}
      * @memberof Giuseppe
      */
-    public expressApp: express.Express = express();
+  public expressApp: express.Express = express();
 
     /**
      * The router instance that is used for this instance of giuseppe. Access it to add additional routes or even
@@ -106,19 +106,19 @@ export class Giuseppe {
      * @type {express.Router}
      * @memberof Giuseppe
      */
-    public router: express.Router = express.Router();
+  public router: express.Router = express.Router();
 
-    protected plugins: GiuseppePlugin[] = [];
-    protected routes: { [id: string]: RouteRegisterInformation } = {};
-    protected _server: Server | undefined;
+  protected plugins: GiuseppePlugin[] = [];
+  protected routes: { [id: string]: RouteRegisterInformation } = {};
+  protected _server: Server | undefined;
 
-    protected _returnTypes: ReturnType<any>[] | null = null;
-    protected _pluginController: ControllerDefinitionConstructor[] | null = null;
-    protected _pluginRoutes: RouteDefinitionConstructor[] | null = null;
-    protected _pluginRouteModificators: RouteModificatorConstructor[] | null = null;
-    protected _pluginParameters: ParameterDefinitionConstructor[] | null = null;
+  protected _returnTypes: ReturnType<any>[] | null = null;
+  protected _pluginController: ControllerDefinitionConstructor[] | null = null;
+  protected _pluginRoutes: RouteDefinitionConstructor[] | null = null;
+  protected _pluginRouteModificators: RouteModificatorConstructor[] | null = null;
+  protected _pluginParameters: ParameterDefinitionConstructor[] | null = null;
 
-    private _port: number | undefined;
+  private _port: number | undefined;
 
     /**
      * List of registered {@link ReturnType}.
@@ -128,13 +128,13 @@ export class Giuseppe {
      * @type {ReturnType<any>[]}
      * @memberof Giuseppe
      */
-    protected get returnTypes(): ReturnType<any>[] {
-        if (!this._returnTypes) {
-            this._returnTypes = this.plugins
+  protected get returnTypes(): ReturnType<any>[] {
+      if (!this._returnTypes) {
+          this._returnTypes = this.plugins
                 .filter(p => !!p.returnTypeHandler)
                 .reduce((all, cur) => all.concat(cur.returnTypeHandler!), [] as ReturnType<any>[]);
         }
-        return this._returnTypes;
+      return this._returnTypes;
     }
 
     /**
@@ -145,13 +145,13 @@ export class Giuseppe {
      * @type {ControllerDefinitionConstructor[]}
      * @memberof Giuseppe
      */
-    protected get pluginController(): ControllerDefinitionConstructor[] {
-        if (!this._pluginController) {
-            this._pluginController = this.plugins
+  protected get pluginController(): ControllerDefinitionConstructor[] {
+      if (!this._pluginController) {
+          this._pluginController = this.plugins
                 .filter(p => !!p.controllerDefinitions)
                 .reduce((all, cur) => all.concat(cur.controllerDefinitions!), [] as ControllerDefinitionConstructor[]);
         }
-        return this._pluginController;
+      return this._pluginController;
     }
 
     /**
@@ -162,13 +162,13 @@ export class Giuseppe {
      * @type {RouteDefinitionConstructor[]}
      * @memberof Giuseppe
      */
-    protected get pluginRoutes(): RouteDefinitionConstructor[] {
-        if (!this._pluginRoutes) {
-            this._pluginRoutes = this.plugins
+  protected get pluginRoutes(): RouteDefinitionConstructor[] {
+      if (!this._pluginRoutes) {
+          this._pluginRoutes = this.plugins
                 .filter(p => !!p.routeDefinitions)
                 .reduce((all, cur) => all.concat(cur.routeDefinitions!), [] as RouteDefinitionConstructor[]);
         }
-        return this._pluginRoutes;
+      return this._pluginRoutes;
     }
 
     /**
@@ -179,13 +179,13 @@ export class Giuseppe {
      * @type {RouteModificatorConstructor[]}
      * @memberof Giuseppe
      */
-    protected get pluginRouteModificators(): RouteModificatorConstructor[] {
-        if (!this._pluginRouteModificators) {
-            this._pluginRouteModificators = this.plugins
+  protected get pluginRouteModificators(): RouteModificatorConstructor[] {
+      if (!this._pluginRouteModificators) {
+          this._pluginRouteModificators = this.plugins
                 .filter(p => !!p.routeModificators)
                 .reduce((all, cur) => all.concat(cur.routeModificators!), [] as RouteModificatorConstructor[]);
         }
-        return this._pluginRouteModificators;
+      return this._pluginRouteModificators;
     }
 
     /**
@@ -196,17 +196,17 @@ export class Giuseppe {
      * @type {ParameterDefinitionConstructor[]}
      * @memberof Giuseppe
      */
-    protected get pluginParameters(): ParameterDefinitionConstructor[] {
-        if (!this._pluginParameters) {
-            this._pluginParameters = this.plugins
+  protected get pluginParameters(): ParameterDefinitionConstructor[] {
+      if (!this._pluginParameters) {
+          this._pluginParameters = this.plugins
                 .filter(p => !!p.parameterDefinitions)
                 .reduce((all, cur) => all.concat(cur.parameterDefinitions!), [] as ParameterDefinitionConstructor[]);
         }
-        return this._pluginParameters;
+      return this._pluginParameters;
     }
 
-    constructor() {
-        this.registerPlugin(new GiuseppeCorePlugin());
+  constructor() {
+      this.registerPlugin(new GiuseppeCorePlugin());
     }
 
     /**
@@ -217,20 +217,20 @@ export class Giuseppe {
      * @returns {this}
      * @memberof Giuseppe
      */
-    public registerPlugin(plugin: GiuseppePlugin): this {
-        if (this.plugins.find(o => o.name === plugin.name)) {
-            throw new DuplicatePluginError(plugin.name);
+  public registerPlugin(plugin: GiuseppePlugin): this {
+      if (this.plugins.find(o => o.name === plugin.name)) {
+          throw new DuplicatePluginError(plugin.name);
         }
 
-        this._pluginController = null;
-        this._pluginParameters = null;
-        this._pluginRouteModificators = null;
-        this._pluginRoutes = null;
-        this._returnTypes = null;
+      this._pluginController = null;
+      this._pluginParameters = null;
+      this._pluginRouteModificators = null;
+      this._pluginRoutes = null;
+      this._returnTypes = null;
 
-        plugin.initialize(this);
-        this.plugins.push(plugin);
-        return this;
+      plugin.initialize(this);
+      this.plugins.push(plugin);
+      return this;
     }
 
     /**
@@ -243,12 +243,12 @@ export class Giuseppe {
      * @param {string} [baseUrl=''] Base url that is preceeding all urls in the system.
      * @memberof Giuseppe
      */
-    public async start(port?: number, baseUrl: string = ''): Promise<void> {
-        const expressPort = port || await getRandomPort();
-        const router = this.configureRouter(baseUrl);
-        this.expressApp.use(router);
-        this._server = await this.startup(expressPort);
-        this._port = expressPort;
+  public async start(port?: number, baseUrl: string = ''): Promise<void> {
+      const expressPort = port || await getRandomPort();
+      const router = this.configureRouter(baseUrl);
+      this.expressApp.use(router);
+      this._server = await this.startup(expressPort);
+      this._port = expressPort;
     }
 
     /**
@@ -256,17 +256,17 @@ export class Giuseppe {
      *
      * @memberof Giuseppe
      */
-    public stop(): Promise<void> {
-        return new Promise(resolve => {
-            if (this._server) {
-                this._server.close(() => {
-                    delete this._server;
-                    delete this._port;
-                    resolve();
+  public stop(): Promise<void> {
+      return new Promise(resolve => {
+          if (this._server) {
+              this._server.close(() => {
+                  delete this._server;
+                  delete this._port;
+                  resolve();
                 });
-                return;
+              return;
             }
-            resolve();
+          resolve();
         });
     }
 
@@ -287,26 +287,26 @@ export class Giuseppe {
      * const giuseppe = new Giuseppe();
      * giuseppe.loadControllers('\* \* /build/ \* \* /*.js'); // <-- without the spaces of course.
      */
-    public async loadControllers(globPattern: string): Promise<void> {
-        try {
-            console.info(`Loading controller for the glob pattern "${globPattern}".`);
-            const files = await new Promise<string[]>((resolve, reject) => {
-                glob(globPattern, (err, matches) => {
-                    if (err) {
-                        reject(err);
-                        return;
+  public async loadControllers(globPattern: string): Promise<void> {
+      try {
+          console.info(`Loading controller for the glob pattern "${globPattern}".`);
+          const files = await new Promise<string[]>((resolve, reject) => {
+              glob(globPattern, (err, matches) => {
+                  if (err) {
+                      reject(err);
+                      return;
                     }
-                    resolve(matches);
+                  resolve(matches);
                 });
             });
-            for (const file of files) {
-                console.info(`Loading file '${file}'.`);
-                require(join(process.cwd(), file));
+          for (const file of files) {
+              console.info(`Loading file '${file}'.`);
+              require(join(process.cwd(), file));
             }
         } catch (e) {
-            console.error(`An error happend during loading of controllers`, {
-                globPattern,
-                err: e,
+          console.error('An error happend during loading of controllers', {
+              globPattern,
+              err: e,
             });
         }
 
@@ -320,10 +320,10 @@ export class Giuseppe {
      * @returns {express.Router} The configured router.
      * @memberof Giuseppe
      */
-    public configureRouter(baseUrl: string = ''): express.Router {
-        this.createRoutes(baseUrl);
-        this.registerRoutes();
-        return this.router;
+  public configureRouter(baseUrl: string = ''): express.Router {
+      this.createRoutes(baseUrl);
+      this.registerRoutes();
+      return this.router;
     }
 
     /**
@@ -342,51 +342,51 @@ export class Giuseppe {
      * @param {string} baseUrl
      * @memberof Giuseppe
      */
-    protected createRoutes(baseUrl: string): void {
-        const url = baseUrl.startsWith('/') ? baseUrl.substring(1) : baseUrl;
+  protected createRoutes(baseUrl: string): void {
+      const url = baseUrl.startsWith('/') ? baseUrl.substring(1) : baseUrl;
 
-        for (const ctrl of Giuseppe.registrar.controller) {
-            this.checkPluginRegistration(ctrl);
+      for (const ctrl of Giuseppe.registrar.controller) {
+          this.checkPluginRegistration(ctrl);
 
-            const meta = new ControllerMetadata(ctrl.ctrlTarget.prototype);
-            const routes = ctrl.createRoutes(url);
+          const meta = new ControllerMetadata(ctrl.ctrlTarget.prototype);
+          const routes = ctrl.createRoutes(url);
 
-            let ctrlRoutes: GiuseppeRoute[] = [];
+          let ctrlRoutes: GiuseppeRoute[] = [];
 
-            for (const route of routes) {
-                const mods = meta.modificators(route.name);
-                if (!mods.length) {
-                    ctrlRoutes.push(route);
-                    continue;
+          for (const route of routes) {
+              const mods = meta.modificators(route.name);
+              if (!mods.length) {
+                  ctrlRoutes.push(route);
+                  continue;
                 }
 
-                let modifiedRoutes: GiuseppeRoute[] = [route];
-                for (const mod of mods) {
-                    modifiedRoutes = mod.modifyRoute(modifiedRoutes);
+              let modifiedRoutes: GiuseppeRoute[] = [route];
+              for (const mod of mods) {
+                  modifiedRoutes = mod.modifyRoute(modifiedRoutes);
                 }
-                ctrlRoutes = ctrlRoutes.concat(modifiedRoutes);
+              ctrlRoutes = ctrlRoutes.concat(modifiedRoutes);
             }
 
-            const ctrlInstance = new (ctrl.ctrlTarget as { new(...args: any[]): any; })();
+          const ctrlInstance = new (ctrl.ctrlTarget as { new(...args: any[]): any; })();
 
-            for (const route of ctrlRoutes) {
-                if (this.routes[route.id]) {
-                    throw new DuplicateRouteError(route);
+          for (const route of ctrlRoutes) {
+              if (this.routes[route.id]) {
+                  throw new DuplicateRouteError(route);
                 }
-                this.routes[route.id] = {
-                    route,
-                    segments: route.url.split('/').length,
-                    wildcards: route.url.split('*').length - 1,
-                    urlParams: route.url.split('/').filter(s => s.indexOf(':') >= 0).length,
-                    ctrl: ctrl.ctrlTarget,
-                    instance: ctrlInstance,
+              this.routes[route.id] = {
+                  route,
+                  segments: route.url.split('/').length,
+                  wildcards: route.url.split('*').length - 1,
+                  urlParams: route.url.split('/').filter(s => s.indexOf(':') >= 0).length,
+                  ctrl: ctrl.ctrlTarget,
+                  instance: ctrlInstance,
                 };
             }
         }
     }
 
-    protected registerRoutes(): void {
-        Object.keys(this.routes)
+  protected registerRoutes(): void {
+      Object.keys(this.routes)
             .map(k => this.routes[k])
             .sort((a, b) => routeScore(b) - routeScore(a))
             .forEach(r => (this.router as any)[HttpMethod[r.route.method]](
@@ -407,32 +407,32 @@ export class Giuseppe {
      * @returns {express.RequestHandler}
      * @memberof Giuseppe
      */
-    protected createRouteWrapper(routeInfo: RouteRegisterInformation): express.RequestHandler {
-        const meta = new ControllerMetadata(routeInfo.ctrl.prototype);
-        const params = meta.parameters(routeInfo.route.name);
-        const returnTypeHandler = new ReturnTypeHandler(this.returnTypes);
+  protected createRouteWrapper(routeInfo: RouteRegisterInformation): express.RequestHandler {
+      const meta = new ControllerMetadata(routeInfo.ctrl.prototype);
+      const params = meta.parameters(routeInfo.route.name);
+      const returnTypeHandler = new ReturnTypeHandler(this.returnTypes);
 
-        return async (req: express.Request, res: express.Response) => {
-            const paramValues: any[] = [];
+      return async (req: express.Request, res: express.Response) => {
+          const paramValues: any[] = [];
 
-            try {
-                for (const param of params) {
-                    paramValues[param.index] = param.getValue(req, res);
+          try {
+              for (const param of params) {
+                  paramValues[param.index] = param.getValue(req, res);
                 }
 
-                let result = routeInfo.route.function.apply(routeInfo.instance, paramValues);
+              let result = routeInfo.route.function.apply(routeInfo.instance, paramValues);
 
-                if (result instanceof Promise) {
-                    result = await result;
+              if (result instanceof Promise) {
+                  result = await result;
                 }
 
-                if (params.some(p => p.canHandleResponse)) {
-                    return;
+              if (params.some(p => p.canHandleResponse)) {
+                  return;
                 }
 
-                returnTypeHandler.handleValue(result, res);
+              returnTypeHandler.handleValue(result, res);
             } catch (e) {
-                meta.errorHandler().handleError(routeInfo.instance, req, res, e);
+              meta.errorHandler().handleError(routeInfo.instance, req, res, e);
             }
         };
     }
@@ -447,38 +447,38 @@ export class Giuseppe {
      * @returns {boolean}
      * @memberof Giuseppe
      */
-    protected checkPluginRegistration(controller: ControllerDefinition): boolean {
-        if (!this.pluginController.some(p => controller instanceof p)) {
-            throw new DefinitionNotRegisteredError(controller.constructor.name);
+  protected checkPluginRegistration(controller: ControllerDefinition): boolean {
+      if (!this.pluginController.some(p => controller instanceof p)) {
+          throw new DefinitionNotRegisteredError(controller.constructor.name);
         }
 
-        const meta = new ControllerMetadata(controller.ctrlTarget.prototype);
+      const meta = new ControllerMetadata(controller.ctrlTarget.prototype);
 
-        for (const route of meta.routes()) {
-            if (!this.pluginRoutes.some(p => route instanceof p)) {
-                throw new DefinitionNotRegisteredError(route.constructor.name);
+      for (const route of meta.routes()) {
+          if (!this.pluginRoutes.some(p => route instanceof p)) {
+              throw new DefinitionNotRegisteredError(route.constructor.name);
             }
 
-            for (const mod of meta.modificators(route.name)) {
-                if (!this.pluginRouteModificators.some(p => mod instanceof p)) {
-                    throw new DefinitionNotRegisteredError(mod.constructor.name);
+          for (const mod of meta.modificators(route.name)) {
+              if (!this.pluginRouteModificators.some(p => mod instanceof p)) {
+                  throw new DefinitionNotRegisteredError(mod.constructor.name);
                 }
             }
 
-            for (const param of meta.parameters(route.name)) {
-                if (!this.pluginParameters.some(p => param instanceof p)) {
-                    throw new DefinitionNotRegisteredError(param.constructor.name);
+          for (const param of meta.parameters(route.name)) {
+              if (!this.pluginParameters.some(p => param instanceof p)) {
+                  throw new DefinitionNotRegisteredError(param.constructor.name);
                 }
             }
         }
 
-        return true;
+      return true;
     }
 
-    private startup(port: number): Promise<Server> {
-        return new Promise(resolve => {
-            const server = this.expressApp.listen(port, () => {
-                resolve(server);
+  private startup(port: number): Promise<Server> {
+      return new Promise(resolve => {
+          const server = this.expressApp.listen(port, () => {
+              resolve(server);
             });
         });
     }

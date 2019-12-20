@@ -35,13 +35,13 @@ export function Query(
         factory,
     }:
         {
-            alias?: string | string[],
-            required?: boolean,
-            validator?: ParameterValidator,
-            factory?: ParameterFactory<any>,
+          alias?: string | string[],
+          required?: boolean,
+          validator?: ParameterValidator,
+          factory?: ParameterFactory<any>,
         } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
+  return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
             propertyKey.toString(),
@@ -67,7 +67,7 @@ export function Query(
  */
 export class GiuseppeQueryParameter extends GiuseppeBaseParameter {
 
-    constructor(
+  constructor(
         name: string,
         type: Function,
         index: number,
@@ -76,15 +76,15 @@ export class GiuseppeQueryParameter extends GiuseppeBaseParameter {
         factory?: ParameterFactory<any>,
         private readonly alias?: string | string[],
     ) {
-        super(name, type, index, required, validator, factory);
+      super(name, type, index, required, validator, factory);
     }
 
-    protected getRawValue(request: Request): any {
-        if (!this.alias) {
-            return request.query[this.name];
+  protected getRawValue(request: Request): any {
+      if (!this.alias) {
+          return request.query[this.name];
         }
-        let aliases = !Array.isArray(this.alias) ? [this.alias] : this.alias as string[];
-        aliases = aliases.map((a: string) => request.query[a]).filter(Boolean);
-        return aliases[0] || request.query[this.name];
+      let aliases = !Array.isArray(this.alias) ? [this.alias] : this.alias as string[];
+      aliases = aliases.map((a: string) => request.query[a]).filter(Boolean);
+      return aliases[0] || request.query[this.name];
     }
 }

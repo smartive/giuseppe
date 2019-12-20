@@ -7,7 +7,7 @@
  * @extends {Error}
  */
 export class ErrorHandlerWrongReturnTypeError extends Error {
-    constructor() {
-        super('Error handler must have return type void');
+  constructor() {
+      super('Error handler must have return type void');
     }
 }

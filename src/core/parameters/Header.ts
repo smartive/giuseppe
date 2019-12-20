@@ -28,7 +28,7 @@ export function Header(
         factory,
     }: { required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
+  return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
             propertyKey.toString(),
@@ -51,7 +51,7 @@ export function Header(
  * @extends {GiuseppeBaseParameter}
  */
 export class GiuseppeHeaderParameter extends GiuseppeBaseParameter {
-    protected getRawValue(request: Request): any {
-        return request.get(this.name);
+  protected getRawValue(request: Request): any {
+      return request.get(this.name);
     }
 }

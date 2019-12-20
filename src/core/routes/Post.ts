@@ -21,15 +21,15 @@ export function Post(
     routeOrMiddleware?: string | RequestHandler,
     ...middlewares: RequestHandler[]
 ): FunctionMethodDecorator {
-    const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
-    if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
-        middlewares.unshift(routeOrMiddleware);
+  const route = routeOrMiddleware && typeof routeOrMiddleware === 'string' ? routeOrMiddleware : '';
+  if (routeOrMiddleware && typeof routeOrMiddleware === 'function') {
+      middlewares.unshift(routeOrMiddleware);
     }
-    return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Callable>) => {
-        if (!descriptor.value) {
-            throw new TypeError(`Function is undefined in route ${route}`);
+  return (target: Object, _: string | symbol, descriptor: TypedPropertyDescriptor<Callable>) => {
+      if (!descriptor.value) {
+          throw new TypeError(`Function is undefined in route ${route}`);
         }
-        Giuseppe.registrar.registerRoute(target, new GiuseppePostRoute(descriptor.value, route, middlewares));
+      Giuseppe.registrar.registerRoute(target, new GiuseppePostRoute(descriptor.value, route, middlewares));
     };
 }
 
@@ -41,11 +41,11 @@ export function Post(
  * @extends {GiuseppeBaseRoute}
  */
 export class GiuseppePostRoute extends GiuseppeBaseRoute {
-    constructor(
+  constructor(
         routeFunction: Function,
         route: string = '',
         middlewares: RequestHandler[] = [],
     ) {
-        super(HttpMethod.post, routeFunction, route, middlewares);
+      super(HttpMethod.post, routeFunction, route, middlewares);
     }
 }

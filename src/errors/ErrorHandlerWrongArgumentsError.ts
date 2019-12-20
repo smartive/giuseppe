@@ -7,7 +7,7 @@
  * @extends {Error}
  */
 export class ErrorHandlerWrongArgumentsError extends Error {
-    constructor() {
-        super('Error handler must accept exactly request, response and an error object');
+  constructor() {
+      super('Error handler must accept exactly request, response and an error object');
     }
 }

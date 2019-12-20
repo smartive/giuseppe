@@ -13,13 +13,13 @@ import { ParameterFactory, ParameterValidator } from './ParameterAdditions';
  * @class CookieHelper
  */
 class CookieHelper {
-    public name: string;
-    public value: string;
+  public name: string;
+  public value: string;
 
-    constructor(value: string) {
-        const split = value.split('=');
-        this.name = split[0];
-        this.value = split[1];
+  constructor(value: string) {
+      const split = value.split('=');
+      this.name = split[0];
+      this.value = split[1];
     }
 }
 
@@ -44,7 +44,7 @@ export function Cookie(
         factory,
     }: { required?: boolean, validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
+  return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
             propertyKey.toString(),
@@ -67,15 +67,15 @@ export function Cookie(
  * @extends {GiuseppeBaseParameter}
  */
 export class GiuseppeCookieParameter extends GiuseppeBaseParameter {
-    protected getRawValue(request: Request): any {
-        const cookies = request.get('cookie');
-        if (!cookies) {
-            return undefined;
+  protected getRawValue(request: Request): any {
+      const cookies = request.get('cookie');
+      if (!cookies) {
+          return undefined;
         }
-        const cookie = cookies
+      const cookie = cookies
             .split(';')
             .map(o => new CookieHelper(o.trim()))
             .filter(o => o.name === this.name)[0];
-        return cookie ? cookie.value : undefined;
+      return cookie ? cookie.value : undefined;
     }
 }

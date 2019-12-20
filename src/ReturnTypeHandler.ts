@@ -14,11 +14,11 @@ import { ReturnType } from './routes/ReturnType';
  * @class ReturnTypeHandler
  */
 export class ReturnTypeHandler {
-    private returnTypes: { [type: string]: ReturnType<any, any> } = {};
+  private returnTypes: { [type: string]: ReturnType<any, any> } = {};
 
-    constructor(types: ReturnType<any, any>[]) {
-        for (const type of types) {
-            this.returnTypes[type.type] = type;
+  constructor(types: ReturnType<any, any>[]) {
+      for (const type of types) {
+          this.returnTypes[type.type] = type;
         }
     }
 
@@ -32,22 +32,22 @@ export class ReturnTypeHandler {
      * @throws {NoReturnValueHandlerFoundError} One handler must be there to handle the value.
      * @memberof ReturnTypeHandler
      */
-    public handleValue(value: any, response: Response): void {
-        const handler = value ?
+  public handleValue(value: any, response: Response): void {
+      const handler = value ?
             this.returnTypes[value.constructor.name] || this.returnTypes['default'] :
             this.returnTypes['default'];
-        if (!handler) {
-            throw new NoReturnValueHandlerFoundError(value);
+      if (!handler) {
+          throw new NoReturnValueHandlerFoundError(value);
         }
 
-        response
+      response
             .status(handler.getStatus(value))
             .set(handler.getHeaders(value));
 
-        if (value) {
-            response.send(handler.getValue(value));
+      if (value) {
+          response.send(handler.getValue(value));
         }
 
-        response.end();
+      response.end();
     }
 }

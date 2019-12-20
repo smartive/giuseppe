@@ -37,35 +37,35 @@ export type ErrorHandlerMethodDecorator = (
  * @returns {(any, string, PropertyDescriptor) => void} Decorator for the class function.
  */
 export function ErrorHandler(...errors: Function[]): ErrorHandlerMethodDecorator {
-    return (
+  return (
         target: Object,
         propertyKey: string | symbol,
         descriptor: TypedPropertyDescriptor<ErrorHandlerFunction<Error>>,
     ) => {
-        if (!descriptor.value) {
-            throw new TypeError(`Errorhandler is undefined`);
+      if (!descriptor.value) {
+          throw new TypeError('Errorhandler is undefined');
         }
 
-        const paramtypes = Reflect.getMetadata('design:paramtypes', target, propertyKey);
-        if (paramtypes.length !== ARGUMENT_COUNT) {
-            throw new ErrorHandlerWrongArgumentsError();
+      const paramtypes = Reflect.getMetadata('design:paramtypes', target, propertyKey);
+      if (paramtypes.length !== ARGUMENT_COUNT) {
+          throw new ErrorHandlerWrongArgumentsError();
         }
 
-        [Object, Object].forEach((type, index) => {
-            if (paramtypes[index] !== type) {
-                throw new ErrorHandlerWrongArgumentTypesError();
+      [Object, Object].forEach((type, index) => {
+          if (paramtypes[index] !== type) {
+              throw new ErrorHandlerWrongArgumentTypesError();
             }
         });
 
-        const returnValue = Reflect.getMetadata('design:returntype', target, propertyKey);
-        if (!!returnValue) {
-            throw new ErrorHandlerWrongReturnTypeError();
+      const returnValue = Reflect.getMetadata('design:returntype', target, propertyKey);
+      if (!!returnValue) {
+          throw new ErrorHandlerWrongReturnTypeError();
         }
 
-        if (!errors.length) {
-            errors.push(Error);
+      if (!errors.length) {
+          errors.push(Error);
         }
 
-        Giuseppe.registrar.registerErrorHandler(target, descriptor.value, errors);
+      Giuseppe.registrar.registerErrorHandler(target, descriptor.value, errors);
     };
 }

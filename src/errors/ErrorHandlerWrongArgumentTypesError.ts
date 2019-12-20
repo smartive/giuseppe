@@ -7,7 +7,7 @@
  * @extends {Error}
  */
 export class ErrorHandlerWrongArgumentTypesError extends Error {
-    constructor() {
-        super('Error handler arguments must be: Object, Object, Error');
+  constructor() {
+      super('Error handler arguments must be: Object, Object, Error');
     }
 }

@@ -16,7 +16,7 @@ export interface ControllerDefinition {
      * @type {Function}
      * @memberof ControllerDefinition
      */
-    readonly ctrlTarget: Function;
+  readonly ctrlTarget: Function;
 
     /**
      * A collection of middlewares that is contained in the given controller.
@@ -25,7 +25,7 @@ export interface ControllerDefinition {
      * @type {RequestHandler[]}
      * @memberof ControllerDefinition
      */
-    readonly middlewares: RequestHandler[];
+  readonly middlewares: RequestHandler[];
 
     /**
      * A function that creates the routes for a given controller. Those routes are then modificated and registered.
@@ -34,5 +34,5 @@ export interface ControllerDefinition {
      * @returns {GiuseppeRoute[]}
      * @memberof ControllerDefinition
      */
-    createRoutes(baseUrl: string): GiuseppeRoute[];
+  createRoutes(baseUrl: string): GiuseppeRoute[];
 }

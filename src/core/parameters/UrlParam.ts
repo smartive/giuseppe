@@ -26,7 +26,7 @@ export function UrlParam(
         factory,
     }: { validator?: ParameterValidator, factory?: ParameterFactory<any> } = {},
 ): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
+  return (target: Object, propertyKey: string | symbol, parameterIndex: number) =>
         Giuseppe.registrar.registerParameter(
             target,
             propertyKey.toString(),
@@ -49,17 +49,17 @@ export function UrlParam(
  */
 export class GiuseppeUrlParameter extends GiuseppeBaseParameter {
 
-    constructor(
+  constructor(
         name: string,
         type: Function,
         index: number,
         validator?: ParameterValidator,
         factory?: ParameterFactory<any>,
     ) {
-        super(name, type, index, true, validator, factory);
+      super(name, type, index, true, validator, factory);
     }
 
-    protected getRawValue(request: Request): any {
-        return request.params[this.name];
+  protected getRawValue(request: Request): any {
+      return request.params[this.name];
     }
 }
