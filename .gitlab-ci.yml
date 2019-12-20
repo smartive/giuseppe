@@ -1,26 +1,12 @@
 include:
-  - 'https://gitlab.com/smartive/open-source/gitlab-ci-templates/raw/master/templates.yml'
+  - project: 'smartive/ci-templates'
+    ref: v1.3.1
+    file: '/github/defaults/npm.yml'
 
-stages:
-  - test
-  - release
+variables:
+  REPO: 'smartive/react-pwa-toolbox'
 
-test:
-  extends: .base
-  stage: test
-  image: node:10
+create release:
   before_script:
     - npm ci
-    - npx lerna bootstrap
-  script:
-    - npm test
-
-release:
-  extends: .create-release
-  stage: release
-  before_script:
-    - npm ci
-    - npx lerna bootstrap
     - npm run build
-  only:
-    - master
