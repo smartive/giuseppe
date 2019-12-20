@@ -1,6 +1,0 @@
-gh-pages:
-    image: starefossen/github-pages
-    volumes: 
-    - "./:/usr/src/app"
-    ports:
-    - "4000:4000"

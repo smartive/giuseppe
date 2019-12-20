@@ -2,16 +2,11 @@
 layout: default
 title: giuseppe - by smartive AG
 ---
+
 giuseppe [Italian: dʒuˈzɛppe] is a controller routing system for [Express](http://expressjs.com/) using [TypeScript](https://www.typescriptlang.org/)
 decorators and annotations named after the great Italian componist Giuseppe Verdi. Like Verdi,
 it composes things, but not a great piece of musical history! We compose routes for you. giuseppe is dedicated to
 [Express](http://expressjs.com/) and depends on it. We were tired of writing all the route registrations by ourselves.
-
-[![Build Status](https://travis-ci.org/smartive/giuseppe.svg)](https://travis-ci.org/smartive/giuseppe)
-[![Build Status](https://ci.appveyor.com/api/projects/status/7m14ruqjaopwbfn4?svg=true)](https://ci.appveyor.com/project/buehler/giuseppe)
-[![npm](https://img.shields.io/npm/v/giuseppe.svg?maxAge=3600)](https://www.npmjs.com/package/giuseppe)
-[![Coverage status](https://img.shields.io/coveralls/smartive/giuseppe.svg?maxAge=3600)](https://coveralls.io/github/smartive/giuseppe)
-[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 ## Table of contents
 
@@ -62,10 +57,7 @@ is compiled in the correct way.
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "exclude": ["node_modules", "build"]
 }
 ```
 
@@ -84,12 +76,10 @@ import { Controller, Get, Giuseppe } from 'giuseppe';
 
 @Controller()
 class PingPongController {
-
-    @Get('ping')
-    public ping(): any {
-        return {ping: 'pong'};
-    }
-
+  @Get('ping')
+  public ping(): any {
+    return { ping: 'pong' };
+  }
 }
 
 const giusi = new Giuseppe();
@@ -111,22 +101,18 @@ import { Controller, Get, Query } from 'giuseppe';
 
 @Controller()
 export class PingPongController {
-
-    @Get('ping')
-    public ping(): any {
-        return {ping: 'pong'};
-    }
-
+  @Get('ping')
+  public ping(): any {
+    return { ping: 'pong' };
+  }
 }
 
 @Controller('echo')
 export class EchoController {
-
-    @Get()
-    public ping(@Query('data') data: string): string {
-        return 'you gave me: ' + data;
-    }
-
+  @Get()
+  public ping(@Query('data') data: string): string {
+    return 'you gave me: ' + data;
+  }
 }
 ```
 
