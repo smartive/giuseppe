@@ -20,7 +20,7 @@ describe('GiuseppeRouteVersion <integration test>', () => {
   let giusi: Giuseppe;
   let controller: Function;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     @Controller()
     class Ctrl {
       @Version({ from: 1, until: 1 })
@@ -52,11 +52,11 @@ describe('GiuseppeRouteVersion <integration test>', () => {
     giusi = new Giuseppe();
     giusi.registerPlugin(new GiuseppeVersionPlugin());
 
-    giusi.start();
+    await giusi.start(8080);
   });
 
-  afterAll(() => {
-    giusi.stop();
+  afterAll(async () => {
+    await giusi.stop();
     (Giuseppe as any).registrar.controller = [];
   });
 
