@@ -1,8 +1,11 @@
 import 'reflect-metadata';
 import { ControllerErrorHandler } from '../errors/ControllerErrorHandler';
 import { ERRORHANDLER_KEY } from '../errors/ErrorHandlerDecorator';
+// tslint:disable-next-line: ordered-imports
 import { ParameterDefinition, PARAMETER_DEFINITION_KEY } from '../parameter/ParameterDefinition';
+// tslint:disable-next-line: ordered-imports
 import { RouteDefinition, ROUTE_DEFINITION_KEY } from '../routes/RouteDefinition';
+// tslint:disable-next-line: ordered-imports
 import { RouteModificator, ROUTE_MODIFICATOR_KEY } from '../routes/RouteModificator';
 
 /**
