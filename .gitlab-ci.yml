@@ -1,12 +1,12 @@
 include:
   - project: 'smartive/ci-templates'
-    ref: v1.4.0
+    ref: v1.4.1
     file: '/github/defaults/npm.yml'
   - project: 'smartive/ci-templates'
-    ref: v1.4.0
+    ref: v1.4.1
     file: '/general/build.yml'
   - project: 'smartive/ci-templates'
-    ref: v1.4.0
+    ref: v1.4.1
     file: '/cloud-run/deploy.yml'
 
 variables:
