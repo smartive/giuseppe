@@ -36,7 +36,7 @@ build documentation:
 
 deploy documentation:
   extends: .cloud-run-public-static-site
-  stage: dploy
+  stage: deploy
   variables:
     NAME: smartive-opensource-giuseppe-documentation
     IMAGE: ${REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/docs:${CI_COMMIT_TAG}
