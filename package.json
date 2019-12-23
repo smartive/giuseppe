@@ -1,17 +1,66 @@
 {
-  "name": "root",
-  "private": true,
+  "name": "giuseppe",
+  "version": "0.0.0-development",
+  "description": "An attributed controller routing system for expressJS with typescript decorators and annotations",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "lerna run build",
-    "test": "lerna run test"
+    "clean": "del-cli ./build ./dist ./coverage",
+    "build": "npm run clean && tsc -p ./config/tsconfig.build.json",
+    "develop": "npm run clean && tsc -p .",
+    "lint": "npm-run-all lint:*",
+    "lint:ts": "tslint -c ./tslint.json -p ./config/tsconfig.build.json",
+    "lint:prettier": "prettier --list-different \"src/**/*.ts{,x}\"",
+    "test": "npm run lint && npm run clean && jest -c ./jest.json",
+    "test:watch": "npm run clean && jest -c ./jest.json --watch",
+    "typedoc": "del-cli ./docs/api && typedoc --ignoreCompilerErrors --out ./docs/api --mode file --tsconfig ./config/tsconfig.build.json --readme none ./src/",
+    "semantic-release": "semantic-release"
+  },
+  "engines": {
+    "node": ">=9",
+    "npm": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smartive/giuseppe.git"
+  },
+  "keywords": [
+    "express",
+    "routing",
+    "typescript",
+    "decorators",
+    "api",
+    "controller"
+  ],
+  "author": "smartive AG <hello@smartive.ch>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smartive/giuseppe/issues"
+  },
+  "homepage": "https://github.com/smartive/giuseppe#readme",
+  "dependencies": {
+    "@types/express": "^4.17.2",
+    "@types/glob": "^7.1.1",
+    "@types/node": "^12.12.21",
+    "express": "^4.17.1",
+    "glob": "^7.1.6",
+    "http-status": "^1.4.2",
+    "reflect-metadata": "^0.1.13",
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
-    "@smartive/semantic-release-lerna": "^1.0.0",
-    "lerna": "^3.11.1",
-    "semantic-release": "^15.13.3"
-  },
-  "release": {
-    "extends": "@smartive/semantic-release-lerna/config",
-    "repositoryUrl": "https://github.com/smartive/giuseppe.git"
+    "@smartive/tslint-config": "^7.0.1",
+    "@types/jest": "^24.0.24",
+    "@types/request": "^2.48.4",
+    "del-cli": "^3.0.0",
+    "jest": "^24.9.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.19.1",
+    "request": "^2.88.0",
+    "ts-jest": "^24.2.0",
+    "tslint": "^5.20.1",
+    "tsutils": "^3.17.1",
+    "typedoc": "^0.15.5",
+    "typescript": "^3.7.3"
   }
 }

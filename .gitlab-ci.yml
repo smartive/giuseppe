@@ -1,26 +1,45 @@
 include:
-  - 'https://gitlab.com/smartive/open-source/gitlab-ci-templates/raw/master/templates.yml'
+  - project: 'smartive/ci-templates'
+    ref: v1.4.1
+    file: '/github/defaults/npm.yml'
+  - project: 'smartive/ci-templates'
+    ref: v1.4.1
+    file: '/general/build.yml'
+  - project: 'smartive/ci-templates'
+    ref: v1.4.1
+    file: '/cloud-run/deploy.yml'
+
+variables:
+  REPO: 'smartive/giuseppe'
 
 stages:
   - test
+  - test report
   - release
+  - deploy
 
-test:
-  extends: .base
-  stage: test
-  image: node:10
+create release:
   before_script:
     - npm ci
-    - npx lerna bootstrap
-  script:
-    - npm test
-
-release:
-  extends: .create-release
-  stage: release
-  before_script:
-    - npm ci
-    - npx lerna bootstrap
     - npm run build
+
+build documentation:
+  extends: .gcb-docker
+  stage: release
+  variables:
+    SUB_REGISTRY: $REGISTRY
+    SUB_CI_PROJECT_NAMESPACE: $CI_PROJECT_NAMESPACE
+    SUB_CI_PROJECT_NAME: $CI_PROJECT_NAME
+    SUB_TAG: $CI_COMMIT_TAG
   only:
-    - master
+    - tags
+
+deploy documentation:
+  extends: .cloud-run-public-static-site
+  stage: deploy
+  variables:
+    NAME: smartive-opensource-giuseppe-documentation
+    IMAGE: ${REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/docs:${CI_COMMIT_TAG}
+    URL: giuseppe
+  only:
+    - tags
